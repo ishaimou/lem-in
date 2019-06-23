@@ -86,7 +86,6 @@ static void		update_exclus(t_lemin *lemin, t_icase *path)
 
 int			algo_ishobe(t_lemin *lemin)
 {
-	t_list	*curr;
 	t_icase	*path;
 	int		flux;
 

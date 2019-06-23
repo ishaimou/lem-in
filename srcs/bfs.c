@@ -45,7 +45,6 @@ static void		store_path(t_lemin *lemin)
 
 int				bfs(t_lemin *lemin)
 {
-	t_room		*room;
 	t_queue		*q;
 	int			u;
 
