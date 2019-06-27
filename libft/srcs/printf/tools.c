@@ -25,13 +25,6 @@ t_fmt		*add_node(t_fmt *head, t_fmt *node)
 	return (head);
 }
 
-void		init_chr(t_chr **chr)
-{
-	(*chr)->str = NULL;
-	(*chr)->len = 0;
-	(*chr)->next = NULL;
-}
-
 int			fmtlen(t_fmt *fmt)
 {
 	int		size;
@@ -43,23 +36,6 @@ int			fmtlen(t_fmt *fmt)
 		fmt = fmt->next;
 	}
 	return (size);
-}
-
-void		free_chr(t_chr **chr)
-{
-	t_chr	*curr;
-	t_chr	*next;
-
-	curr = *chr;
-	while (curr)
-	{
-		next = curr->next;
-		if (curr->str)
-			free(curr->str);
-		free(curr);
-		curr = next;
-	}
-	*chr = NULL;
 }
 
 void		free_fmt(t_fmt **fmt)

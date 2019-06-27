@@ -20,6 +20,7 @@ void	ft_error()
 
 void	init_lemin(t_lemin *lemin)
 {
+	lemin->input = NULL;
 	lemin->tab_bt = NULL;
 	lemin->tab_hash = NULL;
 	lemin->list_paths = NULL;
@@ -72,59 +73,13 @@ t_room	*create_room(int room_id)
 	return (room);
 }
 
-int		chr_len(t_chr *chr)
-{
-	int		len;
-
-	len = 0;
-	while (chr)
-	{
-		len++;
-		chr = chr->next;
-	}
-	return (len);
-}
-
-void            free_chr(t_chr **chr)
-{
-	t_chr   *curr;
-	t_chr   *next;
-
-	curr = *chr;
-	while (curr)
-	{
-		next = curr->next;
-		if (curr->str)
-			free(curr->str);
-		free(curr);
-		curr = next;
-	}
-	*chr = NULL;
-}
-
-void	chr_pushfront(t_chr **list, char *str, int len)
-{
-	t_chr	*node;
-
-	if(!(node = (t_chr*)malloc(sizeof(*list))))
-		ft_error();
-	node->str = ft_strdup(str);
-	node->len = len;
-	node->next = NULL;
-	if (!*list)
-	{
-		*list = node;
-		return ;
-	}
-	node->next = *list;
-	*list = node;
-}
-
+//int		gnl_error(t_lemin *lemin, char **line)
 int		gnl_error(char **line)
 {
 	int		ret;
 
 	ret = get_next_line(0, line);
+	//chr_addnode(&(lemin->input), *line);
 	if (ret < 0)
 		ft_error();
 	return (ret);
@@ -239,7 +194,7 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 		free(line);
 	}
 	if (*list_tmp)
-		free_chr(list_tmp);
+		chr_free(list_tmp);
 	ft_error();
 	return (NULL);
 }
@@ -289,6 +244,29 @@ int		str_to_ind(char **tab_hash, int v, char *str)
 	i = ind;
 	while (i < v)
 	{
+		if (!tab_hash[i])
+			return (i);
+		i++;
+	}
+	i = 0;
+	while (i < ind)
+	{
+		if (!tab_hash[i])
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int		hash_findid(char **tab_hash, int size, char *str)
+{
+	int		ind;
+	int		i;
+
+	ind = hash_str(str) % size;
+	i = ind;
+	while (i < size)
+	{
 		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
 			return (i);
 		i++;
@@ -300,7 +278,7 @@ int		str_to_ind(char **tab_hash, int v, char *str)
 			return (i);
 		i++;
 	}
-	return (0);
+	return (-1);
 }
 
 void	create_tabhash(t_lemin *lemin, t_chr *list_tmp)
@@ -321,6 +299,8 @@ void	create_tabhash(t_lemin *lemin, t_chr *list_tmp)
 	while (list_tmp)
 	{
 		ind = str_to_ind(lemin->tab_hash, v, list_tmp->str);
+			ft_putnbr(ind);
+			ft_putchar('\n');
 		put_in_tabhash(lemin, list_tmp->str, &ind);
 		if (list_tmp->len == 1)
 			lemin->start = ind;
@@ -353,20 +333,29 @@ void	add_links(t_bt **tab_bt, int a, int b)
 	bt_insert_item(&tab_bt[b], room_a, &id_cmp);
 }
 
-void	parse_links(t_lemin *lemin, char *bk_line)
+void	parse_links(t_lemin *lemin, char **bk_line)
 {
 	int				id[2];
 	char			*line;
 	int				eol;
 	int				v;
+	int				i;
 
 	v = lemin->v;
 	if (!(lemin->tab_bt = (t_bt**)malloc(sizeof(t_bt*) * (v + 1))))
 		ft_error();
-	(lemin->tab_bt)[v] = NULL;
-	eol = ft_strlen(bk_line);
-	id[0] = str_to_ind(lemin->tab_hash, lemin->v, bk_line);
-	id[1] = str_to_ind(lemin->tab_hash, lemin->v, &bk_line[eol + 1]);
+	i = 0;
+	while (i <= v)
+		(lemin->tab_bt)[i++] = NULL;
+	eol = ft_strlen(*bk_line);
+	id[0] = hash_findid(lemin->tab_hash, lemin->v, *bk_line);
+	id[1] = hash_findid(lemin->tab_hash, lemin->v, &(*bk_line)[eol + 1]);
+	free(*bk_line);
+	if (id[0] == -1 || id[1] == -1)
+	{
+		free_lemin(lemin);
+		ft_error();
+	}
 	add_links(lemin->tab_bt, id[0], id[1]);
 	while (gnl_error(&line))
 	{
@@ -375,8 +364,13 @@ void	parse_links(t_lemin *lemin, char *bk_line)
 			free_lemin(lemin);
 			ft_error();
 		}
-		id[0] = str_to_ind(lemin->tab_hash, lemin->v, line);
-		id[1] = str_to_ind(lemin->tab_hash, lemin->v, &line[eol + 1]);
+		id[0] = hash_findid(lemin->tab_hash, lemin->v, line);
+		id[1] = hash_findid(lemin->tab_hash, lemin->v, &line[eol + 1]);
+		if (id[0] == -1 || id[1] == -1)
+		{
+			free_lemin(lemin);
+			ft_error();
+		}
 		add_links(lemin->tab_bt, id[0], id[1]);
 	}
 }
@@ -394,6 +388,49 @@ void	parse_links(t_lemin *lemin, char *bk_line)
    }
    */
 
+void print_tabhash(char **tab)
+{
+	int		i = 0;
+
+	while (tab[i])
+	{
+		ft_printf("tab[%d] = %s\n", i, tab[i]);
+		i++;
+	}
+}
+
+void print_tree(void *item)
+{
+	t_room	*room;
+
+	room = (t_room*)item;
+	ft_printf("[%d]-", room->id);
+}
+
+void print_tabbt(t_bt **tab_bt)
+{
+	int		i;
+
+	i = 0;
+	while (tab_bt[i])
+	{
+		ft_printf("\n------------ TREE %d ------------\n", i);
+		bt_apply_infix(tab_bt[i], &print_tree);
+		i++;
+	}
+	ft_printf("\n");
+}
+
+void print_lemin(t_lemin *lemin)
+{
+	ft_printf("\n+++++++++++++++ lem-in ++++++++++\n");
+	ft_printf(" nbr ants   = %d\n", lemin->ants);
+	ft_printf(" nbr vertex = %d\n", lemin->v);
+	ft_printf(" start = %d\n", lemin->start);
+	ft_printf(" end   = %d\n", lemin->end);
+	ft_printf("++++++++++++++++++++++++++++++++++\n");
+}
+
 void	parse(t_lemin *lemin)
 {
 	t_chr	*list_tmp;
@@ -403,9 +440,11 @@ void	parse(t_lemin *lemin)
 	parse_ants(lemin);
 	line = parse_rooms(lemin, &list_tmp);
 	create_tabhash(lemin, list_tmp);
-	free_chr(&list_tmp);
-	parse_links(lemin, line);
-	//free(line);
+	chr_free(&list_tmp);
+			print_tabhash(lemin->tab_hash);			//
+	parse_links(lemin, &line);
+			print_tabbt(lemin->tab_bt);				//
+			print_lemin(lemin);
 	//print_farm();
 }
 

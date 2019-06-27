@@ -29,6 +29,7 @@ typedef struct		s_lemin
 	char			**tab_hash;
 	t_bt			**tab_bt;
 	t_list			*list_paths;
+	t_chr			*input;
 }					t_lemin;
 
 typedef struct		s_room

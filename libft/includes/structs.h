@@ -53,4 +53,11 @@ typedef struct		s_icase
 	struct s_icase	*next;
 }					t_icase;
 
+typedef struct		s_chr
+{
+	char			*str;
+	unsigned int	len;
+	struct s_chr	*next;
+}					t_chr;
+
 #endif
