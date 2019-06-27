@@ -80,7 +80,7 @@ int		gnl_error(t_lemin *lemin, char **line)
 	ret = get_next_line(0, line);
 	if (ret < 0)
 		ft_error();
-	chr_addnode(&(lemin->input), *line, 0);
+	chr_pushfront(&(lemin->input), *line, 0);
 	return (ret);
 }
 
@@ -377,15 +377,6 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	}
 }
 
-
-   void	print_farm(void)
-   {
-   char	buff[100];
-
-   while (read(0, buff, 100) > 0)
-   		ft_putstr(buff);
-	}
-
 void print_tabhash(char **tab)
 {
 	int		i = 0;
@@ -429,19 +420,14 @@ void print_lemin(t_lemin *lemin)
 	ft_printf("++++++++++++++++++++++++++++++++++\n");
 }
 
-void	chr_printfree(t_chr **list)
+void	chr_printfree(t_chr *list)
 {
-	t_chr	*tmp;
-
-	while (*list)
-	{
-		ft_putstr((*list)->str);
-		ft_putchar('\n');
-		tmp = *list;
-		*list = (*list)->next;
-		free(tmp);
-	}
-	*list = NULL;
+	if (!list->next)
+		return ;
+	list = list->next;
+	chr_printfree(list);
+	ft_putstr(list->str);
+	write(1, "\n", 1);
 }
 
 void	parse(t_lemin *lemin)
@@ -458,7 +444,8 @@ void	parse(t_lemin *lemin)
 	parse_links(lemin, &line);
 			print_tabbt(lemin->tab_bt);				//
 			print_lemin(lemin);
-	chr_printfree(&(lemin->input));
+	chr_printfree(lemin->input);
+	write(1, "\n", 1);
 }
 
 int		main(void)
