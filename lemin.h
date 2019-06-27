@@ -41,4 +41,14 @@ typedef struct		s_room
 	int				full:1;
 }					t_room;
 
+void		ft_error(void);
+void		create_tabhash(t_lemin *lemin, t_chr *list_tmp);
+int			hash_findid(char **tab_hash, int size, char *str);
+int			str_to_ind(char **tab_hash, int v, char *str);
+void		put_in_tabhash(t_lemin *lemin, char *str, int *ind);
+void 		print_lemin(t_lemin *lemin);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void 		print_tabhash(char **tab);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void 		print_tabbt(t_bt **tab_bt);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void 		print_tree(void *item);					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #endif
