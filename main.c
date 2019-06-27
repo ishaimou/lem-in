@@ -73,15 +73,14 @@ t_room	*create_room(int room_id)
 	return (room);
 }
 
-//int		gnl_error(t_lemin *lemin, char **line)
-int		gnl_error(char **line)
+int		gnl_error(t_lemin *lemin, char **line)
 {
 	int		ret;
 
 	ret = get_next_line(0, line);
-	//chr_addnode(&(lemin->input), *line);
 	if (ret < 0)
 		ft_error();
+	chr_addnode(&(lemin->input), *line, 0);
 	return (ret);
 }
 
@@ -91,7 +90,7 @@ void	parse_ants(t_lemin *lemin)
 	int		i;
 
 	i = 0;
-	if (!gnl_error(&line))
+	if (!gnl_error(lemin, &line))
 		ft_error();
 	while (ft_isdigit(line[i]))
 		i++;
@@ -175,7 +174,7 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 	t = 0;
 	limit[0] = 0;
 	limit[1] = 0;
-	while (gnl_error(&line))
+	while (gnl_error(lemin, &line))
 	{
 		if (line[0] == '#')
 			parse_cmds(line, &t, limit);
@@ -194,7 +193,10 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 		free(line);
 	}
 	if (*list_tmp)
+	{
+		free_lemin(lemin);
 		chr_free(list_tmp);
+	}
 	ft_error();
 	return (NULL);
 }
@@ -357,7 +359,7 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 		ft_error();
 	}
 	add_links(lemin->tab_bt, id[0], id[1]);
-	while (gnl_error(&line))
+	while (gnl_error(lemin, &line))
 	{
 		if (!(eol = is_link(&line)))
 		{
@@ -375,18 +377,14 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	}
 }
 
-/*
+
    void	print_farm(void)
    {
-   char	*line;
+   char	buff[100];
 
-   while (get_next_line(0, &line) > 0)
-   {
-   ft_putstr(line);
-   free(line);
-   }
-   }
-   */
+   while (read(0, buff, 100) > 0)
+   		ft_putstr(buff);
+	}
 
 void print_tabhash(char **tab)
 {
@@ -431,6 +429,21 @@ void print_lemin(t_lemin *lemin)
 	ft_printf("++++++++++++++++++++++++++++++++++\n");
 }
 
+void	chr_printfree(t_chr **list)
+{
+	t_chr	*tmp;
+
+	while (*list)
+	{
+		ft_putstr((*list)->str);
+		ft_putchar('\n');
+		tmp = *list;
+		*list = (*list)->next;
+		free(tmp);
+	}
+	*list = NULL;
+}
+
 void	parse(t_lemin *lemin)
 {
 	t_chr	*list_tmp;
@@ -445,7 +458,7 @@ void	parse(t_lemin *lemin)
 	parse_links(lemin, &line);
 			print_tabbt(lemin->tab_bt);				//
 			print_lemin(lemin);
-	//print_farm();
+	chr_printfree(&(lemin->input));
 }
 
 int		main(void)
