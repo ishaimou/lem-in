@@ -94,6 +94,7 @@ char				*ic_joinstr(t_icase **icase, int size);
 int					chr_len(t_chr *chr);
 void				chr_init(t_chr **chr);
 void				chr_free(t_chr **chr);
+void				chr_revprint(t_chr *list);
 void				chr_addnode(t_chr **list, char *str, int len);
 void				chr_pushfront(t_chr **list, char *str, int len);
 

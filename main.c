@@ -266,16 +266,6 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	}
 }
 
-void	chr_printfree(t_chr *list)
-{
-	if (!list->next)
-		return ;
-	list = list->next;
-	chr_printfree(list);
-	ft_putstr(list->str);
-	write(1, "\n", 1);
-}
-
 void	parse(t_lemin *lemin)
 {
 	t_chr	*list_tmp;
@@ -290,8 +280,9 @@ void	parse(t_lemin *lemin)
 	parse_links(lemin, &line);
 			print_tabbt(lemin->tab_bt);				//
 			print_lemin(lemin);
-	chr_printfree(lemin->input);
+	chr_revprint(lemin->input);
 	write(1, "\n", 1);
+	chr_free(&(lemin->input));
 }
 
 int		main(void)
