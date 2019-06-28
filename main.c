@@ -58,21 +58,6 @@ void    free_room(t_bt **root)
 	*root = NULL;
 }
 
-void	ic_free(t_icase **icase)
-{
-	t_icase	*tmp;
-	t_icase *curr;
-
-	tmp = *icase;
-	while (tmp)
-	{
-		curr = tmp;
-		tmp = tmp->next;
-		free(curr);
-	}
-	icase = NULL;
-}
-
 void	ic_lstdel(t_list **alst)
 {
 	t_list	*current_node;
@@ -398,21 +383,6 @@ void	bt_enqueue_infix(t_lemin *lemin, t_bt *root, t_queue *q, int u)
 	}
 }
 
-void		print_path(t_lemin *lemin)
-{
-	int		u;
-
-	u = lemin->end;
-	while (u != lemin->start)
-	{
-		ft_putendl((lemin->tab_hash)[u]);
-		u = lemin->parent[u];
-	}
-		ft_putendl((lemin->tab_hash)[u]);
-		ft_putchar('\n');
-		ft_putchar('\n');
-}
-
 t_list	*ft_lstnew_sm(void *content, size_t content_size)
 {
 	t_list	*node;
@@ -462,22 +432,12 @@ void		store_path(t_lemin *lemin)
 	ft_lstadd(&lemin->list_paths, node);
 }
 
-void	print_list_paths(t_list	*list_paths)
-{
-	while (list_paths)
-	{
-		ic_print((t_icase*)(list_paths->content));
-		list_paths = list_paths->next;
-	}
-}
-
 int			is_exclus(int *exclus, int x)
 {
 	if (exclus[x])
 		return (1);
 	return (0);
 }
-
 
 static void		edit_edgeflow(t_bt **tab_bt, int id1, int id2, t_room *room)
 {
@@ -540,25 +500,6 @@ static void		update_exclus(t_lemin *lemin, t_icase *path)
 	}
 }
 
-void	print_list_grp(t_list *grp)
-{
-	int		i;
-
-	i = 1;
-	while (grp)
-	{
-		ft_putstr(" ------ GROUP ");
-		ft_putchar('[');
-		ft_putnbr(i);
-		ft_putchar(']');
-		ft_putstr(" ------\n");
-		print_list_paths((t_list*)grp->content);
-		grp = grp->next;
-		i++;
-		ft_putchar('\n');
-	}
-}
-
 int			bfs(t_lemin *lemin)
 {
 	t_room		*room;
@@ -576,10 +517,6 @@ int			bfs(t_lemin *lemin)
 		qt_front(*q, &u);
 		if (u == lemin->end)
 		{
-			ft_putstr("6666666666666666666\n");			///////////////////
-			if (lemin->list_paths)
-				print_list_paths(lemin->list_paths);		////////////////////
-			ft_putstr("6666666666666666666\n");			///////////////////
 			store_path(lemin);
 			qt_free(q);
 			return (1);
@@ -592,7 +529,7 @@ int			bfs(t_lemin *lemin)
 	return (0);
 }
 
-int			algo_ishobe(t_lemin *lemin)
+static int	algo_ishobe(t_lemin *lemin)
 {
 	t_list	*curr;
 	t_icase	*path;
@@ -600,28 +537,38 @@ int			algo_ishobe(t_lemin *lemin)
 
 	flux = lemin->flux;
 	reset_tab_int(lemin->exclus, lemin->v, 0);
-	while (bfs(lemin) && flux--)
+	while (flux-- && bfs(lemin))
 	{
-		ft_printf("flux == [%d]\n", flux);  //!!!!!!!!!
+		//ft_printf("flux == [%d]\n", flux);  //!!!!!!!!!
 		path = (t_icase*)(lemin->list_paths->content);
 		//ic_print(path);				//!!!!!!!!
 		update_edgeflow(lemin, path);
 		update_exclus(lemin, path);
 	}
+	print_list_paths(lemin->list_paths);
 	if (!(lemin->list_paths))
 		return (0);
 	return (1);
 }
 
-void	algo_general_ishobe(t_lemin *lemin)
+void		algo_general_ishobe(t_lemin *lemin)
 {
 	t_list		*node;
+	t_list		*tmp;
 
 	while (algo_ishobe(lemin))
 	{
+		//print_list_paths(lemin->list_paths);
 		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
 		ft_lstadd(&lemin->list_grp, node);
-		lemin->list_paths = NULL;
+		while (lemin->list_paths)
+		{
+			tmp = lemin->list_paths;
+			lemin->list_paths = lemin->list_paths->next;
+			tmp = NULL;
+		}
+		//print_list_grp(lemin->list_grp);
+		ft_putstr("\n.............\n\n\n\n");
 	}
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
@@ -646,7 +593,7 @@ int		main(void)
 	parse(&lemin);
 	init_tools(&lemin);
 	algo_general_ishobe(&lemin);
-	print_list_grp(lemin.list_grp);
+	//print_list_grp(lemin.list_grp);
 	free_lemin(&lemin, 0);
 	return (0);
 }	

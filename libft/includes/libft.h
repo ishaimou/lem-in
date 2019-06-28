@@ -86,6 +86,8 @@ void				ft_lstprint(t_list *head, int type, int sep);
 void				ic_pushnode(t_icase **icase, int value);
 void				ic_addnode(t_icase **icase, int value);
 char				*ic_joinstr(t_icase **icase, int size);
+void				ic_free(t_icase **icase);
+void				ic_print(t_icase *icase);
 
 /*
 **		STR LIST :		-----------------------------------------------------

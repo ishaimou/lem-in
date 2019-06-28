@@ -41,7 +41,6 @@ typedef struct		s_room
 {
 	int				id;
 	int				edge_flow;
-	//int				full:1;
 }					t_room;
 
 void		ft_error(void);
@@ -53,5 +52,8 @@ void 		print_lemin(t_lemin *lemin);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabhash(char **tab);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabbt(t_bt **tab_bt);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tree(void *item);					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void		print_list_paths(t_list	*list_paths);	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void		print_list_grp(t_list *grp);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void		print_path(t_lemin *lemin);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #endif

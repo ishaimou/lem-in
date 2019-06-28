@@ -43,3 +43,46 @@ void print_tabbt(t_bt **tab_bt)
 	}
 	ft_printf("\n");
 }
+
+void	print_list_grp(t_list *grp)
+{
+	int		i;
+
+	i = 1;
+	while (grp)
+	{
+		ft_putstr(" ------ GROUP ");
+		ft_putchar('[');
+		ft_putnbr(i);
+		ft_putchar(']');
+		ft_putstr(" ------\n");
+		print_list_paths((t_list*)grp->content);
+		grp = grp->next;
+		i++;
+		ft_putchar('\n');
+	}
+}
+
+void	print_list_paths(t_list	*list_paths)
+{
+	while (list_paths)
+	{
+		ic_print((t_icase*)(list_paths->content));
+		list_paths = list_paths->next;
+	}
+}
+
+void		print_path(t_lemin *lemin)
+{
+	int		u;
+
+	u = lemin->end;
+	while (u != lemin->start)
+	{
+		ft_putendl((lemin->tab_hash)[u]);
+		u = lemin->parent[u];
+	}
+		ft_putendl((lemin->tab_hash)[u]);
+		ft_putchar('\n');
+		ft_putchar('\n');
+}
