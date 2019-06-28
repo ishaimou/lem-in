@@ -54,10 +54,19 @@ typedef struct		s_lemin
 }					t_lemin;
 
 void		ft_error(void);
+void		init_tools(t_lemin *lemin);
+void		init_lemin(t_lemin *lemin);
+void		free_lemin(t_lemin *lemin, int error);
 void		create_tabhash(t_lemin *lemin, t_chr *list_tmp);
 int			hash_findid(char **tab_hash, int size, char *str);
 int			str_to_ind(char **tab_hash, int v, char *str);
 void		put_in_tabhash(t_lemin *lemin, char *str, int *ind);
+int			algo_ishobe(t_lemin *lemin);
+int			bfs(t_lemin *lemin);
+t_room		*create_room(int room_id);
+void		min_flux(t_lemin *lemin);
+int			id_cmp(void *item1, void *item2);
+int			gnl_error(t_lemin *lemin, char **line);
 void 		print_lemin(t_lemin *lemin);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabhash(char **tab);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabbt(t_bt **tab_bt);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

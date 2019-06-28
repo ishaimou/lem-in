@@ -72,6 +72,7 @@ void				sk_free(t_list **head);
 */
 
 t_list				*ft_lstnew(void const *content, size_t content_size);
+t_list				*ft_lstnew_sm(void *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void*, size_t));
 void				ft_lstadd(t_list **alst, t_list *new);
@@ -87,6 +88,7 @@ int             	ft_list_size(t_list *begin_list);
 void				ic_pushnode(t_icase **icase, int value);
 void				ic_addnode(t_icase **icase, int value);
 char				*ic_joinstr(t_icase **icase, int size);
+void				ic_lstdel(t_list **alst);
 void				ic_free(t_icase **icase);
 void				ic_print(t_icase *icase);
 
@@ -219,5 +221,6 @@ int					ft_min(int a, int b);
 int					ft_sqrt(int nb);
 int					ft_prime(int nb);
 void				ft_epurstr(char **str);
+void				reset_tab_int(int *tab, int size, int n);
 
 #endif
