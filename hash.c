@@ -6,16 +6,18 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 03:34:30 by obelouch          #+#    #+#             */
-/*   Updated: 2019/06/28 05:04:29 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/06/28 23:28:24 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "libft.h"
 
-#define SIZE	10
+#define SIZE 4
 
+/*
 unsigned long		hash_str(char *str)
 {
 	unsigned long	hash;
@@ -35,7 +37,9 @@ unsigned long		hash_str(char *str)
 	}
 	return (hash);
 }
+*/
 
+/*
 int					fill_hashtab(char **hash_tab, int size, char *str)
 {
 	unsigned long	ind;
@@ -64,6 +68,7 @@ int					fill_hashtab(char **hash_tab, int size, char *str)
 	}
 	return (-1);
 }
+*/
 
 int					main(int ac, char **av)
 {
@@ -78,7 +83,7 @@ int					main(int ac, char **av)
 			tab[i] = NULL;
 		i = -1;
 		while (++i < SIZE)
-			fill_hashtab(tab, SIZE, av[i + 1]);
+			hash_filltab(tab, SIZE, av[i + 1]);
 		i = -1;
 		while (++i < SIZE)
 			printf("tab[%d]: %s\t| hash = %lu\n", i, tab[i], hash_str(tab[i]));
