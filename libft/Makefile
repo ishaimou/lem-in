@@ -25,9 +25,9 @@ LIB_STRUCTS = qt_enqueue qt_dequeue qt_isempty qt_free qt_front qt_print qt_new_
 			  bt_apply_infix bt_apply_revinfix bt_apply_prefix bt_apply_suffix bt_free\
 			  bt_create_node bt_insert_item bt_search_item bt_size_count bt_level_count\
 		 	  ft_lstnew ft_lstnew_sm ft_lstdelone ft_lstdel ft_lstadd ft_lstiter\
-			  ft_lstmap ft_lstprint ft_list_size\
+			  ft_lstmap ft_lstprint ft_list_size ft_lstadd_last\
 			  sk_push sk_pop sk_top sk_free sk_isempty\
-			  ic_addnode ic_pushnode ic_joinstr ic_free ic_print ic_lstdel\
+			  ic_addnode ic_pushnode ic_joinstr ic_free ic_print ic_lstdel ic_size\
 			  chr_init chr_free chr_len chr_pushfront chr_addnode chr_revprint\
 
 LIB_STRUCTS_SRC = $(addprefix srcs/data_structs/, $(addsuffix .c, $(LIB_STRUCTS)))

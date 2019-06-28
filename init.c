@@ -11,6 +11,7 @@ void	init_lemin(t_lemin *lemin)
 	lemin->list_paths = NULL;
 	lemin->list_grp = NULL;
 	lemin->grp_infos = NULL;
+	lemin->ngrp = 0;
 }
 
 void	init_tools(t_lemin *lemin)

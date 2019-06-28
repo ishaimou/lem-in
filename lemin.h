@@ -20,11 +20,16 @@
 # include <stdio.h>
 # include "libft.h"
 
+typedef struct		s_paths
+{
+	int				len;
+	int				ants;
+}					t_paths;
+
 typedef struct		s_infos
 {
-	int				dead;
 	int				n_paths;
-	int				min_rooms;
+	t_paths			*paths;
 	int				n_shots;
 }					t_infos;
 
@@ -46,11 +51,12 @@ typedef struct		s_lemin
 	int				*exclus;
 	char			**tab_hash;
 	t_bt			**tab_bt;
-	t_list			*best;
+	t_list			*best_grp;
 	t_list			*list_grp;
 	t_list			*list_paths;
 	t_chr			*input;
 	t_infos			*grp_infos;
+	int				ngrp;
 }					t_lemin;
 
 void		ft_error(void);

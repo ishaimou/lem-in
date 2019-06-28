@@ -79,6 +79,7 @@ void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void				ft_lstprint(t_list *head, int type, int sep);
+void    			ft_lstadd_last(t_list **lst, t_list* node);
 int             	ft_list_size(t_list *begin_list);
 
 /*
@@ -91,6 +92,7 @@ char				*ic_joinstr(t_icase **icase, int size);
 void				ic_lstdel(t_list **alst);
 void				ic_free(t_icase **icase);
 void				ic_print(t_icase *icase);
+int					ic_size(t_icase *icase);
 
 /*
 **		STR LIST :		-----------------------------------------------------

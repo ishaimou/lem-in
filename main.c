@@ -210,23 +210,94 @@ void	parse(t_lemin *lemin)
 	write(1, "\n", 1);
 }
 
-/*
-void		best_choice(t_lemin *lemin)
+int			ft_ceil(float f)
 {
-	t_list	*ptr;
-	int		ngrp;
+	if ((float)(f - (int)f) > .0)
+		return ((int)(f + 1));
+	return ((int)f);
+}
 
-	ngrp = ft_list_size(lemin->list_grp);
-	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp + 1))))
-		ft_error();
-	(lemin->grp_infos)[ngrp] = NULL;
-	ptr = lemin->grp_infos;
-	while (ptr)
+void		calcul_ants_shots(int ants, t_infos *infos)
+{
+	int		n_paths;
+	int		res;
+	int		i;
+
+	n_paths = infos->n_paths;
+	i = n_paths - 1;
+	ants += (infos->paths)[i].len - 1;
+	while (--i >= 0)
 	{
-		
+		if (ants > (infos->paths)[i].len)
+		{
+			res = ft_ceil((float)((ants - (infos->paths)[i].len)) / 2.0);
+			(infos->paths)[i].ants = res;
+			ants -= res;
+		}
+	}
+	(infos->paths)[n_paths - 1].ants = ants;
+}
+
+void		fill_grp_infos(t_lemin *lemin, t_list *grp, t_infos *infos)
+{
+	t_paths	*infos_paths;
+	int		i;
+
+	i = 0;
+	infos->n_paths = ft_list_size(grp);
+	infos->paths = (t_paths*)malloc(sizeof(t_paths) * infos->n_paths);
+	infos_paths = infos->paths;
+	while (grp)
+	{
+		infos_paths[i].len = ic_size((t_icase*)(grp->content));
+		grp = grp->next;
+		i++;
+	}
+	calcul_ants_shots(lemin->ants, infos);
+}
+
+void		print_grp_infos(t_infos *infos, int ngrp)
+{
+	int		i;
+	int		j;
+	int		npaths;
+
+	i = -1;
+	while (++i < ngrp)
+	{
+		npaths = infos[i].n_paths;
+		ft_putstr("\n--------------------------\n");
+		ft_printf("nbr paths: %d\n\n", npaths);
+		j = -1;
+		while (++j < npaths)
+		{
+			ft_printf("  len paths 	[%d]: %d\n", j + 1, (infos[i].paths)[j].len);
+			ft_printf("  ants paths [%d]: %d\n", j + 1, (infos[i].paths)[j].ants);
+		}
+		ft_putstr("\n--------------------------\n");
 	}
 }
-*/
+
+void		best_choice(t_lemin *lemin)
+{
+	t_list	*ptr_grp;
+	int		ngrp;
+	int		i;
+
+	ngrp = lemin->ngrp;
+	ft_printf("nbr of groups: %d\n", lemin->ngrp);
+	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp))))
+		ft_error();
+	i = 0;
+	ptr_grp = lemin->list_grp;
+	while (i < ngrp)
+	{
+		fill_grp_infos(lemin, (t_list*)(ptr_grp->content), &(lemin->grp_infos[i]));
+		ptr_grp = ptr_grp->next;
+		i++;
+	}
+	print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
 
 void		algo_general_ishobe(t_lemin *lemin)
 {
@@ -238,6 +309,7 @@ void		algo_general_ishobe(t_lemin *lemin)
 		//print_list_paths(lemin->list_paths);
 		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
 		ft_lstadd(&lemin->list_grp, node);
+		(lemin->ngrp)++;
 		while (lemin->list_paths)
 		{
 			tmp = lemin->list_paths;
@@ -259,7 +331,7 @@ int		main(void)
 	parse(&lemin);
 	init_tools(&lemin);
 	algo_general_ishobe(&lemin);
-	//best_choice(lemin);
+	best_choice(&lemin);
 	//print_list_grp(lemin.list_grp);
 	free_lemin(&lemin, 0);
 	return (0);
