@@ -220,19 +220,20 @@ int			ft_ceil(float f)
 void		calcul_ants_shots(int ants, t_infos *infos)
 {
 	int		n_paths;
-	int		res;
+	int		result;
+	int		tmp;
 	int		i;
 
 	n_paths = infos->n_paths;
 	i = n_paths - 1;
-	ants += (infos->paths)[i].len - 1;
-	while (--i >= 0)
+	while (--i >= 0 && ants > 0)
 	{
-		if (ants > (infos->paths)[i].len)
+		tmp = ants + (infos->paths)[n_paths - 1].len - 1;
+		if (tmp > (infos->paths)[i].len)
 		{
-			res = ft_ceil((float)((ants - (infos->paths)[i].len)) / 2.0);
-			(infos->paths)[i].ants = res;
-			ants -= res;
+			result = ft_ceil((float)((tmp - (infos->paths)[i].len)) / 2.0);
+			(infos->paths)[i].ants = result;
+			ants -= result;
 		}
 	}
 	(infos->paths)[n_paths - 1].ants = ants;
