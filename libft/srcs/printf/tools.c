@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/05 17:43:57 by obelouch          #+#    #+#             */
-/*   Updated: 2019/04/12 01:09:10 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/06/29 04:06:04 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,13 @@ void		init_chr(t_chr **chr)
 
 int			fmtlen(t_fmt *fmt)
 {
-	t_fmt	*curr;
 	int		size;
 
 	size = 0;
-	curr = fmt;
-	while (curr)
+	while (fmt)
 	{
 		size++;
-		curr = curr->next;
+		fmt = fmt->next;
 	}
 	return (size);
 }
