@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/29 07:57:36 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/06/29 08:33:39 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ void	chr_pushfront(t_chr **list, char *str, int len)
 		ft_error();
 	node->str = ft_strdup(str);
 	node->len = len;
+	node->next = NULL;
 	if (!*list)
 	{
 		*list = node;
@@ -165,7 +166,7 @@ int			is_link(char **line)
 	i++;
 	while (ft_isdigit((*line)[i]))
 		i++;
-	if (line[i])
+	if ((*line)[i])
 		return (0);
 	return (eol);
 }
@@ -224,7 +225,7 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 		if (line[0] == '#')
 			parse_cmds(line, &t, limit);
 		else if (is_room(&line))
-			 chr_pushfront(list_tmp, line, t);
+			chr_pushfront(list_tmp, line, t);
 		else if (is_link(&line))
 		{
 			if (limit[0] == 1 && limit[1] == 1)
@@ -288,14 +289,14 @@ int		str_to_ind(char **tab_hash, int v, char *str)
 	i = ind;
 	while (i < v)
 	{
-		if (!ft_strcmp(tab_hash[i], str))
+		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
 			return (i);
 		i++;
 	}
 	i = 0;
 	while (i < ind)
 	{
-		if (!ft_strcmp(tab_hash[i], str))
+		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
 			return (i);
 		i++;
 	}
@@ -316,13 +317,13 @@ void	create_tabhash(t_lemin *lemin, t_chr *list_tmp)
 		ft_error();
 	i = 0;
 	while (i <= v)
-		(lemin->tab_hash)[i] = NULL;
+		(lemin->tab_hash)[i++] = NULL;
 	while (list_tmp)
 	{
 		ind = str_to_ind(lemin->tab_hash, v, list_tmp->str);
 		put_in_tabhash(lemin, list_tmp->str, &ind);
-			if (list_tmp->len == 1)
-				lemin->start = ind;
+		if (list_tmp->len == 1)
+			lemin->start = ind;
 		if (list_tmp->len == 2)
 			lemin->end = ind;
 		list_tmp = list_tmp->next;
@@ -381,17 +382,17 @@ void	parse_links(t_lemin *lemin, char *bk_line)
 }
 
 /*
-void	print_farm(void)
-{
-	char	*line;
+   void	print_farm(void)
+   {
+   char	*line;
 
-	while (get_next_line(0, &line) > 0)
-	{
-		ft_putstr(line);
-		free(line);
-	}
-}
-*/
+   while (get_next_line(0, &line) > 0)
+   {
+   ft_putstr(line);
+   free(line);
+   }
+   }
+   */
 
 void	parse(t_lemin *lemin)
 {
@@ -401,9 +402,9 @@ void	parse(t_lemin *lemin)
 	list_tmp = NULL;
 	parse_ants(lemin);
 	line = parse_rooms(lemin, &list_tmp);
-	//create_tabhash(lemin, list_tmp);
-	//free_chr(&list_tmp);
-	//parse_links(lemin, line);
+	create_tabhash(lemin, list_tmp);
+	free_chr(&list_tmp);
+	parse_links(lemin, line);
 	//free(line);
 	//print_farm();
 }
