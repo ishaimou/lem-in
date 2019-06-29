@@ -6,11 +6,17 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/29 06:14:45 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/06/29 07:57:36 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
+
+void	ft_error()
+{
+	write(2, "ERROR\n", 6);
+	exit(1);
+}
 
 void	init_lemin(t_lemin *lemin)
 {
@@ -37,6 +43,7 @@ void    free_room(t_bt **root)
 void	free_lemin(t_lemin *lemin)
 {
 	int		v;
+	int		i;
 
 	v = lemin->v;
 	if (lemin->tab_bt)
@@ -51,8 +58,18 @@ void	free_lemin(t_lemin *lemin)
 	//if (lemin->list_paths)
 }
 
-void	init_room(t_room *room)
+t_room	*create_room(int room_id)
 {
+	t_room	*room;
+
+	if (!(room = (t_room*)malloc(sizeof(t_room))))
+		ft_error();
+	room->id = room_id;
+	room->pid = -1;
+	room->edge_flow = 1;
+	room->visited = 0;
+	room->full = 0;
+	return (room);
 }
 
 int		chr_len(t_chr *chr)
@@ -62,13 +79,13 @@ int		chr_len(t_chr *chr)
 	len = 0;
 	while (chr)
 	{
-		size++;
+		len++;
 		chr = chr->next;
 	}
 	return (len);
 }
 
-voir            free_chr(t_chr **chr)
+void            free_chr(t_chr **chr)
 {
 	t_chr   *curr;
 	t_chr   *next;
@@ -102,17 +119,11 @@ void	chr_pushfront(t_chr **list, char *str, int len)
 	*list = node;
 }
 
-void	ft_error()
-{
-	write(2, "ERROR\n", 6);
-	exit(1);
-}
-
 int		gnl_error(char **line)
 {
 	int		ret;
 
-	ret = get_next_line(1, line);
+	ret = get_next_line(0, line);
 	if (ret < 0)
 		ft_error();
 	return (ret);
@@ -145,14 +156,14 @@ int			is_link(char **line)
 	int		i;
 
 	i = 0;
-	while (is_digit((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i] != '-')
 		return (0);
 	eol = i;
 	(*line)[i] = '\0';
 	i++;
-	while (is_digit((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if (line[i])
 		return (0);
@@ -164,18 +175,18 @@ int			is_room(char **line)
 	int		i;
 
 	i = 0;
-	while (is_digit((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	(*line)[i] = '\0';
 	i++;
-	while (is_digit((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	i++;
-	while (is_digit((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i])
 		return (0);
@@ -213,7 +224,7 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 		if (line[0] == '#')
 			parse_cmds(line, &t, limit);
 		else if (is_room(&line))
-			*list_tmp  = chr_pushfront(list_tmp, line, t);
+			 chr_pushfront(list_tmp, line, t);
 		else if (is_link(&line))
 		{
 			if (limit[0] == 1 && limit[1] == 1)
@@ -229,9 +240,10 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 	if (*list_tmp)
 		free_chr(list_tmp);
 	ft_error();
+	return (NULL);
 }
 
-static int	test_in_tabhash(char ***tab_hash, char *str, int *ind)
+static int	test_hash(char ***tab_hash, char *str, int *ind, int i)
 {
 	if (!(*tab_hash)[i])
 	{
@@ -254,51 +266,18 @@ void		put_in_tabhash(t_lemin *lemin, char *str, int *ind)
 	i = *ind;
 	while (i < lemin->v)
 	{
-		if (!test_in_tabhash(&(lemin->tab_hash), str, ind))
+		if (!test_hash(&(lemin->tab_hash), str, ind, i))
 			return ;
 		i++;
 	}
 	i = 0;
 	while (i < *ind)
 	{
-		if (!test_in_tabhash(&(lemin->tab_hash), str, ind))
+		if (!test_hash(&(lemin->tab_hash), str, ind, i))
 			return ;
 		i++;
 	}
 }
-
-void	create_tabhash(t_lemin *lemin, t_chr *list_tmp)
-{
-	int		ind;
-	int		v;
-	int		i;
-
-	v = chr_len(list_tmp);
-	if (!v)
-		ft_error();
-	lemin->v = v;
-	if (!(lemin->tab_hash = (char**)malloc(sizeof(char*) * (v + 1))))
-		ft_error();
-	i = 0;
-	while (i <= v)
-		(lemin->tab_hash)[i] = NULL;
-	while (list_tmp)
-	{
-		ind = str_to_ind(lemin->tab_hash, v, list_tmp->str);
-		put_in_tabhash(lemin, list_tmp->str, &ind)
-			//ind = hash_filltab(lemin->tab_hash, v, list_tmp->str);
-			if (list_tmp->len = 1)
-				lemin->start = ind;
-		if (list_tmp->len = 2)
-			lemin->end = ind;
-		list_tmp = list_tmp->next;
-	}
-}
-
-//void	add_links(t_bt **tab_bt, int a, int b)
-//{
-
-//}
 
 int		str_to_ind(char **tab_hash, int v, char *str)
 {
@@ -323,9 +302,59 @@ int		str_to_ind(char **tab_hash, int v, char *str)
 	return (0);
 }
 
-void	parse_links(t_lemin *lemin, char *line)
+void	create_tabhash(t_lemin *lemin, t_chr *list_tmp)
 {
-	unsigned long	hash[2];
+	int		ind;
+	int		v;
+	int		i;
+
+	v = chr_len(list_tmp);
+	if (!v)
+		ft_error();
+	lemin->v = v;
+	if (!(lemin->tab_hash = (char**)malloc(sizeof(char*) * (v + 1))))
+		ft_error();
+	i = 0;
+	while (i <= v)
+		(lemin->tab_hash)[i] = NULL;
+	while (list_tmp)
+	{
+		ind = str_to_ind(lemin->tab_hash, v, list_tmp->str);
+		put_in_tabhash(lemin, list_tmp->str, &ind);
+			if (list_tmp->len == 1)
+				lemin->start = ind;
+		if (list_tmp->len == 2)
+			lemin->end = ind;
+		list_tmp = list_tmp->next;
+	}
+}
+
+int		id_cmp(void *item1, void *item2)
+{
+	t_room	*room1;
+	t_room	*room2;
+
+	room1 = (t_room*)item1;
+	room2 = (t_room*)item2;
+	if (room1->id > room2->id)
+		return (-1);
+	return (1);
+}
+
+void	add_links(t_bt **tab_bt, int a, int b)
+{
+	t_room	*room_a;
+	t_room	*room_b;
+
+	room_a = create_room(a);
+	room_b = create_room(b);
+	bt_insert_item(&tab_bt[a], room_b, &id_cmp);
+	bt_insert_item(&tab_bt[b], room_a, &id_cmp);
+}
+
+void	parse_links(t_lemin *lemin, char *bk_line)
+{
+	int				id[2];
 	char			*line;
 	int				eol;
 	int				v;
@@ -334,12 +363,10 @@ void	parse_links(t_lemin *lemin, char *line)
 	if (!(lemin->tab_bt = (t_bt**)malloc(sizeof(t_bt*) * (v + 1))))
 		ft_error();
 	(lemin->tab_bt)[v] = NULL;
-	eol = 0;
-	while (line[eol])
-		eol++;
-	hash[0] = hash_str(line);
-	hash[1] = hash_str(&line[eol + 1]);
-	add_links(lemin->tab_bt, hash[0], hash[1]);
+	eol = ft_strlen(bk_line);
+	id[0] = str_to_ind(lemin->tab_hash, lemin->v, bk_line);
+	id[1] = str_to_ind(lemin->tab_hash, lemin->v, &bk_line[eol + 1]);
+	add_links(lemin->tab_bt, id[0], id[1]);
 	while (gnl_error(&line))
 	{
 		if (!(eol = is_link(&line)))
@@ -347,11 +374,24 @@ void	parse_links(t_lemin *lemin, char *line)
 			free_lemin(lemin);
 			ft_error();
 		}
-		hash[0] = hash_str(line);
-		hash[1] = hash_str(&line[eol + 1]);
-		add_links(lemin->tab_bt, hash[0], hash[1]);
+		id[0] = str_to_ind(lemin->tab_hash, lemin->v, line);
+		id[1] = str_to_ind(lemin->tab_hash, lemin->v, &line[eol + 1]);
+		add_links(lemin->tab_bt, id[0], id[1]);
 	}
 }
+
+/*
+void	print_farm(void)
+{
+	char	*line;
+
+	while (get_next_line(0, &line) > 0)
+	{
+		ft_putstr(line);
+		free(line);
+	}
+}
+*/
 
 void	parse(t_lemin *lemin)
 {
@@ -361,11 +401,11 @@ void	parse(t_lemin *lemin)
 	list_tmp = NULL;
 	parse_ants(lemin);
 	line = parse_rooms(lemin, &list_tmp);
-	create_tabhash(lemin, list_tmp);
-	free_chr(list_tmp);
-	parse_links(lemin, line);
-	free(line);
-	print_farm();
+	//create_tabhash(lemin, list_tmp);
+	//free_chr(&list_tmp);
+	//parse_links(lemin, line);
+	//free(line);
+	//print_farm();
 }
 
 int		main(void)

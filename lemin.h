@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lem-in.h                                           :+:      :+:    :+:   */
+/*   lemin.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/29 06:14:46 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/06/29 07:57:37 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEM-IN_H
-# define LEM-IN_H
+#ifndef LEMIN_H
+# define LEMIN_H
 
 # include <sys/types.h>
 # include <sys/uio.h>
@@ -29,7 +29,7 @@ typedef struct		s_lemin
 	char			**tab_hash;
 	t_bt			**tab_bt;
 	t_list			*list_paths;
-}
+}					t_lemin;
 
 typedef struct		s_room
 {
@@ -39,7 +39,5 @@ typedef struct		s_room
 	int				visited:1;
 	int				full:1;
 }					t_room;
-
-void				parse()
 
 #endif
