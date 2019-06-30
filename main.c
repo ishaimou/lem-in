@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/30 03:21:12 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/06/30 05:59:53 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	ft_error()
 
 void	init_lemin(t_lemin *lemin)
 {
+	lemin->visited = NULL;
+	lemin->parent = NULL;
 	lemin->input = NULL;
 	lemin->tab_bt = NULL;
 	lemin->tab_hash = NULL;
@@ -42,7 +44,7 @@ void    free_room(t_bt **root)
 	*root = NULL;
 }
 
-void	free_lemin(t_lemin *lemin)
+void	free_lemin(t_lemin *lemin, int error)
 {
 	int		v;
 	int		i;
@@ -58,6 +60,14 @@ void	free_lemin(t_lemin *lemin)
 	}
 	if (lemin->tab_hash)
 		free_tabstr(&(lemin->tab_hash));
+	if (lemin->input)
+		chr_free(&lemin->input);
+	if (lemin->visited)
+		free(lemin->visited);
+	if (lemin->parent)
+		free(lemin->parent);
+	if (error)
+		ft_error();
 	//if (lemin->list_paths)
 }
 
@@ -68,7 +78,7 @@ t_room	*create_room(int room_id)
 	if (!(room = (t_room*)malloc(sizeof(t_room))))
 		ft_error();
 	room->id = room_id;
-	room->pid = -1;
+	//room->pid = -1;
 	room->edge_flow = 1;
 	//room->visited = 0;
 	room->full = 0;
@@ -83,6 +93,12 @@ int		gnl_error(t_lemin *lemin, char **line)
 	if (ret < 0)
 		ft_error();
 	chr_pushfront(&lemin->input, *line, 0);
+	/*if ((*line)[0] == '#' && (*line)[1] != '#')
+	{
+		free(*line);
+		*line = NULL;
+		gnl_error(lemin, line);
+	}*/
 	return (ret);
 }
 
@@ -203,11 +219,8 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 	if (line)
 		free(line);
 	if (*list_tmp)
-	{
-		free_lemin(lemin);
 		chr_free(list_tmp);
-	}
-	ft_error();
+	free_lemin(lemin, 1);
 	return (NULL);
 }
 
@@ -253,26 +266,26 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	id[1] = hash_findid(lemin->tab_hash, lemin->v, &(*bk_line)[eol + 1]);
 	free(*bk_line);
 	if (id[0] == -1 || id[1] == -1)
-	{
-		free_lemin(lemin);
-		ft_error();
-	}
+		free_lemin(lemin, 1);
 	add_links(lemin->tab_bt, id[0], id[1]);
 	while (gnl_error(lemin, &line))
 	{
+		if (line[0] == '#')
+		{
+			free(line);
+			continue ;
+		}
 		if (!(eol = is_link(&line)))
 		{
-			free_lemin(lemin);
 			free(line);
-			ft_error();
+			free_lemin(lemin, 1);
 		}
 		id[0] = hash_findid(lemin->tab_hash, lemin->v, line);
 		id[1] = hash_findid(lemin->tab_hash, lemin->v, &line[eol + 1]);
 		if (id[0] == -1 || id[1] == -1)
 		{
-			free_lemin(lemin);
 			free(line);
-			ft_error();
+			free_lemin(lemin, 1);
 		}
 		add_links(lemin->tab_bt, id[0], id[1]);
 		free(line);
@@ -296,56 +309,138 @@ void	parse(t_lemin *lemin)
 			print_lemin(lemin);
 	chr_revprint(lemin->input);
 	write(1, "\n", 1);
-	chr_free(&(lemin->input));
 }
 
-void	bt_enqueue_infix(t_bt *root, t_queue *q, int pid, int *visited)
+void	bt_enqueue_infix(t_lemin *lemin, t_bt *root, t_queue *q, int u)
 {
 	t_room	*room;
 
 	if (root)
 	{
 		room = (t_room*)root->item;
-		bt_enqueue_infix(root->left, q, pid, visited);
-		if (!visited[room->id])
+		bt_enqueue_infix(lemin, root->left, q, u);
+		if (!(lemin->visited)[room->id])
 		{
 			qt_enqueue(q, &room->id, sizeof(int));
-			printf("%d - ", room->id);  //!!!!!!!!!!!
-			visited[room->id] = 1;
-			room->pid = pid;
+			(lemin->visited)[room->id] = 1;
+			(lemin->parent)[room->id] = u;
 		}
-		bt_enqueue_infix(root->right, q, pid, visited);
+		bt_enqueue_infix(lemin, root->right, q, u);
 	}
 }
 
-void	bfs(t_lemin *lemin)
+void		print_path(t_lemin *lemin)
+{
+	int		u;
+
+	u = lemin->end;
+	while (u != lemin->start)
+	{
+		ft_putendl((lemin->tab_hash)[u]);
+		u = lemin->parent[u];
+	}
+		ft_putendl((lemin->tab_hash)[u]);
+		ft_putchar('\n');
+		ft_putchar('\n');
+}
+
+t_list	*ft_lstnew_sm(void *content, size_t content_size)
+{
+	t_list	*node;
+	void	*cont;
+
+	node = (t_list*)malloc(sizeof(t_list));
+	if (node == NULL)
+		return (NULL);
+	node->next = NULL;
+	if (content == NULL)
+	{
+		node->content = NULL;
+		node->content_size = 0;
+	}
+	else
+	{
+		node->content = content;
+		node->content_size = content_size;
+	}
+	return (node);
+}
+
+void	ic_print(t_icase *icase)
+{
+	while (icase)
+	{
+		ft_printf("[%d] - ", icase->n);
+		icase = icase->next;
+	}
+	ft_putchar('\n');
+}
+
+void		store_path(t_lemin *lemin)
+{
+	t_icase		*path;
+	t_list		*node;
+	int			u;
+
+	u = lemin->parent[lemin->end];
+	path = NULL;
+	while (u != lemin->start)
+	{
+		ic_pushnode(&path, u);
+		u = lemin->parent[u];
+	}
+	node = ft_lstnew_sm(path, sizeof(path));
+	ft_lstadd(&lemin->list_paths, node);
+}
+
+void	print_list_paths(t_list	*list_paths)
+{
+	while (list_paths)
+	{
+		ic_print((t_icase*)(list_paths->content));
+		list_paths = list_paths->next;
+	}
+}
+
+int			bfs(t_lemin *lemin)
 {
 	t_queue		*q;
 	int			u;
-	int			*visited;
-
-	visited = (int*)ft_memalloc(sizeof(int) * lemin->v);
+	
 	q = qt_new_queue();
 	u = lemin->start;
 	qt_enqueue(q, &u, sizeof(int));
-	printf("%d - ", u);  //!!!!!!!!!
-	visited[u] = 1;
+	(lemin->visited)[u] = 1;
+	(lemin->parent)[u] = -1;
 	while (!qt_isempty(*q))
 	{
 		qt_front(*q, &u);
 		if (u == lemin->end)
-			break ;
+		{
+			store_path(lemin);
+			qt_free(q);
+			return (1);
+		}
 		qt_dequeue(q);
-		bt_enqueue_infix(lemin->tab_bt[u], q, u, visited);
+		bt_enqueue_infix(lemin, lemin->tab_bt[u], q, u);
 	}
-	free(visited);
 	qt_free(q);
+	return (0);
 }
 
-/*void	algo(t_lemin *lemin)
+/*
+void	algo(t_lemin *lemin)
 {
-
-}*/
+	
+}
+*/
+void	init_tools(t_lemin *lemin)
+{
+	if (!(lemin->visited = (int*)ft_memalloc(sizeof(int) * lemin->v)))
+		free_lemin(lemin, 1);
+	if (!(lemin->parent = (int*)malloc(sizeof(int) * lemin->v)))
+		free_lemin(lemin, 1);
+}
 
 int		main(void)
 {
@@ -353,8 +448,10 @@ int		main(void)
 
 	init_lemin(&lemin);
 	parse(&lemin);
+	init_tools(&lemin);
 	bfs(&lemin);
+	print_list_paths(lemin.list_paths);
 	//algo(&lemin);
-	free_lemin(&lemin);
+	free_lemin(&lemin, 0);
 	return (0);
 }	
