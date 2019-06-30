@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/29 08:33:39 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/06/30 03:02:58 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void    free_room(t_bt **root)
 		free_room(&tmp->left);
 	if (tmp->right)
 		free_room(&tmp->right);
+	free(tmp->item);
 	free(tmp);
 	*root = NULL;
 }
@@ -53,6 +54,7 @@ void	free_lemin(t_lemin *lemin)
 		while (++i < v)
 			if (lemin->tab_bt[i])
 				free_room(&(lemin->tab_bt[i]));
+		free(lemin->tab_bt);
 	}
 	if (lemin->tab_hash)
 		free_tabstr(&(lemin->tab_hash));
@@ -68,7 +70,7 @@ t_room	*create_room(int room_id)
 	room->id = room_id;
 	room->pid = -1;
 	room->edge_flow = 1;
-	room->visited = 0;
+	//room->visited = 0;
 	room->full = 0;
 	return (room);
 }
@@ -80,7 +82,7 @@ int		gnl_error(t_lemin *lemin, char **line)
 	ret = get_next_line(0, line);
 	if (ret < 0)
 		ft_error();
-	chr_pushfront(&(lemin->input), *line, 0);
+	chr_pushfront(&lemin->input, *line, 0);
 	return (ret);
 }
 
@@ -91,18 +93,26 @@ void	parse_ants(t_lemin *lemin)
 
 	i = 0;
 	if (!gnl_error(lemin, &line))
+	{
+		free(line);
+		chr_free(&lemin->input);
 		ft_error();
+	}
 	while (ft_isdigit(line[i]))
 		i++;
 	if (line[i])
 	{
 		free(line);
+		chr_free(&lemin->input);
 		ft_error();
 	}
 	lemin->ants = ft_atoi(line);
 	free(line);
 	if (!lemin->ants)
+	{
+		chr_free(&lemin->input);
 		ft_error();
+	}
 }
 
 int			is_link(char **line)
@@ -186,12 +196,12 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 				return (line);
 		}
 		else
-		{
-			free(line);
 			break ;
-		}
 		free(line);
+		line = NULL;
 	}
+	if (line)
+		free(line);
 	if (*list_tmp)
 	{
 		free_lemin(lemin);
@@ -253,6 +263,7 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 		if (!(eol = is_link(&line)))
 		{
 			free_lemin(lemin);
+			free(line);
 			ft_error();
 		}
 		id[0] = hash_findid(lemin->tab_hash, lemin->v, line);
@@ -260,10 +271,13 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 		if (id[0] == -1 || id[1] == -1)
 		{
 			free_lemin(lemin);
+			free(line);
 			ft_error();
 		}
 		add_links(lemin->tab_bt, id[0], id[1]);
+		free(line);
 	}
+	free(line);
 }
 
 void	parse(t_lemin *lemin)
@@ -285,12 +299,62 @@ void	parse(t_lemin *lemin)
 	chr_free(&(lemin->input));
 }
 
+void	bt_enqueue_infix(t_bt *root, t_queue *q, int pid, int *visited)
+{
+	t_room	*room;
+
+	if (root)
+	{
+		room = (t_room*)root->item;
+		bt_enqueue_infix(root->left, q, pid, visited);
+		if (!visited[room->id])
+		{
+			qt_enqueue(q, &room->id, sizeof(int));
+			printf("%d - ", room->id);  //!!!!!!!!!!!
+			visited[room->id] = 1;
+			room->pid = pid;
+		}
+		bt_enqueue_infix(root->right, q, pid, visited);
+	}
+}
+
+void	bfs(t_lemin *lemin)
+{
+	t_queue		*q;
+	int			u;
+	int			*visited;
+
+	visited = (int*)ft_memalloc(sizeof(int) * lemin->v);
+	q = qt_new_queue();
+	u = lemin->start;
+	qt_enqueue(q, &u, sizeof(int));
+	printf("%d - ", u);  //!!!!!!!!!
+	visited[u] = 1;
+	while (!qt_isempty(*q))
+	{
+		qt_front(*q, &u);
+		if (u == lemin->end)
+			break ;
+		qt_dequeue(q);
+		bt_enqueue_infix(lemin->tab_bt[u], q, u, visited);
+	}
+	free(visited);
+	qt_free(q);
+}
+
+/*void	algo(t_lemin *lemin)
+{
+
+}*/
+
 int		main(void)
 {
 	t_lemin		lemin;
 
 	init_lemin(&lemin);
 	parse(&lemin);
+	bfs(&lemin);
+	//algo(&lemin);
 	free_lemin(&lemin);
 	return (0);
 }	

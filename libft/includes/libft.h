@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/04 01:07:21 by obelouch          #+#    #+#             */
-/*   Updated: 2019/06/28 05:53:41 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/06/30 03:02:59 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void				bt_free(t_bt **root, void (*freef)(void **));
 int					qt_enqueue(t_queue *queue, void *content, size_t size);
 int					qt_dequeue(t_queue *queue);
 int					qt_front(t_queue queue, void *content);
-t_queue				qt_new_queue(void);
+t_queue				*qt_new_queue(void);
 int					qt_isempty(t_queue queue);
 void				qt_print(t_queue queue, int type, int sep);
 void				qt_free(t_queue *queue);

@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/29 08:33:40 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/06/30 02:11:45 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct		s_room
 	int				id;
 	int				pid;
 	int				edge_flow;
-	int				visited:1;
+	//int				visited:1;
 	int				full:1;
 }					t_room;
 
