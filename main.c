@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/30 05:59:53 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/06/30 09:51:37 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@ void	ft_error()
 {
 	write(2, "ERROR\n", 6);
 	exit(1);
+}
+
+void	reset_visited(int *visited, int size)
+{
+	int		i;
+
+	i = 0;
+	while (i < size)
+	{
+		visited[i] = 0;
+		i++;
+	}
 }
 
 void	init_lemin(t_lemin *lemin)
@@ -137,14 +149,14 @@ int			is_link(char **line)
 	int		i;
 
 	i = 0;
-	while (ft_isdigit((*line)[i]))
+	while (ft_isalnum((*line)[i]))
 		i++;
 	if ((*line)[i] != '-')
 		return (0);
 	eol = i;
 	(*line)[i] = '\0';
 	i++;
-	while (ft_isdigit((*line)[i]))
+	while (ft_isalnum((*line)[i]))
 		i++;
 	if ((*line)[i])
 		return (0);
@@ -156,18 +168,18 @@ int			is_room(char **line)
 	int		i;
 
 	i = 0;
-	while (ft_isdigit((*line)[i]))
+	while (ft_isalnum((*line)[i]))
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	(*line)[i] = '\0';
 	i++;
-	while (ft_isdigit((*line)[i]))
+	while (ft_isalnum((*line)[i]))
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	i++;
-	while (ft_isdigit((*line)[i]))
+	while (ft_isalnum((*line)[i]))
 		i++;
 	if ((*line)[i])
 		return (0);
@@ -231,6 +243,8 @@ int		id_cmp(void *item1, void *item2)
 
 	room1 = (t_room*)item1;
 	room2 = (t_room*)item2;
+	if (room1->id == room2->id)
+		return (0);
 	if (room1->id > room2->id)
 		return (-1);
 	return (1);
@@ -319,7 +333,7 @@ void	bt_enqueue_infix(t_lemin *lemin, t_bt *root, t_queue *q, int u)
 	{
 		room = (t_room*)root->item;
 		bt_enqueue_infix(lemin, root->left, q, u);
-		if (!(lemin->visited)[room->id])
+		if (!(lemin->visited)[room->id] && room->edge_flow)
 		{
 			qt_enqueue(q, &room->id, sizeof(int));
 			(lemin->visited)[room->id] = 1;
@@ -404,9 +418,11 @@ void	print_list_paths(t_list	*list_paths)
 
 int			bfs(t_lemin *lemin)
 {
+	t_room		*room;
 	t_queue		*q;
 	int			u;
-	
+
+	reset_visited(lemin->visited, lemin->v);	
 	q = qt_new_queue();
 	u = lemin->start;
 	qt_enqueue(q, &u, sizeof(int));
@@ -428,15 +444,76 @@ int			bfs(t_lemin *lemin)
 	return (0);
 }
 
-/*
-void	algo(t_lemin *lemin)
+static void		edit_edgeflow(t_bt **tab_bt, int id1, int id2, t_room *room)
 {
-	
+	t_bt		*root;
+	t_bt		*found;
+	t_room		*fnd_room;
+
+	room->id = id1;
+	root = tab_bt[id2];
+	found = bt_search_item(root, room, &id_cmp);
+	fnd_room = (t_room*)found->item;
+	fnd_room->edge_flow = 0;
+	room->id = id2;
+	root = tab_bt[id1];
+	found = bt_search_item(root, room, &id_cmp);
+	fnd_room = (t_room*)found->item;
+	fnd_room->edge_flow = 0;
 }
-*/
+
+static void		limit_edgeflow(t_lemin *lemin, int id, t_room *room, int is_start)
+{
+	t_bt	*root;
+	t_bt	*found;
+	t_room		*fnd_room;
+
+	root = (is_start) ? (lemin->tab_bt)[lemin->start] : (lemin->tab_bt)[lemin->end];
+	if (bt_size_count(root) == 1)
+		return ;
+	room->id = id;
+	found = bt_search_item(root, room, &id_cmp);
+	fnd_room = (t_room*)found->item;
+	fnd_room->edge_flow = 0;
+}
+
+static void		update_edgeflow(t_lemin *lemin, t_icase *path)
+{
+	t_room		room;
+
+	if (path->next)
+	{
+		while (path && path->next)
+		{
+			edit_edgeflow(lemin->tab_bt, path->n, path->next->n, &room);
+			path = path->next;
+		}
+	}
+	else
+	{
+		limit_edgeflow(lemin, path->n, &room, 1);
+		limit_edgeflow(lemin, path->n, &room, 0);
+	}
+}
+
+void	algo_ishobe(t_lemin *lemin)
+{
+	t_list	*curr;
+	t_icase	*path;
+
+	while (bfs(lemin))
+	{
+		path = (t_icase*)(lemin->list_paths->content);
+		ic_print(path);
+		update_edgeflow(lemin, path);
+	}
+	if (!(lemin->list_paths))
+		free_lemin(lemin, 1);
+}
+
 void	init_tools(t_lemin *lemin)
 {
-	if (!(lemin->visited = (int*)ft_memalloc(sizeof(int) * lemin->v)))
+	if (!(lemin->visited = (int*)malloc(sizeof(int) * lemin->v)))
 		free_lemin(lemin, 1);
 	if (!(lemin->parent = (int*)malloc(sizeof(int) * lemin->v)))
 		free_lemin(lemin, 1);
@@ -449,9 +526,7 @@ int		main(void)
 	init_lemin(&lemin);
 	parse(&lemin);
 	init_tools(&lemin);
-	bfs(&lemin);
-	print_list_paths(lemin.list_paths);
-	//algo(&lemin);
+	algo_ishobe(&lemin);
 	free_lemin(&lemin, 0);
 	return (0);
 }	
