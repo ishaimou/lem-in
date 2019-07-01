@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/30 09:51:38 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/01 02:51:54 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ typedef struct		s_lemin
 	int				end;
 	int				*visited;
 	int				*parent;
+	int				*exclus;
 	char			**tab_hash;
 	t_bt			**tab_bt;
+	t_list			*list_grp;
 	t_list			*list_paths;
 	t_chr			*input;
 }					t_lemin;
@@ -37,9 +39,7 @@ typedef struct		s_lemin
 typedef struct		s_room
 {
 	int				id;
-	//int				pid;
 	int				edge_flow;
-	//int				visited:1;
 	int				full:1;
 }					t_room;
 

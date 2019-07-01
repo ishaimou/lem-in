@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/06/30 09:51:37 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/01 02:51:53 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	ft_error()
 	exit(1);
 }
 
-void	reset_visited(int *visited, int size)
+void	reset_tab_int(int *tab, int size, int n)
 {
 	int		i;
 
 	i = 0;
 	while (i < size)
 	{
-		visited[i] = 0;
+		tab[i] = n;
 		i++;
 	}
 }
@@ -34,10 +34,12 @@ void	init_lemin(t_lemin *lemin)
 {
 	lemin->visited = NULL;
 	lemin->parent = NULL;
+	lemin->exclus = NULL;
 	lemin->input = NULL;
 	lemin->tab_bt = NULL;
 	lemin->tab_hash = NULL;
 	lemin->list_paths = NULL;
+	lemin->list_grp = NULL;
 }
 
 void    free_room(t_bt **root)
@@ -54,6 +56,50 @@ void    free_room(t_bt **root)
 	free(tmp->item);
 	free(tmp);
 	*root = NULL;
+}
+
+void	ic_free(t_icase **icase)
+{
+	t_icase	*tmp;
+	t_icase *curr;
+
+	tmp = *icase;
+	while (tmp)
+	{
+		curr = tmp;
+		tmp = tmp->next;
+		free(curr);
+	}
+	icase = NULL;
+}
+
+void	ic_lstdel(t_list **alst)
+{
+	t_list	*current_node;
+
+	while (*alst != NULL)
+	{
+		current_node = *alst;
+		ic_free((t_icase**)(&(*alst)->content));
+		*alst = (*alst)->next;
+		free(current_node);
+	}
+}
+
+void	free_list_grp(t_list **list_grp)
+{
+	t_list	*tmp;
+	t_list	*curr;
+
+	tmp = *list_grp;
+	while (tmp)
+	{
+		curr = tmp;
+		ic_lstdel((t_list**)(&(tmp->content)));
+		tmp = tmp->next;
+		free(curr);
+	}
+	*list_grp = NULL;
 }
 
 void	free_lemin(t_lemin *lemin, int error)
@@ -78,9 +124,12 @@ void	free_lemin(t_lemin *lemin, int error)
 		free(lemin->visited);
 	if (lemin->parent)
 		free(lemin->parent);
+	if (lemin->exclus)
+		free(lemin->exclus);
+	if (lemin->list_grp)
+		free_list_grp(&lemin->list_grp);
 	if (error)
 		ft_error();
-	//if (lemin->list_paths)
 }
 
 t_room	*create_room(int room_id)
@@ -90,9 +139,7 @@ t_room	*create_room(int room_id)
 	if (!(room = (t_room*)malloc(sizeof(t_room))))
 		ft_error();
 	room->id = room_id;
-	//room->pid = -1;
 	room->edge_flow = 1;
-	//room->visited = 0;
 	room->full = 0;
 	return (room);
 }
@@ -105,12 +152,6 @@ int		gnl_error(t_lemin *lemin, char **line)
 	if (ret < 0)
 		ft_error();
 	chr_pushfront(&lemin->input, *line, 0);
-	/*if ((*line)[0] == '#' && (*line)[1] != '#')
-	{
-		free(*line);
-		*line = NULL;
-		gnl_error(lemin, line);
-	}*/
 	return (ret);
 }
 
@@ -416,13 +457,20 @@ void	print_list_paths(t_list	*list_paths)
 	}
 }
 
+int			is_exclus(int *exclus, int x)
+{
+	if (exclus[x])
+		return (1);
+	return (0);
+}
+
 int			bfs(t_lemin *lemin)
 {
 	t_room		*room;
 	t_queue		*q;
 	int			u;
 
-	reset_visited(lemin->visited, lemin->v);	
+	reset_tab_int(lemin->visited, lemin->v, 0);
 	q = qt_new_queue();
 	u = lemin->start;
 	qt_enqueue(q, &u, sizeof(int));
@@ -438,7 +486,8 @@ int			bfs(t_lemin *lemin)
 			return (1);
 		}
 		qt_dequeue(q);
-		bt_enqueue_infix(lemin, lemin->tab_bt[u], q, u);
+		if (!is_exclus(lemin->exclus, u))
+			bt_enqueue_infix(lemin, lemin->tab_bt[u], q, u);
 	}
 	qt_free(q);
 	return (0);
@@ -496,18 +545,64 @@ static void		update_edgeflow(t_lemin *lemin, t_icase *path)
 	}
 }
 
-void	algo_ishobe(t_lemin *lemin)
+static void		update_exclus(t_lemin *lemin, t_icase *path)
+{
+	while (path)
+	{
+		lemin->exclus[path->n] = 1;
+		path = path->next;
+	}
+}
+
+int			algo_ishobe(t_lemin *lemin)
 {
 	t_list	*curr;
 	t_icase	*path;
 
+	reset_tab_int(lemin->exclus, lemin->v, 0);
 	while (bfs(lemin))
 	{
 		path = (t_icase*)(lemin->list_paths->content);
-		ic_print(path);
+		//ic_print(path);
 		update_edgeflow(lemin, path);
+		update_exclus(lemin, path);
 	}
 	if (!(lemin->list_paths))
+		return (0);
+	return (1);
+}
+
+void	print_list_grp(t_list *grp)
+{
+	int		i;
+
+	i = 1;
+	while (grp)
+	{
+		ft_putstr(" ------ GROUP ");
+		ft_putchar('[');
+		ft_putnbr(i);
+		ft_putchar(']');
+		ft_putstr(" ------\n");
+		print_list_paths((t_list*)grp->content);
+		grp = grp->next;
+		i++;
+		ft_putchar('\n');
+	}
+}
+
+void	algo_general_ishobe(t_lemin *lemin)
+{
+	t_list		*node;
+
+	while (algo_ishobe(lemin))
+	{
+		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
+		ft_lstadd(&lemin->list_grp, node);
+		lemin->list_paths = NULL;
+	}
+	print_list_grp(lemin->list_grp);
+	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
 }
 
@@ -517,6 +612,9 @@ void	init_tools(t_lemin *lemin)
 		free_lemin(lemin, 1);
 	if (!(lemin->parent = (int*)malloc(sizeof(int) * lemin->v)))
 		free_lemin(lemin, 1);
+	if (!(lemin->exclus = (int*)malloc(sizeof(int) * lemin->v)))
+		free_lemin(lemin, 1);
+
 }
 
 int		main(void)
@@ -526,7 +624,7 @@ int		main(void)
 	init_lemin(&lemin);
 	parse(&lemin);
 	init_tools(&lemin);
-	algo_ishobe(&lemin);
+	algo_general_ishobe(&lemin);
 	free_lemin(&lemin, 0);
 	return (0);
 }	
