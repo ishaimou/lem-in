@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/01 04:41:38 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/01 07:46:58 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	init_lemin(t_lemin *lemin)
 	lemin->tab_hash = NULL;
 	lemin->list_paths = NULL;
 	lemin->list_grp = NULL;
+	lemin->grp_infos = NULL;
 }
 
 void    free_room(t_bt **root)
@@ -539,17 +540,33 @@ static int	algo_ishobe(t_lemin *lemin)
 	reset_tab_int(lemin->exclus, lemin->v, 0);
 	while (flux-- && bfs(lemin))
 	{
-		//ft_printf("flux == [%d]\n", flux);  //!!!!!!!!!
 		path = (t_icase*)(lemin->list_paths->content);
-		//ic_print(path);				//!!!!!!!!
 		update_edgeflow(lemin, path);
 		update_exclus(lemin, path);
 	}
-	print_list_paths(lemin->list_paths);
+	//print_list_paths(lemin->list_paths);
 	if (!(lemin->list_paths))
 		return (0);
 	return (1);
 }
+
+/*
+void		best_choice(t_lemin *lemin)
+{
+	t_list	*ptr;
+	int		ngrp;
+
+	ngrp = ft_list_size(lemin->list_grp);
+	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp + 1))))
+		ft_error();
+	(lemin->grp_infos)[ngrp] = NULL;
+	ptr = lemin->grp_infos;
+	while (ptr)
+	{
+		
+	}
+}
+*/
 
 void		algo_general_ishobe(t_lemin *lemin)
 {
@@ -567,11 +584,12 @@ void		algo_general_ishobe(t_lemin *lemin)
 			lemin->list_paths = lemin->list_paths->next;
 			tmp = NULL;
 		}
-		//print_list_grp(lemin->list_grp);
-		ft_putstr("\n.............\n\n\n\n");
 	}
+	print_list_grp(lemin->list_grp);
+	ft_putstr("\n.............\n\n");
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
+	//best_choice(lemin);
 }
 
 void	init_tools(t_lemin *lemin)

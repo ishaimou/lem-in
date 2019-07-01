@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/01 03:07:31 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/01 07:46:59 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@
 # include <stdio.h>
 # include "libft.h"
 
+typedef struct		s_infos
+{
+	int				dead;
+	int				n_paths;
+	int				min_rooms;
+	int				n_shots;
+}					t_infos;
+
+typedef struct		s_room
+{
+	int				id;
+	int				edge_flow;
+}					t_room;
+
 typedef struct		s_lemin
 {
 	int				ants;
@@ -32,16 +46,12 @@ typedef struct		s_lemin
 	int				*exclus;
 	char			**tab_hash;
 	t_bt			**tab_bt;
+	t_list			*best;
 	t_list			*list_grp;
 	t_list			*list_paths;
 	t_chr			*input;
+	t_infos			*grp_infos;
 }					t_lemin;
-
-typedef struct		s_room
-{
-	int				id;
-	int				edge_flow;
-}					t_room;
 
 void		ft_error(void);
 void		create_tabhash(t_lemin *lemin, t_chr *list_tmp);
