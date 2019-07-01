@@ -7,6 +7,7 @@ void print_lemin(t_lemin *lemin)
 	ft_printf(" nbr vertex = %d\n", lemin->v);
 	ft_printf(" start = %d\n", lemin->start);
 	ft_printf(" end   = %d\n", lemin->end);
+	ft_printf(" flux  = %d\n", lemin->flux);
 	ft_printf("++++++++++++++++++++++++++++++++++\n");
 }
 

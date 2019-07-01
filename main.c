@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/01 02:51:53 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/01 04:41:38 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ t_room	*create_room(int room_id)
 		ft_error();
 	room->id = room_id;
 	room->edge_flow = 1;
-	room->full = 0;
+	//room->full = 0;
 	return (room);
 }
 
@@ -348,6 +348,19 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	free(line);
 }
 
+void	min_flux(t_lemin *lemin)
+{
+	int		conx_start;
+	int		conx_end;
+
+	conx_start = bt_size_count(lemin->tab_bt[lemin->start]);
+	conx_end = bt_size_count(lemin->tab_bt[lemin->end]);
+	if (conx_start < conx_end)
+		lemin->flux = ft_min(lemin->ants, conx_start);
+	else
+		lemin->flux = ft_min(lemin->ants, conx_end);
+}
+
 void	parse(t_lemin *lemin)
 {
 	t_chr	*list_tmp;
@@ -361,6 +374,7 @@ void	parse(t_lemin *lemin)
 			print_tabhash(lemin->tab_hash);			//
 	parse_links(lemin, &line);
 			print_tabbt(lemin->tab_bt);				//
+	min_flux(lemin);
 			print_lemin(lemin);
 	chr_revprint(lemin->input);
 	write(1, "\n", 1);
@@ -464,34 +478,6 @@ int			is_exclus(int *exclus, int x)
 	return (0);
 }
 
-int			bfs(t_lemin *lemin)
-{
-	t_room		*room;
-	t_queue		*q;
-	int			u;
-
-	reset_tab_int(lemin->visited, lemin->v, 0);
-	q = qt_new_queue();
-	u = lemin->start;
-	qt_enqueue(q, &u, sizeof(int));
-	(lemin->visited)[u] = 1;
-	(lemin->parent)[u] = -1;
-	while (!qt_isempty(*q))
-	{
-		qt_front(*q, &u);
-		if (u == lemin->end)
-		{
-			store_path(lemin);
-			qt_free(q);
-			return (1);
-		}
-		qt_dequeue(q);
-		if (!is_exclus(lemin->exclus, u))
-			bt_enqueue_infix(lemin, lemin->tab_bt[u], q, u);
-	}
-	qt_free(q);
-	return (0);
-}
 
 static void		edit_edgeflow(t_bt **tab_bt, int id1, int id2, t_room *room)
 {
@@ -554,24 +540,6 @@ static void		update_exclus(t_lemin *lemin, t_icase *path)
 	}
 }
 
-int			algo_ishobe(t_lemin *lemin)
-{
-	t_list	*curr;
-	t_icase	*path;
-
-	reset_tab_int(lemin->exclus, lemin->v, 0);
-	while (bfs(lemin))
-	{
-		path = (t_icase*)(lemin->list_paths->content);
-		//ic_print(path);
-		update_edgeflow(lemin, path);
-		update_exclus(lemin, path);
-	}
-	if (!(lemin->list_paths))
-		return (0);
-	return (1);
-}
-
 void	print_list_grp(t_list *grp)
 {
 	int		i;
@@ -591,6 +559,60 @@ void	print_list_grp(t_list *grp)
 	}
 }
 
+int			bfs(t_lemin *lemin)
+{
+	t_room		*room;
+	t_queue		*q;
+	int			u;
+
+	reset_tab_int(lemin->visited, lemin->v, 0);
+	q = qt_new_queue();
+	u = lemin->start;
+	qt_enqueue(q, &u, sizeof(int));
+	(lemin->visited)[u] = 1;
+	(lemin->parent)[u] = -1;
+	while (!qt_isempty(*q))
+	{
+		qt_front(*q, &u);
+		if (u == lemin->end)
+		{
+			ft_putstr("6666666666666666666\n");			///////////////////
+			if (lemin->list_paths)
+				print_list_paths(lemin->list_paths);		////////////////////
+			ft_putstr("6666666666666666666\n");			///////////////////
+			store_path(lemin);
+			qt_free(q);
+			return (1);
+		}
+		qt_dequeue(q);
+		if (!is_exclus(lemin->exclus, u))
+			bt_enqueue_infix(lemin, lemin->tab_bt[u], q, u);
+	}
+	qt_free(q);
+	return (0);
+}
+
+int			algo_ishobe(t_lemin *lemin)
+{
+	t_list	*curr;
+	t_icase	*path;
+	int		flux;
+
+	flux = lemin->flux;
+	reset_tab_int(lemin->exclus, lemin->v, 0);
+	while (bfs(lemin) && flux--)
+	{
+		ft_printf("flux == [%d]\n", flux);  //!!!!!!!!!
+		path = (t_icase*)(lemin->list_paths->content);
+		//ic_print(path);				//!!!!!!!!
+		update_edgeflow(lemin, path);
+		update_exclus(lemin, path);
+	}
+	if (!(lemin->list_paths))
+		return (0);
+	return (1);
+}
+
 void	algo_general_ishobe(t_lemin *lemin)
 {
 	t_list		*node;
@@ -601,7 +623,6 @@ void	algo_general_ishobe(t_lemin *lemin)
 		ft_lstadd(&lemin->list_grp, node);
 		lemin->list_paths = NULL;
 	}
-	print_list_grp(lemin->list_grp);
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
 }
@@ -625,6 +646,7 @@ int		main(void)
 	parse(&lemin);
 	init_tools(&lemin);
 	algo_general_ishobe(&lemin);
+	print_list_grp(lemin.list_grp);
 	free_lemin(&lemin, 0);
 	return (0);
 }	

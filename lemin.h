@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/01 02:51:54 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/01 03:07:31 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct		s_lemin
 	int				v;
 	int				start;
 	int				end;
+	int				flux;
 	int				*visited;
 	int				*parent;
 	int				*exclus;
@@ -40,7 +41,7 @@ typedef struct		s_room
 {
 	int				id;
 	int				edge_flow;
-	int				full:1;
+	//int				full:1;
 }					t_room;
 
 void		ft_error(void);
