@@ -37,6 +37,24 @@ $(NAME):
 	@echo "$(BGREEN)$(LIB_NAME) has been created successfully.$(RESET)"
 	@gcc -o $(NAME) $(SRCS_DIR) -I $(H_DIR) -I $(H_LIB_DIR) $(LIB) $(FLAGS)
 	@echo "$(BEER)  $(BGREEN)$(NAME) has been created successfully.$(RESET)"
+	@echo ""
+	@echo ""
+	@echo "$(BGREEN)"
+	@echo "              ,"
+	@echo '     _,-`\   /|   .    .    /`.'
+	@echo ' _,-`     \_/_|_  |\   |`. /   `._,--===--.__'
+	@echo '        _/"/  " \ : \__|_ /.   ,"    :.  :. .`-._'
+	@echo '       // ^   /7 t`""    "`-._/ ,"\   :   :  :  .`.'
+	@echo '       Y      L/ )\         ]],`   \  :   :  :   : `.'
+	@echo '       |        /  `.n_n_n,","\_    \ ;   ;  ;   ;  _>'
+	@echo '       |__    ,`     |  \`-`    `-.__\_______.==---"'
+	@echo '      //  `""\\      |   \            \'
+	@echo '      \|     |/      /    \            \'
+	@echo '                    /     |             `.'
+	@echo '                   /      |               ^'
+	@echo '                  ^       |'
+	@echo "                          ^   $(BCYAN) ISHOBE$(RESET) Take care of ants"
+	@echo "$(RESET)"
 
 clean:
 	@make clean -C $(LIB_DIR)

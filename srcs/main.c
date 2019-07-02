@@ -98,10 +98,31 @@ void		parse_cmds(char *line, int *t, int *limit)
 	}
 }
 
+static int		type_action(t_chr **list_tmp, char **line, int *limit, int *t)
+{
+	if ((*line)[0] == '#')
+	{
+		parse_cmds(*line, t, limit);
+		return (2);
+	}
+	if (is_room(line))
+	{
+		chr_pushfront(list_tmp, *line, *t);
+		return (2);
+	}
+	if (is_link(line))
+	{
+		if (limit[0] == 1 && limit[1] == 1)
+			return (0);
+	}
+	return (1);
+}
+
 char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 {
 	char	*line;
 	int		limit[2];
+	int		ret;
 	int		t;
 
 	t = 0;
@@ -109,16 +130,10 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 	limit[1] = 0;
 	while (gnl_error(lemin, &line))
 	{
-		if (line[0] == '#')
-			parse_cmds(line, &t, limit);
-		else if (is_room(&line))
-			chr_pushfront(list_tmp, line, t);
-		else if (is_link(&line))
-		{
-			if (limit[0] == 1 && limit[1] == 1)
-				return (line);
-		}
-		else
+		ret = type_action(list_tmp, &line, limit, &t);
+		if (ret == 0)
+			return (line);
+		if (ret == 1)
 			break ;
 		free(line);
 		line = NULL;
@@ -131,7 +146,7 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 	return (NULL);
 }
 
-void	add_links(t_bt **tab_bt, int a, int b)
+/*void	int_add_links(t_bt **tab_bt, int a, int b)
 {
 	t_room	*room_a;
 	t_room	*room_b;
@@ -140,11 +155,30 @@ void	add_links(t_bt **tab_bt, int a, int b)
 	room_b = create_room(b);
 	bt_insert_item(&tab_bt[a], room_b, &id_cmp);
 	bt_insert_item(&tab_bt[b], room_a, &id_cmp);
+}*/
+
+void	add_links(t_lemin *lemin, int n_vertex, char **link, int eol)
+{
+	t_room		*room_a;
+	t_room		*room_b;
+	int			a;
+	int			b;
+
+	a = hash_findid(lemin->tab_hash, n_vertex, *link);
+	b = hash_findid(lemin->tab_hash, n_vertex, &(*link)[eol]);
+	free(*link);
+	if (a == -1 || b == -1)
+		free_lemin(lemin, 1);
+	//int_add_links(lemin->tab_bt, a, b);
+	room_a = create_room(a);
+	room_b = create_room(b);
+	bt_insert_item(&(lemin->tab_bt)[a], room_b, &id_cmp);
+	bt_insert_item(&(lemin->tab_bt)[b], room_a, &id_cmp);
 }
 
 void	parse_links(t_lemin *lemin, char **bk_line)
 {
-	int				id[2];
+	//int				id[2];
 	char			*line;
 	int				eol;
 	int				v;
@@ -157,12 +191,7 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	while (i <= v)
 		(lemin->tab_bt)[i++] = NULL;
 	eol = ft_strlen(*bk_line);
-	id[0] = hash_findid(lemin->tab_hash, lemin->v, *bk_line);
-	id[1] = hash_findid(lemin->tab_hash, lemin->v, &(*bk_line)[eol + 1]);
-	free(*bk_line);
-	if (id[0] == -1 || id[1] == -1)
-		free_lemin(lemin, 1);
-	add_links(lemin->tab_bt, id[0], id[1]);
+	add_links(lemin, lemin->v, bk_line, eol + 1);
 	while (gnl_error(lemin, &line))
 	{
 		if (!(eol = is_link(&line)))
@@ -170,15 +199,7 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 			free(line);
 			free_lemin(lemin, 1);
 		}
-		id[0] = hash_findid(lemin->tab_hash, lemin->v, line);
-		id[1] = hash_findid(lemin->tab_hash, lemin->v, &line[eol + 1]);
-		if (id[0] == -1 || id[1] == -1)
-		{
-			free(line);
-			free_lemin(lemin, 1);
-		}
-		add_links(lemin->tab_bt, id[0], id[1]);
-		free(line);
+		add_links(lemin, lemin->v, &line, eol + 1);
 	}
 	free(line);
 }
