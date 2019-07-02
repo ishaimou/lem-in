@@ -86,3 +86,28 @@ void		print_path(t_lemin *lemin)
 		ft_putchar('\n');
 		ft_putchar('\n');
 }
+
+void		print_grp_infos(t_infos *infos, int ngrp)
+{
+	int		i;
+	int		j;
+	int		npaths;
+	int		nshots;
+
+	i = -1;
+	while (++i < ngrp)
+	{
+		npaths = infos[i].n_paths;
+		nshots = infos[i].n_shots;
+		ft_putstr("\n--------------------------\n");
+		ft_printf("nbr paths: %d\n\n", npaths);
+		ft_printf("max shots: %d\n\n", nshots);
+		j = -1;
+		while (++j < npaths)
+		{
+			ft_printf("  len paths 	[%d]: %d\n", j + 1, (infos[i].paths)[j].len);
+			ft_printf("  ants paths [%d]: %d\n", j + 1, (infos[i].paths)[j].ants);
+		}
+		ft_putstr("\n--------------------------\n");
+	}
+}

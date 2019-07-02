@@ -261,32 +261,39 @@ void		fill_grp_infos(t_lemin *lemin, t_list *grp, t_infos *infos)
 	calcul_ants_shots(lemin->ants, infos);
 }
 
-void		print_grp_infos(t_infos *infos, int ngrp)
+int			find_min_shots(t_infos *infos, int size)
 {
+	int		index_min;
 	int		i;
-	int		j;
-	int		npaths;
-	int		nshots;
 
-	i = -1;
-	while (++i < ngrp)
+	i = 0;
+	index_min = 0;
+	while (i < size)
 	{
-		npaths = infos[i].n_paths;
-		nshots = infos[i].n_shots;
-		ft_putstr("\n--------------------------\n");
-		ft_printf("nbr paths: %d\n\n", npaths);
-		ft_printf("max shots: %d\n\n", nshots);
-		j = -1;
-		while (++j < npaths)
-		{
-			ft_printf("  len paths 	[%d]: %d\n", j + 1, (infos[i].paths)[j].len);
-			ft_printf("  ants paths [%d]: %d\n", j + 1, (infos[i].paths)[j].ants);
-		}
-		ft_putstr("\n--------------------------\n");
+		if (infos[index_min].n_shots > infos[i].n_shots)
+			index_min = i;
+		i++;
 	}
+	return (index_min);
 }
 
 void		best_choice(t_lemin *lemin)
+{
+	t_infos	*infos;
+	t_list	*grps;
+	int		index_min;
+	int		i;
+
+	infos = lemin->grp_infos;
+	grps = lemin->list_grp;
+	index_min = find_min_shots(infos, lemin->ngrp);
+	i = 0;
+	while (i++ < index_min)
+		grps = grps->next;
+	lemin->best_grp = (t_list*)(grps->content);
+}
+
+void		find_best_grp(t_lemin *lemin)
 {
 	t_list	*ptr_grp;
 	int		ngrp;
@@ -305,6 +312,7 @@ void		best_choice(t_lemin *lemin)
 		i++;
 	}
 	print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	best_choice(lemin);
 }
 
 void		algo_general_ishobe(t_lemin *lemin)
@@ -339,8 +347,11 @@ int		main(void)
 	parse(&lemin);
 	init_tools(&lemin);
 	algo_general_ishobe(&lemin);
-	best_choice(&lemin);
+	find_best_grp(&lemin);
 	//print_list_grp(lemin.list_grp);
+	ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n");
+	print_list_paths(lemin.best_grp);
+	ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");
 	free_lemin(&lemin, 0);
 	return (0);
 }	

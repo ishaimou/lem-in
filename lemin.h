@@ -80,5 +80,6 @@ void 		print_tree(void *item);					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void		print_list_paths(t_list	*list_paths);	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void		print_list_grp(t_list *grp);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void		print_path(t_lemin *lemin);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void		print_grp_infos(t_infos *infos, int ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #endif
