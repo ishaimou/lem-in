@@ -16,16 +16,22 @@ static void	free_room(t_bt **root)
 	*root = NULL;
 }
 
-static void	free_tab_bt(t_bt **tab_bt, int size)
+static void	free_tab_bt(t_bt ***tab_bt, int size)
 {
+	t_bt	**tmp;
 	int		i;
 
-	i = 0;
-	while (i < size)
+	if (*tab_bt)
 	{
-		if (tab_bt[i])
-			free_room(&(tab_bt[i]));
-		i++;
+		i = 0;
+		tmp = *tab_bt;
+		while (i < size)
+		{
+			if (tmp[i])
+				free_room(&(tmp[i]));
+			i++;
+		}
+		free(*tab_bt);
 	}
 }
 
@@ -45,16 +51,31 @@ static void	free_list_grp(t_list **list_grp)
 	*list_grp = NULL;
 }
 
+static void	free_infos(t_infos **infos, int size)
+{
+	t_infos *tmp;
+	int		i;
+
+	if (*infos)
+	{
+		i = 0;
+		tmp = *infos;
+		while (i < size)
+		{
+			free(tmp[i].paths);
+			i++;
+		}
+		free(*infos);
+		*infos = NULL;
+	}
+}
+
 void	free_lemin(t_lemin *lemin, int error)
 {
 	int		v;
 
 	v = lemin->v;
-	if (lemin->tab_bt)
-	{
-		free_tab_bt(lemin->tab_bt, lemin->v);
-		free(lemin->tab_bt);
-	}
+	free_tab_bt(&(lemin->tab_bt), lemin->v);
 	if (lemin->tab_hash)
 		free_tabstr(&(lemin->tab_hash));
 	if (lemin->list_grp)
@@ -67,6 +88,7 @@ void	free_lemin(t_lemin *lemin, int error)
 		free(lemin->parent);
 	if (lemin->exclus)
 		free(lemin->exclus);
+	free_infos(&(lemin->grp_infos), lemin->ngrp);
 	if (error)
 		ft_error();
 }

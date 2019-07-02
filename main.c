@@ -291,6 +291,7 @@ void		best_choice(t_lemin *lemin)
 	while (i++ < index_min)
 		grps = grps->next;
 	lemin->best_grp = (t_list*)(grps->content);
+	lemin->best_infos = &(infos[index_min]);
 }
 
 void		find_best_grp(t_lemin *lemin)
@@ -339,6 +340,122 @@ void		algo_general_ishobe(t_lemin *lemin)
 		free_lemin(lemin, 1);
 }
 
+void	init_tab_ants(t_stat_ants *tab_ants, int size)
+{
+	while (--size >= 0)
+	{
+		tab_ants[size].finish = 0;
+		tab_ants[size].id_path = -1;
+		tab_ants[size].pos = NULL;
+	}
+}
+
+void	print_l(char **tab_hash, int a, int b)
+{
+	write(1, "L", 1);
+	ft_putnbr(a);
+	write(1, "-", 1);
+	ft_putstr(tab_hash[b]);
+	write(1, " ", 2);
+}
+
+t_icase	*begin_path(t_list *best, int index)
+{
+	int		i;
+
+	i = 0;
+	while (i++ < index)
+		best = best->next;
+	return ((t_icase*)(best->content));
+}
+
+static int	valid_path_id(int id, int pass)
+{
+	if (id == pass)
+		return (1);
+	if (id == -1)
+		return (1);
+	return (0);
+}
+
+void	parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
+{
+	t_infos		*infos;
+	int			npaths;
+	int			i;
+	int			j;
+
+	i = -1;
+	infos = lemin->best_infos;
+	npaths = infos->n_paths;
+	while (++i < npaths)
+	{
+		j = -1;
+		while (++j < lemin->ants)
+		{
+			if (!tab_ants[j].finish && valid_path_id(tab_ants[j].id_path, i))
+			{
+				if (!tab_ants[j].pos)
+				{
+					tab_ants[j].pos = begin_path(lemin->best_grp, i);
+					tab_ants[j].id_path = i;
+					print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n);
+					break ;
+				}
+				else
+				{
+					tab_ants[j].pos = tab_ants[j].pos->next;
+					if (!tab_ants[j].pos)
+					{
+						tab_ants[j].finish = 1;
+						print_l(lemin->tab_hash, j + 1, lemin->end);
+					}
+					else
+						print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n);
+				}
+			}
+		}
+	}
+	write (1, "\n", 1);
+}
+
+void print_tab_ants(t_stat_ants *tab, int size)
+{
+	int		i;
+
+	i = 0;
+	while (i < size)
+	{
+		ft_printf("id: %d\t", tab[i].id_path);
+		ft_printf("finish: %d\t", tab[i].finish);
+		ic_print(tab[i].pos);
+		ft_putstr("-   -    -    -    -   -  \n");
+		i++;
+	}
+}
+
+void	manage_ants(t_lemin *lemin)
+{
+	t_stat_ants	*tab_ants;
+	int			nshots;
+	int			i;
+
+	i = 0;
+	nshots = lemin->best_infos->n_shots;
+	if (!(tab_ants = (t_stat_ants*)malloc(sizeof(t_stat_ants) * lemin->ants)))
+		ft_error();
+	init_tab_ants(tab_ants, lemin->ants);
+	while (i++ < nshots)
+	{
+		parallel_walk(lemin, tab_ants);
+		//ft_putstr("- - - - - - - - - -  - - - - - - \n");		//!!!!!!!!!!!!!!!!!!!!!!!
+		//print_tab_ants(tab_ants, lemin->ants);					//!!!!!!!!!!!!!!!!!!!!!!!
+		//ft_putstr("- - - - - - - - - -  - - - - - - \n");		//!!!!!!!!!!!!!!!!!!!!!!!
+	}
+	free(tab_ants);
+	tab_ants = NULL;
+}
+
 int		main(void)
 {
 	t_lemin		lemin;
@@ -348,10 +465,11 @@ int		main(void)
 	init_tools(&lemin);
 	algo_general_ishobe(&lemin);
 	find_best_grp(&lemin);
+	manage_ants(&lemin);
 	//print_list_grp(lemin.list_grp);
-	ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n");
-	print_list_paths(lemin.best_grp);
-	ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");
+	//ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n");
+	//print_list_paths(lemin.best_grp);
+	//ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");
 	free_lemin(&lemin, 0);
 	return (0);
 }	

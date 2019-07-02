@@ -39,6 +39,13 @@ typedef struct		s_room
 	int				edge_flow;
 }					t_room;
 
+typedef struct		s_stat_ants
+{
+	int				finish;
+	int				id_path;
+	t_icase			*pos;
+}					t_stat_ants;
+
 typedef struct		s_lemin
 {
 	int				ants;
@@ -56,6 +63,7 @@ typedef struct		s_lemin
 	t_list			*list_paths;
 	t_chr			*input;
 	t_infos			*grp_infos;
+	t_infos			*best_infos;
 	int				ngrp;
 }					t_lemin;
 
