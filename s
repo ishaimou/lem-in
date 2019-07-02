@@ -1,1 +1,1 @@
-gcc -g *.c -L ./libft -lft -I ./libft/includes/ -o lemin
+gcc -g *.c -L ./libft -lft -I ./libft/includes/ -o lem-in

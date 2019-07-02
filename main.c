@@ -86,18 +86,15 @@ int			is_room(char **line)
 
 void		parse_cmds(char *line, int *t, int *limit)
 {
-	if (line[1] == '#')
+	if (!ft_strcmp(&line[2], "start"))
 	{
-		if (!ft_strcmp(&line[2], "start"))
-		{
-			limit[0] = !limit[0] ? 1 : -1;
-			*t = 1;
-		}
-		else if (!ft_strcmp(&line[2], "end"))
-		{
-			limit[1] = !limit[1] ? 1 : -1;
-			*t = 2;
-		}
+		limit[0] = !limit[0] ? 1 : -1;
+		*t = 1;
+	}
+	else if (!ft_strcmp(&line[2], "end"))
+	{
+		limit[1] = !limit[1] ? 1 : -1;
+		*t = 2;
 	}
 }
 
@@ -168,11 +165,6 @@ void	parse_links(t_lemin *lemin, char **bk_line)
 	add_links(lemin->tab_bt, id[0], id[1]);
 	while (gnl_error(lemin, &line))
 	{
-		if (line[0] == '#')
-		{
-			free(line);
-			continue ;
-		}
 		if (!(eol = is_link(&line)))
 		{
 			free(line);

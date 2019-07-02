@@ -6,6 +6,19 @@ void	ft_error()
 	exit(1);
 }
 
+int		is_ignored(char *str)
+{
+	if (str[0] == '#')
+	{
+		if (!ft_strcmp(str, "##start"))
+			return (0);
+		if (!ft_strcmp(str, "##end"))
+			return (0);
+		return (1);
+	}
+	return (0);
+}
+
 int		gnl_error(t_lemin *lemin, char **line)
 {
 	int		ret;
@@ -14,6 +27,14 @@ int		gnl_error(t_lemin *lemin, char **line)
 	if (ret < 0)
 		ft_error();
 	chr_pushfront(&lemin->input, *line, 0);
+	while (is_ignored(*line))
+	{
+		free(*line);
+		ret = get_next_line(0, line);
+		if (ret < 0)
+			ft_error();
+		chr_pushfront(&lemin->input, *line, 0);
+	}
 	return (ret);
 }
 
