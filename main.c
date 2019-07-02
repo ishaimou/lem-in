@@ -219,24 +219,28 @@ int			ft_ceil(float f)
 
 void		calcul_ants_shots(int ants, t_infos *infos)
 {
+	t_paths	*paths;
 	int		n_paths;
-	int		result;
 	int		tmp;
+	int		max;
 	int		i;
 
+	max = 0;
 	n_paths = infos->n_paths;
+	paths = infos->paths;
 	i = n_paths - 1;
 	while (--i >= 0 && ants > 0)
 	{
-		tmp = ants + (infos->paths)[n_paths - 1].len - 1;
-		if (tmp > (infos->paths)[i].len)
+		tmp = ants + paths[n_paths - 1].len - 1;
+		if (tmp > paths[i].len)
 		{
-			result = ft_ceil((float)((tmp - (infos->paths)[i].len)) / 2.0);
-			(infos->paths)[i].ants = result;
-			ants -= result;
+			paths[i].ants = ft_ceil((float)(tmp - paths[i].len) / 2.0);
+			ants -= paths[i].ants;
 		}
+		max = ft_max(max, paths[i].len + paths[i].ants);
 	}
-	(infos->paths)[n_paths - 1].ants = ants;
+	paths[n_paths - 1].ants = ants;
+	infos->n_shots = ft_max(max, paths[n_paths - 1].len + ants);
 }
 
 void		fill_grp_infos(t_lemin *lemin, t_list *grp, t_infos *infos)
@@ -262,13 +266,16 @@ void		print_grp_infos(t_infos *infos, int ngrp)
 	int		i;
 	int		j;
 	int		npaths;
+	int		nshots;
 
 	i = -1;
 	while (++i < ngrp)
 	{
 		npaths = infos[i].n_paths;
+		nshots = infos[i].n_shots;
 		ft_putstr("\n--------------------------\n");
 		ft_printf("nbr paths: %d\n\n", npaths);
+		ft_printf("max shots: %d\n\n", nshots);
 		j = -1;
 		while (++j < npaths)
 		{
