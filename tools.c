@@ -17,6 +17,13 @@ int		gnl_error(t_lemin *lemin, char **line)
 	return (ret);
 }
 
+int			ft_ceil(float f)
+{
+	if ((float)(f - (int)f) > .0)
+		return ((int)(f + 1));
+	return ((int)f);
+}
+
 int		id_cmp(void *item1, void *item2)
 {
 	t_room	*room1;
@@ -53,4 +60,14 @@ t_room	*create_room(int room_id)
 	room->id = room_id;
 	room->edge_flow = 1;
 	return (room);
+}
+
+t_icase	*begin_path(t_list *best, int index)
+{
+	int		i;
+
+	i = 0;
+	while (i++ < index)
+		best = best->next;
+	return ((t_icase*)(best->content));
 }

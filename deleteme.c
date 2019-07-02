@@ -111,3 +111,18 @@ void		print_grp_infos(t_infos *infos, int ngrp)
 		ft_putstr("\n--------------------------\n");
 	}
 }
+
+void		print_tab_ants(t_stat_ants *tab, int size)
+{
+	int		i;
+
+	i = 0;
+	while (i < size)
+	{
+		ft_printf("id: %d\t", tab[i].id_path);
+		ft_printf("finish: %d\t", tab[i].finish);
+		ic_print(tab[i].pos);
+		ft_putstr("-   -    -    -    -   -  \n");
+		i++;
+	}
+}

@@ -25,3 +25,13 @@ void	init_tools(t_lemin *lemin)
 		free_lemin(lemin, 1);
 
 }
+
+void	init_tab_ants(t_stat_ants *tab_ants, int size)
+{
+	while (--size >= 0)
+	{
+		tab_ants[size].finish = 0;
+		tab_ants[size].id_path = -1;
+		tab_ants[size].pos = NULL;
+	}
+}
