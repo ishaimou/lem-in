@@ -84,7 +84,7 @@ void		find_best_grp(t_lemin *lemin)
 	int		i;
 
 	ngrp = lemin->ngrp;
-	ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp))))
 		ft_error();
 	i = 0;
@@ -95,6 +95,6 @@ void		find_best_grp(t_lemin *lemin)
 		ptr_grp = ptr_grp->next;
 		i++;
 	}
-	print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	best_choice(lemin);
 }

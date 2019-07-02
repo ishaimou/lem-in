@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/01 07:46:59 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/02 10:39:47 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int			id_cmp(void *item1, void *item2);
 int			gnl_error(t_lemin *lemin, char **line);
 void		find_best_grp(t_lemin *lemin);
 void		manage_ants(t_lemin *lemin);
-void		print_l(char **tab_hash, int a, int b);
+void		print_l(char **tab_hash, int a, int b, int *flag);
 void 		print_lemin(t_lemin *lemin);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabhash(char **tab);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabbt(t_bt **tab_bt);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

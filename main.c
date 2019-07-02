@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/01 07:46:58 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/02 10:09:14 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,11 +201,11 @@ void	parse(t_lemin *lemin)
 	line = parse_rooms(lemin, &list_tmp);
 	create_tabhash(lemin, list_tmp);
 	chr_free(&list_tmp);
-			print_tabhash(lemin->tab_hash);			//
+			//print_tabhash(lemin->tab_hash);			//
 	parse_links(lemin, &line);
-			print_tabbt(lemin->tab_bt);				//
+			//print_tabbt(lemin->tab_bt);				//
 	min_flux(lemin);
-			print_lemin(lemin);
+			//print_lemin(lemin);						//
 	chr_revprint(lemin->input);
 	write(1, "\n", 1);
 }
@@ -228,19 +228,22 @@ void		algo_general_ishobe(t_lemin *lemin)
 			tmp = NULL;
 		}
 	}
-		print_list_grp(lemin->list_grp);	//////////////////////////
-		ft_putstr("\n.............\n\n");	//////////////////////////
+		//print_list_grp(lemin->list_grp);	//////////////////////////
+		//ft_putstr("\n.............\n\n");	//////////////////////////
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
 }
 
-void	print_l(char **tab_hash, int a, int b)
+void	print_l(char **tab_hash, int a, int b, int *flag)
 {
-	write(1, "L", 1);
+	if (*flag)
+		ft_putchar(' ');
+	if (!*flag)
+		*flag = 1;
+	ft_putchar('L');
 	ft_putnbr(a);
-	write(1, "-", 1);
+	ft_putchar('-');
 	ft_putstr(tab_hash[b]);
-	write(1, " ", 2);
 }
 
 int		main(void)

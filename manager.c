@@ -15,8 +15,10 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 	int			npaths;
 	int			i;
 	int			j;
+	int			flag;
 
 	i = -1;
+	flag = 0;
 	infos = lemin->best_infos;
 	npaths = infos->n_paths;
 	while (++i < npaths)
@@ -30,7 +32,7 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 				{
 					tab_ants[j].pos = begin_path(lemin->best_grp, i);
 					tab_ants[j].id_path = i;
-					print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n);
+					print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n, &flag);
 					break ;
 				}
 				else
@@ -39,10 +41,10 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 					if (!tab_ants[j].pos)
 					{
 						tab_ants[j].finish = 1;
-						print_l(lemin->tab_hash, j + 1, lemin->end);
+						print_l(lemin->tab_hash, j + 1, lemin->end, &flag);
 					}
 					else
-						print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n);
+						print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n, &flag);
 				}
 			}
 		}
