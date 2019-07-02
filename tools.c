@@ -82,13 +82,3 @@ t_room	*create_room(int room_id)
 	room->edge_flow = 1;
 	return (room);
 }
-
-t_icase	*begin_path(t_list *best, int index)
-{
-	int		i;
-
-	i = 0;
-	while (i++ < index)
-		best = best->next;
-	return ((t_icase*)(best->content));
-}

@@ -33,31 +33,54 @@ static void		limit_edgeflow(t_lemin *lemin, int id, t_room *room, int is_start)
 	fnd_room->edge_flow = 0;
 }
 
+static void		extrem_edgeflow(t_lemin *lemin, t_room *room)
+{
+	t_bt	*root;
+	t_bt	*found;
+	t_room		*fnd_room;
+
+	root = (lemin->tab_bt)[lemin->start];
+	room->id = lemin->end;
+	found = bt_search_item(root, room, &id_cmp);
+	fnd_room = (t_room*)found->item;
+	fnd_room->edge_flow = 0;
+}
+
 static void		update_edgeflow(t_lemin *lemin, t_icase *path)
 {
 	t_room		room;
+	t_icase		*tmp;
 
-	if (path->next)
+	if (ic_size(path) == 2)
+		extrem_edgeflow(lemin, &room);
+	if (ic_size(path) > 3)
 	{
-		while (path && path->next)
+		tmp = path->next;
+		while (tmp && tmp->next && tmp->next->next)
 		{
-			edit_edgeflow(lemin->tab_bt, path->n, path->next->n, &room);
-			path = path->next;
+			edit_edgeflow(lemin->tab_bt, tmp->n, tmp->next->n, &room);
+			tmp = tmp->next;
 		}
 	}
 	else
 	{
-		limit_edgeflow(lemin, path->n, &room, 1);
-		limit_edgeflow(lemin, path->n, &room, 0);
+		limit_edgeflow(lemin, path->next->n, &room, 1);
+		limit_edgeflow(lemin, path->next->n, &room, 0);
 	}
 }
 
 static void		update_exclus(t_lemin *lemin, t_icase *path)
 {
-	while (path)
+	t_icase		*tmp;
+
+	if (path)
+		tmp = path->next;
+	else
+		tmp = NULL;
+	while (tmp->next)
 	{
-		lemin->exclus[path->n] = 1;
-		path = path->next;
+		lemin->exclus[tmp->n] = 1;
+		tmp = tmp->next;
 	}
 }
 

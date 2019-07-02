@@ -193,11 +193,11 @@ void	parse(t_lemin *lemin)
 	line = parse_rooms(lemin, &list_tmp);
 	create_tabhash(lemin, list_tmp);
 	chr_free(&list_tmp);
-			//print_tabhash(lemin->tab_hash);			//
+			print_tabhash(lemin->tab_hash);			//
 	parse_links(lemin, &line);
-			//print_tabbt(lemin->tab_bt);				//
+			print_tabbt(lemin->tab_bt);				//
 	min_flux(lemin);
-			//print_lemin(lemin);						//
+			print_lemin(lemin);						//
 	chr_revprint(lemin->input);
 	write(1, "\n", 1);
 }
@@ -209,7 +209,7 @@ void		algo_general_ishobe(t_lemin *lemin)
 
 	while (algo_ishobe(lemin))
 	{
-		//print_list_paths(lemin->list_paths);
+		print_list_paths(lemin->list_paths);  //!!!!!!!!!!!!!!!!!!
 		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
 		ft_lstadd(&lemin->list_grp, node);
 		(lemin->ngrp)++;
@@ -220,8 +220,8 @@ void		algo_general_ishobe(t_lemin *lemin)
 			tmp = NULL;
 		}
 	}
-		//print_list_grp(lemin->list_grp);	//////////////////////////
-		//ft_putstr("\n.............\n\n");	//////////////////////////
+		print_list_grp(lemin->list_grp);	//////////////////////////
+		ft_putstr("\n.............\n\n");	//////////////////////////
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
 }

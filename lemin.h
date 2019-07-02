@@ -78,7 +78,6 @@ int			str_to_ind(char **tab_hash, int v, char *str);
 void		put_in_tabhash(t_lemin *lemin, char *str, int *ind);
 int			algo_ishobe(t_lemin *lemin);
 int			bfs(t_lemin *lemin);
-t_icase		*begin_path(t_list *best, int index);
 t_room		*create_room(int room_id);
 void		min_flux(t_lemin *lemin);
 int			ft_ceil(float f);

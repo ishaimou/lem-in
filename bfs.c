@@ -31,13 +31,14 @@ static void		store_path(t_lemin *lemin)
 	t_list		*node;
 	int			u;
 
-	u = lemin->parent[lemin->end];
+	u = lemin->end;
 	path = NULL;
 	while (u != lemin->start)
 	{
 		ic_pushnode(&path, u);
 		u = lemin->parent[u];
 	}
+	ic_pushnode(&path, u);
 	node = ft_lstnew_sm(path, sizeof(path));
 	ft_lstadd(&lemin->list_paths, node);
 }

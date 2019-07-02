@@ -1,5 +1,15 @@
 #include "lemin.h"
 
+t_icase	*after_start_path(t_list *best, int index)
+{
+	int		i;
+
+	i = 0;
+	while (i++ < index)
+		best = best->next;
+	return (((t_icase*)(best->content))->next);
+}
+
 static int	valid_path_id(int id, int pass)
 {
 	if (id == pass)
@@ -30,7 +40,7 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 			{
 				if (!tab_ants[j].pos)
 				{
-					tab_ants[j].pos = begin_path(lemin->best_grp, i);
+					tab_ants[j].pos = after_start_path(lemin->best_grp, i);
 					tab_ants[j].id_path = i;
 					print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n, &flag);
 					break ;
@@ -38,13 +48,10 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 				else
 				{
 					tab_ants[j].pos = tab_ants[j].pos->next;
-					if (!tab_ants[j].pos)
-					{
-						tab_ants[j].finish = 1;
-						print_l(lemin->tab_hash, j + 1, lemin->end, &flag);
-					}
-					else
+					if (tab_ants[j].pos)
 						print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n, &flag);
+					else
+						tab_ants[j].finish = 1;
 				}
 			}
 		}
