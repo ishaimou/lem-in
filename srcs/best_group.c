@@ -1,29 +1,78 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   best_group.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/04 05:57:58 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/04 06:25:09 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lemin.h"
+
+static int		ft_paths_maxlen(t_paths *paths, int n_paths)
+{
+	int			max;
+	int			i;
+
+	i = 0;
+	while (i < n_paths)
+	{
+		if (max < paths[i].len)
+			max = paths[i].len;
+		i++;
+	}
+	return (max);
+}
+
+static int		calc_max_shots(t_paths *paths, int n_paths)
+{
+	int			max_shots;
+	int			i;
+
+	i = 0;
+	max_shots = 0;
+	while (i < n_paths)
+	{
+		if (max_shots < paths[i].len + paths[i].ants)
+			max_shots = paths[i].len + paths[i].ants;
+		i++;
+	}
+	return (max_shots);
+}
 
 static void		calcul_ants_shots(int ants, t_infos *infos)
 {
 	t_paths	*paths;
 	int		n_paths;
-	int		tmp;
+	int		phi;
 	int		max;
 	int		i;
 
-	max = 0;
 	n_paths = infos->n_paths;
 	paths = infos->paths;
+	max = ft_paths_maxlen(paths, n_paths);
 	i = n_paths - 1;
-	while (--i >= 0 && ants > 0)
+	while (i >= 0 && ants > 0)
 	{
-		tmp = ants + paths[n_paths - 1].len - 1;
-		if (tmp > paths[i].len)
-		{
-			paths[i].ants = ft_ceil((float)(tmp - paths[i].len) / 2.0);
-			ants -= paths[i].ants;
-		}
-		max = ft_max(max, paths[i].len + paths[i].ants);
+		phi = max - paths[i].len + 1;
+		paths[i].ants = ((ants - phi >= 0) ? phi : ants);
+		ants -= phi;
+		i--;
 	}
-	paths[n_paths - 1].ants = ants;
-	infos->n_shots = ft_max(max, paths[n_paths - 1].len + ants);
+	while (ants > 0)
+	{
+		i = n_paths - 1;
+		while (i >= 0 && ants > 0)
+		{
+			paths[i].ants++;
+			ants--;
+			i--;
+		}
+	}
+	infos->n_shots = calc_max_shots(paths, n_paths);
 }
 
 static void		fill_grp_infos(t_lemin *lemin, t_list *grp, t_infos *infos)
@@ -84,7 +133,7 @@ void		find_best_grp(t_lemin *lemin)
 	int		i;
 
 	ngrp = lemin->ngrp;
-	ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp))))
 		ft_error();
 	i = 0;

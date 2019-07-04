@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/02 10:09:14 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/04 05:39:36 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,17 +146,6 @@ char		*parse_rooms(t_lemin *lemin, t_chr **list_tmp)
 	return (NULL);
 }
 
-/*void	int_add_links(t_bt **tab_bt, int a, int b)
-{
-	t_room	*room_a;
-	t_room	*room_b;
-
-	room_a = create_room(a);
-	room_b = create_room(b);
-	bt_insert_item(&tab_bt[a], room_b, &id_cmp);
-	bt_insert_item(&tab_bt[b], room_a, &id_cmp);
-}*/
-
 void	add_links(t_lemin *lemin, int n_vertex, char **link, int eol)
 {
 	t_room		*room_a;
@@ -169,7 +158,6 @@ void	add_links(t_lemin *lemin, int n_vertex, char **link, int eol)
 	free(*link);
 	if (a == -1 || b == -1)
 		free_lemin(lemin, 1);
-	//int_add_links(lemin->tab_bt, a, b);
 	room_a = create_room(a);
 	room_b = create_room(b);
 	bt_insert_item(&(lemin->tab_bt)[a], room_b, &id_cmp);
@@ -214,11 +202,11 @@ void	parse(t_lemin *lemin)
 	line = parse_rooms(lemin, &list_tmp);
 	create_tabhash(lemin, list_tmp);
 	chr_free(&list_tmp);
-			print_tabhash(lemin->tab_hash);			//
+		//	print_tabhash(lemin->tab_hash);			//
 	parse_links(lemin, &line);
-			print_tabbt(lemin->tab_bt);				//
+		//	print_tabbt(lemin->tab_bt);				//
 	min_flux(lemin);
-			print_lemin(lemin);						//
+		//	print_lemin(lemin);						//
 	chr_revprint(lemin->input);
 	write(1, "\n", 1);
 }
@@ -230,7 +218,7 @@ void		algo_general_ishobe(t_lemin *lemin)
 
 	while (algo_ishobe(lemin))
 	{
-		print_list_paths(lemin->list_paths);  //!!!!!!!!!!!!!!!!!!
+		//print_list_paths(lemin->list_paths);  //!!!!!!!!!!!!!!!!!!
 		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
 		ft_lstadd(&lemin->list_grp, node);
 		(lemin->ngrp)++;
@@ -241,8 +229,8 @@ void		algo_general_ishobe(t_lemin *lemin)
 			tmp = NULL;
 		}
 	}
-		print_list_grp(lemin->list_grp);	//////////////////////////
-		ft_putstr("\n.............\n\n");	//////////////////////////
+		//print_list_grp(lemin->list_grp);	//////////////////////////
+		//ft_putstr("\n.............\n\n");	//////////////////////////
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   manager.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/04 05:36:02 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/04 06:41:13 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lemin.h"
 
 t_icase	*after_start_path(t_list *best, int index)
@@ -27,11 +39,11 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 	int			j;
 	int			flag;
 
-	i = -1;
 	flag = 0;
 	infos = lemin->best_infos;
 	npaths = infos->n_paths;
-	while (++i < npaths)
+	i = npaths;
+	while (--i >= 0)
 	{
 		j = -1;
 		while (++j < lemin->ants)
@@ -67,6 +79,7 @@ void	manage_ants(t_lemin *lemin)
 
 	i = 0;
 	nshots = lemin->best_infos->n_shots;
+	ft_printf("shots : %d\n", nshots);
 	if (!(tab_ants = (t_stat_ants*)malloc(sizeof(t_stat_ants) * lemin->ants)))
 		ft_error();
 	init_tab_ants(tab_ants, lemin->ants);
