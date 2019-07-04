@@ -12,22 +12,6 @@
 
 #include "lemin.h"
 
-static int		ft_paths_maxlen(t_paths *paths, int n_paths)
-{
-	int			max;
-	int			i;
-
-	i = 0;
-	max = 0;
-	while (i < n_paths)
-	{
-		if (max < paths[i].len)
-			max = paths[i].len;
-		i++;
-	}
-	return (max);
-}
-
 static int		calc_max_shots(t_paths *paths, int n_paths)
 {
 	int			max_shots;
@@ -37,43 +21,102 @@ static int		calc_max_shots(t_paths *paths, int n_paths)
 	max_shots = 0;
 	while (i < n_paths)
 	{
-		if (max_shots < paths[i].len + paths[i].ants)
-			max_shots = paths[i].len + paths[i].ants;
+		if (paths[i].ants > 0)
+			if (max_shots < paths[i].len + paths[i].ants)
+				max_shots = paths[i].len + paths[i].ants;
 		i++;
 	}
 	return (max_shots);
 }
 
-static void		calcul_ants_shots(int ants, t_infos *infos)
+static int		sum_subpathslen(t_paths *paths, int n_paths, int n_subs)
+{
+	int			i;
+	int			sum;
+
+	sum = 0;
+	i = n_paths - 1;
+	while (i >= 0 && n_subs-- > 0)
+	{
+		sum += paths[i].len;
+		i--;
+	}
+	return (sum);
+}
+
+static int		calcul_ants_shots(int ants, t_infos *infos, int n_subs)
 {
 	t_paths	*paths;
 	int		n_paths;
+	int		nsubs;
 	int		phi;
-	int		max;
+	int		avg;
 	int		i;
 
 	n_paths = infos->n_paths;
 	paths = infos->paths;
-	max = ft_paths_maxlen(paths, n_paths);
+	avg = (ants + sum_subpathslen(paths, n_paths, n_subs)) / n_paths;
 	i = n_paths - 1;
-	while (i >= 0 && ants > 0)
+	nsubs = n_subs;
+	while (i >= 0 && nsubs-- > 0 && ants > 0)
 	{
-		phi = max - paths[i].len + 1;
-		paths[i].ants = ((ants - phi >= 0) ? phi : ants);
+		phi = avg - paths[i].len;
+		paths[i].ants = (ants > phi) ? phi : ants;
 		ants -= paths[i].ants;
 		i--;
 	}
 	while (ants > 0)
 	{
 		i = n_paths - 1;
-		while (i >= 0 && ants > 0)
+		nsubs = n_subs;
+		while (i >= 0 && nsubs-- > 0 && ants > 0)
 		{
 			paths[i].ants++;
 			ants--;
 			i--;
 		}
 	}
-	infos->n_shots = calc_max_shots(paths, n_paths);
+	return (calc_max_shots(paths, n_paths));
+}
+
+static void		init_paths_ants(t_paths *paths, int n_paths)
+{
+	int			i;
+
+	i = 0;
+	while (i < n_paths)
+	{
+		paths[i].ants = 0;
+		i++;
+	}
+}
+
+static void		calcul_obeish(int ants, t_infos *infos)
+{
+	t_paths		*paths;
+	int			n_paths;
+	int			n_shots;
+	int			n_subs;
+
+	n_paths = infos->n_paths;
+	paths = infos->paths;
+	infos->n_shots = INT_MAX;
+	n_shots = INT_MAX;
+	n_subs = 1;
+	infos->n_subs = 1;
+	while (n_subs <= n_paths)
+	{
+		init_paths_ants(paths, n_paths);
+		n_shots = calcul_ants_shots(ants, infos, n_subs);
+		if (n_shots < infos->n_shots)
+		{
+			infos->n_shots = n_shots;
+			infos->n_subs = n_subs;
+		}
+		n_subs++;
+	}
+	init_paths_ants(paths, n_paths);
+	calcul_ants_shots(ants, infos, infos->n_subs);
 }
 
 static void		fill_grp_infos(t_lemin *lemin, t_list *grp, t_infos *infos)
@@ -82,16 +125,18 @@ static void		fill_grp_infos(t_lemin *lemin, t_list *grp, t_infos *infos)
 	int		i;
 
 	i = 0;
+	//sum_pathslen = 0;
 	infos->n_paths = ft_list_size(grp);
 	infos->paths = (t_paths*)malloc(sizeof(t_paths) * infos->n_paths);
 	infos_paths = infos->paths;
 	while (grp)
 	{
 		infos_paths[i].len = ic_size((t_icase*)(grp->content)) - 2;
+		//infos_paths[i].ants = 0;
 		grp = grp->next;
 		i++;
 	}
-	calcul_ants_shots(lemin->ants, infos);
+	calcul_obeish(lemin->ants, infos);
 }
 
 static int		find_min_shots(t_infos *infos, int size)
@@ -145,6 +190,6 @@ void		find_best_grp(t_lemin *lemin)
 		ptr_grp = ptr_grp->next;
 		i++;
 	}
-	//print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	best_choice(lemin);
 }

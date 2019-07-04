@@ -90,10 +90,10 @@ void	manage_ants(t_lemin *lemin)
 		//print_tab_ants(tab_ants, lemin->ants);					//!!!!!!!!!!!!!!!!!!!!!!!
 		//ft_putstr("- - - - - - - - - -  - - - - - - \n");		//!!!!!!!!!!!!!!!!!!!!!!!
 	}
-	ft_putstr("\n");				//!!!!!!!!!!!!!!!!!!!!!
-	ft_putstr("nshots: ");			//!!!!!!!!!!!!!!!!!!!!!
-	ft_putnbr(nshots);				//!!!!!!!!!!!!!!!!!!!!!
-	ft_putstr("\n");				//!!!!!!!!!!!!!!!!!!!!!
+	//ft_putstr("\n");				//!!!!!!!!!!!!!!!!!!!!!
+	//ft_putstr("nshots: ");			//!!!!!!!!!!!!!!!!!!!!!
+	//ft_putnbr(nshots);				//!!!!!!!!!!!!!!!!!!!!!
+	//ft_putstr("\n");				//!!!!!!!!!!!!!!!!!!!!!
 	free(tab_ants);
 	tab_ants = NULL;
 }

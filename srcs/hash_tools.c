@@ -104,10 +104,10 @@ void	create_tabhash(t_lemin *lemin, t_chr *list_tmp)
 	if (!v)
 		ft_error();
 	lemin->v = v;
-	if (!(lemin->tab_hash = (char**)malloc(sizeof(char*) * (v + 1))))
+	if (!(lemin->tab_hash = (char**)malloc(sizeof(char*) * v)))
 		ft_error();
 	i = 0;
-	while (i <= v)
+	while (i < v)
 		(lemin->tab_hash)[i++] = NULL;
 	while (list_tmp)
 	{

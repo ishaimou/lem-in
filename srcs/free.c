@@ -70,6 +70,19 @@ static void	free_infos(t_infos **infos, int size)
 	}
 }
 
+void	free_tabhash(char ***tab_hash, int size)
+{
+	int		i;
+
+	i = 0;
+	while (i < size)
+	{
+		free((*tab_hash)[i]);
+		i++;
+	}
+	free(*tab_hash);
+}
+
 void	free_lemin(t_lemin *lemin, int error)
 {
 	int		v;
@@ -77,7 +90,7 @@ void	free_lemin(t_lemin *lemin, int error)
 	v = lemin->v;
 	free_tab_bt(&(lemin->tab_bt), lemin->v);
 	if (lemin->tab_hash)
-		free_tabstr(&(lemin->tab_hash));
+		free_tabhash(&(lemin->tab_hash), lemin->v);
 	if (lemin->list_grp)
 		free_list_grp(&lemin->list_grp);
 	if (lemin->input)

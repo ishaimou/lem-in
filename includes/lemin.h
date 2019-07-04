@@ -30,6 +30,7 @@ typedef struct		s_infos
 {
 	int				n_paths;
 	t_paths			*paths;
+	int				n_subs;
 	int				n_shots;
 }					t_infos;
 
