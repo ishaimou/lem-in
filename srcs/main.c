@@ -166,7 +166,6 @@ void	add_links(t_lemin *lemin, int n_vertex, char **link, int eol)
 
 void	parse_links(t_lemin *lemin, char **bk_line)
 {
-	//int				id[2];
 	char			*line;
 	int				eol;
 	int				v;
