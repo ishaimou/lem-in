@@ -18,6 +18,7 @@ static int		ft_paths_maxlen(t_paths *paths, int n_paths)
 	int			i;
 
 	i = 0;
+	max = 0;
 	while (i < n_paths)
 	{
 		if (max < paths[i].len)
@@ -59,7 +60,7 @@ static void		calcul_ants_shots(int ants, t_infos *infos)
 	{
 		phi = max - paths[i].len + 1;
 		paths[i].ants = ((ants - phi >= 0) ? phi : ants);
-		ants -= phi;
+		ants -= paths[i].ants;
 		i--;
 	}
 	while (ants > 0)
