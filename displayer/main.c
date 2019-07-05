@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/05 03:18:24 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/05 07:59:05 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,16 @@ void			free_intmatrix(int ***tab, int size)
 	free(*tab);
 }
 
+void			free_tabhash(char ***tab_hash, int size)
+{
+	int			i;
+
+	i = 0;
+	while (i < size)
+		free((*tab_hash)[i++]);
+	free(*tab_hash);
+}
+
 void			free_infos(t_infos *infos)
 {
 	int			i;
@@ -80,7 +90,7 @@ void			free_infos(t_infos *infos)
 	if (infos->input)
 		chr_free(&(infos->input));
 	if (infos->tab_hash)
-		free_tabstr(&infos->tab_hash);
+		free_tabhash(&infos->tab_hash, infos->v);
 	if (infos->rooms)
 		free(infos->rooms);
 	if (infos->links)
@@ -104,6 +114,7 @@ void			free_error(t_infos *infos)
 void			init_infos(t_infos *infos)
 {
 	infos->v = 0;
+	infos->ants = 0;
 	infos->shots = 0;
 	infos->input = NULL;
 	infos->tab_hash = NULL;
@@ -126,20 +137,33 @@ int				is_strnbr(char *str)
 	return (1);
 }
 
-static int		is_room(char *str)
+int				is_room(char *str)
 {
 	int			i;
 
-	i = 0;
-	while (str[i] && str[i] != ' ')
-	{
-		if (!ft_isdigit(str[i]))
+	i = -1;
+	while (str[++i] && str[i] != ' ')
+		if (!ft_isalnum(str[i]))
 			return (0);
-		i++;
-	}
 	if (str[i] != ' ')
 		return (0);
-	return (1);
+	while (str[++i] && str[i] != ' ')
+		if (!ft_isdigit(str[i]))
+			return (0);
+	if (str[i] != ' ')
+		return (0);
+	while (str[++i])
+		if (!ft_isdigit(str[i]))
+			return (0);
+	return ((str[i]) ? 0 : 1);
+}
+
+void			find_start_end(t_chr *curr, char *str)
+{
+	if (!ft_strcmp(str, "start"))
+		curr->next->len = INT_MAX;
+	else if (!ft_strcmp(str, "end"))
+		curr->next->len = UINT_MAX;
 }
 
 void			fill_basic_infos(t_infos *infos)
@@ -153,12 +177,14 @@ void			fill_basic_infos(t_infos *infos)
 	while (curr)
 	{
 		str = curr->str;
-		if (str[0] == '#' && str[1] != '#')
+		if (str[0] == '#')
 		{
-			ft_putendl(&str[1]);
-			ft_putstr("=================\n");   //!!!!!!!!!!!!!!!!!!!!
+			if (str[1] != '#')
+				ft_putendl(&str[1]);
+			else
+				find_start_end(curr, &str[2]);
 		}
-		else if (is_strnbr(str))
+		else if (is_strnbr(str) && !infos->ants)
 			infos->ants = ft_atoi(str);
 		else if (is_room(str))
 			infos->v++;
@@ -235,16 +261,62 @@ static void		set_room_color(t_room *rooms, char *str)
 
 void			take_cmds(t_infos *infos, t_chr *curr)
 {
-	if (!ft_strcmp(curr->str, "##start"))
-		curr->next->len = 1;
-	else if (!ft_strcmp(curr->str, "##end"))
-		curr->next->len = 2;
-	else if (!ft_strncmp(curr->str, "##color branch ", 15))
+	if (!ft_strncmp(curr->str, "##color branch ", 15))
 		infos->color_paths = the_color(&(curr->str[15]), L_WHITE);
 	else if (!ft_strncmp(curr->str, "##color ant ", 12))
 		set_ant_color(infos->tab_ants, &(curr->str[12]));
 	else if (!ft_strncmp(curr->str, "##color room ", 13))
 		set_room_color(infos->rooms, &(curr->str[13]));
+}
+
+void			fill_room(t_infos *infos, char *str)
+{
+	char	**tab;
+	int		ind;
+
+	tab = ft_strsplit(str, ' ');
+	ind = hash_findid(infos->tab_hash, infos->v, tab[0]);
+	infos->rooms[ind].id = ind;
+	infos->rooms[ind].coord.x = ft_atoi(tab[1]);
+	infos->rooms[ind].coord.y = ft_atoi(tab[2]);
+	free_tabstr(&tab);
+}
+
+int				is_link(char *str)
+{
+	int			i;
+
+	i = 0;
+	while (str[i] && str[i] != '-')
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	if (str[i++] != '-')
+		return (0);
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	if (str[i])
+		return (0);
+	return (1);
+}
+
+void			add_link(int **matrix, char *str)
+{
+	char		**tab;
+	int			a;
+	int			b;
+
+	tab = ft_strsplit(str, '-');
+	a = ft_atoi(tab[0]);
+	b = ft_atoi(tab[1]);
+	matrix[a][b] = 1;
+	matrix[b][a] = 1;
 }
 
 void			fill_adv_infos(t_infos *infos)
@@ -256,8 +328,10 @@ void			fill_adv_infos(t_infos *infos)
 	{
 		if (!ft_strncmp(curr->str, "##", 2))
 			take_cmds(infos, curr);
-		//else if (is_room(curr->str))
-		//	fill_room(infos, curr->str);
+		else if (is_room(curr->str))
+			fill_room(infos, curr->str);
+		else if (is_link(curr->str))
+			add_link(infos->links, curr->str);
 		curr = curr->next;
 	}
 }
@@ -309,111 +383,6 @@ int			alloc_places(t_infos *infos)
 	return (1);
 }
 
-static int	test_hash(char ***tab_hash, char *str, int *ind, int i)
-{
-	if (!(*tab_hash)[i])
-	{
-		(*tab_hash)[i] = ft_strdup(str);
-		*ind = i;
-		return (0);
-	}
-	if (!ft_strcmp(str, (*tab_hash)[i]))
-	{
-		free_tabstr(tab_hash);
-		return (0);
-	}
-	return (1);
-}
-
-void		put_in_tabhash(char **tab_hash, int size, char *str, int *ind)
-{
-	int		i;
-
-	i = *ind;
-	while (i < size)
-	{
-		if (!test_hash(&tab_hash, str, ind, i))
-			return ;
-		i++;
-	}
-	i = 0;
-	while (i < *ind)
-	{
-		if (!test_hash(&tab_hash, str, ind, i))
-			return ;
-		i++;
-	}
-}
-
-int		str_to_ind(char **tab_hash, int v, char *str)
-{
-	int		ind;
-	int		i;
-
-	ind = hash_str(str) % v;
-	i = ind;
-	while (i < v)
-	{
-		if (!tab_hash[i])
-			return (i);
-		i++;
-	}
-	i = 0;
-	while (i < ind)
-	{
-		if (!tab_hash[i])
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-int		hash_findid(char **tab_hash, int size, char *str)
-{
-	int		ind;
-	int		i;
-
-	ind = hash_str(str) % size;
-	i = ind;
-	while (i < size)
-	{
-		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
-			return (i);
-		i++;
-	}
-	i = 0;
-	while (i < ind)
-	{
-		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
-			return (i);
-		i++;
-	}
-	return (-1);
-}
-
-void		create_tabhash_2(t_infos *infos, t_chr *list)
-{
-	int		ind;
-	int		i;
-
-	if (!(infos->tab_hash = (char**)malloc(sizeof(char*) * (infos->v + 1))))
-		free_error(infos);
-	i = 0;
-	while (i <= infos->v)
-		(infos->tab_hash)[i++] = NULL;
-	while (list)
-	{
-		if (!is_room(list->str))
-			continue ;
-		ind = str_to_ind(infos->tab_hash, infos->v, list->str);
-		put_in_tabhash(infos->tab_hash, infos->v, list->str, &ind);
-		if (list->len == 1)
-			infos->start = ind;
-		if (list->len == 2)
-			infos->end = ind;
-		list = list->next;
-	}
-}
 void			fill_infos(t_infos *infos)
 {
 	fill_basic_infos(infos);
@@ -423,14 +392,7 @@ void			fill_infos(t_infos *infos)
 		exit(1);
 	}
 	create_tabhash_2(infos, infos->input);
-	//fill_adv_infos(infos);
-}
-
-void			print_infos(t_infos infos)
-{
-	ft_printf("infos ants: %d\n", infos.ants);
-	ft_printf("infos v: %d\n", infos.v);
-	ft_printf("infos shots: %d\n", infos.shots);
+	fill_adv_infos(infos);
 }
 
 int				main(void)

@@ -44,4 +44,12 @@ typedef struct		s_infos
 	int				color_paths;
 }					t_infos;
 
+void		put_in_tabhash(char **tab_hash, int size, char *str, int *ind);
+int			str_to_ind(char **tab_hash, int size, char *str);
+int			hash_findid(char **tab_hash, int size, char *str);
+void		create_tabhash_2(t_infos *infos, t_chr *list);
+void		free_error(t_infos *infos);
+int			is_room(char *str);
+void		print_infos(t_infos infos);		//!!!!!!!!!!!!!!!!
+
 #endif
