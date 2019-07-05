@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/05 07:59:05 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/05 12:10:39 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,6 +332,8 @@ void			fill_adv_infos(t_infos *infos)
 			fill_room(infos, curr->str);
 		else if (is_link(curr->str))
 			add_link(infos->links, curr->str);
+		else if (curr->str[0] == 'L')
+			break ;
 		curr = curr->next;
 	}
 }

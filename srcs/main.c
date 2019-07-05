@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/04 05:39:36 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/05 12:31:12 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ int			is_link(char **line)
 	int		i;
 
 	i = 0;
-	while (ft_isalnum((*line)[i]))
+	while ((*line)[i] > 32 && (*line)[i] != '-')
 		i++;
 	if ((*line)[i] != '-')
 		return (0);
 	eol = i;
 	(*line)[i] = '\0';
 	i++;
-	while (ft_isalnum((*line)[i]))
+	while (ft_isprint((*line)[i]))
 		i++;
 	if ((*line)[i])
 		return (0);
@@ -66,18 +66,18 @@ int			is_room(char **line)
 	int		i;
 
 	i = 0;
-	while (ft_isalnum((*line)[i]))
+	while ((*line)[i] > 32 && (*line)[i] != '-')
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	(*line)[i] = '\0';
 	i++;
-	while (ft_isalnum((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	i++;
-	while (ft_isalnum((*line)[i]))
+	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i])
 		return (0);

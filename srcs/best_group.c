@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 05:57:58 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/04 06:25:09 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/05 12:23:44 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,6 @@ void		find_best_grp(t_lemin *lemin)
 		ptr_grp = ptr_grp->next;
 		i++;
 	}
-	print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	best_choice(lemin);
 }

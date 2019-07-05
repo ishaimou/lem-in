@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 05:36:02 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/04 06:41:13 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/05 13:15:03 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ void	manage_ants(t_lemin *lemin)
 
 	i = 0;
 	nshots = lemin->best_infos->n_shots;
-	ft_printf("shots : %d\n", nshots);
 	if (!(tab_ants = (t_stat_ants*)malloc(sizeof(t_stat_ants) * lemin->ants)))
 		ft_error();
+	//ft_printf("shots: %d\n", lemin->n_shots);
 	init_tab_ants(tab_ants, lemin->ants);
 	while (i++ < nshots)
 	{
@@ -90,6 +90,10 @@ void	manage_ants(t_lemin *lemin)
 		//print_tab_ants(tab_ants, lemin->ants);					//!!!!!!!!!!!!!!!!!!!!!!!
 		//ft_putstr("- - - - - - - - - -  - - - - - - \n");		//!!!!!!!!!!!!!!!!!!!!!!!
 	}
+	ft_putstr("\n");				//!!!!!!!!!!!!!!!!!!!!!
+	ft_putstr("nshots: ");			//!!!!!!!!!!!!!!!!!!!!!
+	ft_putnbr(nshots);				//!!!!!!!!!!!!!!!!!!!!!
+	ft_putstr("\n");				//!!!!!!!!!!!!!!!!!!!!!
 	free(tab_ants);
 	tab_ants = NULL;
 }
