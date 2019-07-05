@@ -101,7 +101,6 @@ static void		calcul_obeish(int ants, t_infos *infos)
 	n_paths = infos->n_paths;
 	paths = infos->paths;
 	infos->n_shots = INT_MAX;
-	n_shots = INT_MAX;
 	n_subs = 1;
 	infos->n_subs = 1;
 	while (n_subs <= n_paths)
@@ -179,7 +178,7 @@ void		find_best_grp(t_lemin *lemin)
 	int		i;
 
 	ngrp = lemin->ngrp;
-	//ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp))))
 		ft_error();
 	i = 0;

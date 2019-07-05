@@ -35,15 +35,17 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 {
 	t_infos		*infos;
 	int			npaths;
+	int			nsubs;
 	int			i;
 	int			j;
 	int			flag;
 
 	flag = 0;
 	infos = lemin->best_infos;
+	nsubs = infos->n_subs;
 	npaths = infos->n_paths;
 	i = npaths;
-	while (--i >= 0)
+	while (--i >= 0 && nsubs-- > 0)
 	{
 		j = -1;
 		while (++j < lemin->ants)
@@ -52,9 +54,13 @@ static void		parallel_walk(t_lemin *lemin, t_stat_ants *tab_ants)
 			{
 				if (!tab_ants[j].pos)
 				{
-					tab_ants[j].pos = after_start_path(lemin->best_grp, i);
-					tab_ants[j].id_path = i;
-					print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n, &flag);
+					if (infos->paths[i].ants > 0)
+					{
+						tab_ants[j].pos = after_start_path(lemin->best_grp, i);
+						tab_ants[j].id_path = i;
+						print_l(lemin->tab_hash, j + 1, tab_ants[j].pos->n, &flag);
+						infos->paths[i].ants--;
+					}
 					break ;
 				}
 				else
@@ -81,7 +87,7 @@ void	manage_ants(t_lemin *lemin)
 	nshots = lemin->best_infos->n_shots;
 	if (!(tab_ants = (t_stat_ants*)malloc(sizeof(t_stat_ants) * lemin->ants)))
 		ft_error();
-	//ft_printf("shots: %d\n", lemin->n_shots);
+	//ft_printf("shots: %d\n", nshots);
 	init_tab_ants(tab_ants, lemin->ants);
 	while (i++ < nshots)
 	{
