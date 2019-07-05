@@ -319,9 +319,44 @@ void			add_link(int **matrix, char *str)
 	matrix[b][a] = 1;
 }
 
+static int		modify_l(char **str)
+{
+	char		*s;
+	int			i;
+
+	i = 1;
+	s = *str;
+	while(s[i] && s[i] != '-')
+		i++;
+	(*str)[i] = '\0';
+	return (i);
+}
+
+void			fill_tab_ants(t_infos *infos, t_ant_infos *tab_ants, char *str, int time)
+{
+	char		**tab_cmds;
+	int			num_ant;
+	int			id_room;
+	int			eol;
+	int			i;
+
+	i = 0;
+	tab_cmds = ft_strsplit(str, ' ');
+	while (tab_cmds[i])
+	{
+		eol = modify_l(&tab_cmds[i]);
+		num_ant = ft_atoi(&tab_cmds[i][1]);
+		id_room = hash_findid(infos->tab_hash, infos->v, &tab_cmds[i][eol + 1]);
+		tab_ants[num_ant].tab_life[time] = id_room;
+		i++;
+	}
+	free_tabstr(&tab_cmds);
+}
+
 void			fill_adv_infos(t_infos *infos)
 {
 	t_chr		*curr;
+	int			time;
 
 	curr = infos->input;
 	while (curr)
@@ -336,19 +371,27 @@ void			fill_adv_infos(t_infos *infos)
 			break ;
 		curr = curr->next;
 	}
+	time = 0;	
+	while (curr)
+	{
+		fill_tab_ants(infos, infos->tab_ants, curr->str, time);
+		curr = curr->next;
+		time++;
+	}
 }
 
-static t_ant_infos	*alloc_tab_ants(int ants, int shots)
+static void			alloc_tab_ants(t_infos *infos)
 {
-	t_ant_infos		*tab_ants;
+	int				nshots;
+	int				ants;
 	int				i;
 
-	if (!(tab_ants = (t_ant_infos*)malloc(sizeof(t_ant_infos) * ants)))
+	if (!(infos->tab_ants = (t_ant_infos*)malloc(sizeof(t_ant_infos) * ants)))
 		return (0);
 	i = 0;
 	while (i < ants)
 	{
-		if (!(tab_ants[i].tab_life = (int*)malloc(sizeof(int) * shots)))
+		if (!((infos->tab_ants)[i].tab_life = (int*)malloc(sizeof(int) * shots)))
 		{
 			free(tab_ants);
 			tab_ants = NULL;
@@ -407,6 +450,6 @@ int				main(void)
 	chr_print(infos.input);			//!!!!!!!!!!!!!!!!!!
 	ft_putstr("\n\n");				//!!!!!!!!!!!!!!!!!!
 	fill_infos(&infos);
-	print_infos(infos);
+	//print_infos(infos);				//!!!!!!!!!!!!!!!!!!
 	return (0);
 }
