@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/05 02:48:22 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
 void	chr_print(t_chr *list)
@@ -72,7 +84,7 @@ void			free_infos(t_infos *infos)
 	if (infos->rooms)
 		free(infos->rooms);
 	if (infos->links)
-		free_intmatrix(&(infos->links));
+		free_intmatrix(&(infos->links), infos->v);
 	if (infos->tab_ants)
 	{
 		i = -1;
@@ -82,7 +94,7 @@ void			free_infos(t_infos *infos)
 	}
 }
 
-void			farm_error(t_infos *infos)
+void			free_error(t_infos *infos)
 {
 	free_infos(infos);
 	ft_putstr("ERROR\n");
@@ -91,7 +103,7 @@ void			farm_error(t_infos *infos)
 
 void			init_infos(t_infos *infos)
 {
-	infos->>v = 0;
+	infos->v = 0;
 	infos->shots = 0;
 	infos->input = NULL;
 	infos->tab_hash = NULL;
@@ -132,17 +144,20 @@ static int		is_room(char *str)
 
 void			fill_basic_infos(t_infos *infos)
 {
-	t_chr		*curr;
+	t_chr		*curr;	
 	char		*str;
 
 	curr = infos->input;
 	if (!ft_strncmp(curr->str, "ERROR", 5))
-		farm_error(infos);
+		free_error(infos);
 	while (curr)
 	{
 		str = curr->str;
 		if (str[0] == '#' && str[1] != '#')
+		{
 			ft_putendl(&str[1]);
+			ft_putstr("=================\n");   //!!!!!!!!!!!!!!!!!!!!
+		}
 		else if (is_strnbr(str))
 			infos->ants = ft_atoi(str);
 		else if (is_room(str))
@@ -153,46 +168,41 @@ void			fill_basic_infos(t_infos *infos)
 	}
 }
 
-static int		the_color(char *str, int default)
+int			the_color(char *str, int def)
 {
 	if (!ft_strcmp(str, "RED"))
-		return (RED);
+		return (L_RED);
 	if (!ft_strcmp(str, "BLUE"))
-		return (BLUE);
+		return (L_BLUE);
 	if (!ft_strcmp(str, "YELLOW"))
-		return (YELLOW);
+		return (L_YELLOW);
 	if (!ft_strcmp(str, "GREEN"))
-		return (GREEN);
+		return (L_GREEN);
 	if (!ft_strcmp(str, "CYAN"))
-		return (CYAN);
+		return (L_CYAN);
 	if (!ft_strcmp(str, "ORANGE"))
-		return (ORANGE);
-	return (default);
+		return (L_ORANGE);
+	return (def);
 }			
 
-static int		is_ant_color(char **str)
+int				correct_syntax(char **s)
 {
+	char		*str;
 	int			eol;
-	char		*s;
 	int			i;
 
 	i = 0;
-	s = *str;
-	while (s[i] && s[i] != '-')
+	while (str[i] && str[i] != '-')
 	{
-		if (!ft_isdigit(s[i]))
+		if (!ft_isdigit(str[i]))
 			return (0);
 		i++;
 	}
 	eol = i;
-	i++;
-	while (s[i])
-	{
-		if (s[i] < 65 && s[i] > 90 )
+	while (str[++i])
+		if (str[i] < 65 && str[i] > 90 )
 			return (0);
-		i++;
-	}
-	(*str)[eol] = '\0';
+	(*s)[eol] = '\0';
 	return (eol);
 }
 
@@ -201,10 +211,24 @@ static void		set_ant_color(t_ant_infos *tab_ants, char *str)
 	int			eol;
 	int			n;
 
-	eol = is_ant_color(&str);
+	eol = correct_syntax(&str);
 	if (eol > 0)
 	{
 		n = ft_atoi(str);
+		tab_ants[n].color = the_color(&str[eol + 1], L_BLACK);
+	}
+}
+
+static void		set_room_color(t_room *rooms, char *str)
+{
+	int			eol;
+	int			n;
+
+	eol = correct_syntax(&str);
+	if (eol > 0)
+	{
+		n = ft_atoi(str);
+		rooms[n].color = the_color(%str[eol + 1], L_WHITE);
 	}
 }
 
@@ -214,11 +238,11 @@ void			take_cmds(t_infos *infos, t_chr *curr)
 		curr->next->len = -1;
 	else if (!ft_strcmp(curr->str, "##end"))
 		curr->next->len = -2;
-	else if (!ft_strncmp(curr->str, "##color branch ", 15)
-		infos->color_paths = the_color(&(curr->str[15]));
-	else if (!ft_strncmp(curr->str, "##color ant ", 12)
+	else if (!ft_strncmp(curr->str, "##color branch ", 15))
+		infos->color_paths = the_color(&(curr->str[15]), L_WHITE);
+	else if (!ft_strncmp(curr->str, "##color ant ", 12))
 		set_ant_color(infos->tab_ants, &(curr->str[12]));
-	else if (!ft_strncmp(curr->str, "##color room ", 13)
+	else if (!ft_strncmp(curr->str, "##color room ", 13))
 		set_room_color(infos->rooms, &(curr->str[13]));
 }
 
@@ -231,13 +255,16 @@ void			fill_adv_infos(t_infos *infos)
 	{
 		if (!ft_strncmp(curr->str, "##", 2))
 			take_cmds(infos, &curr);
-		curr = curr-next;
+		else if (is_room(curr->str))
+			fill_room(infos, curr->str);
+		curr = curr->next;
 	}
 }
 
 static t_ant_infos	*alloc_tab_ants(int ants, int shots)
 {
 	t_ant_infos		*tab_ants;
+	int				i;
 
 	if (!(tab_ants = (t_ant_infos*)malloc(sizeof(t_ant_infos) * ants)))
 		return (0);
@@ -278,6 +305,111 @@ int			alloc_places(t_infos *infos)
 	infos->tab_ants = alloc_tab_ants(infos->ants, infos->shots);
 }
 
+static int	test_hash(char ***tab_hash, char *str, int *ind, int i)
+{
+	if (!(*tab_hash)[i])
+	{
+		(*tab_hash)[i] = ft_strdup(str);
+		*ind = i;
+		return (0);
+	}
+	if (!ft_strcmp(str, (*tab_hash)[i]))
+	{
+		free_tabstr(tab_hash);
+		ft_error();
+	}
+	return (1);
+}
+
+void		put_in_tabhash(t_lemin *lemin, char *str, int *ind)
+{
+	int		i;
+
+	i = *ind;
+	while (i < lemin->v)
+	{
+		if (!test_hash(&(lemin->tab_hash), str, ind, i))
+			return ;
+		i++;
+	}
+	i = 0;
+	while (i < *ind)
+	{
+		if (!test_hash(&(lemin->tab_hash), str, ind, i))
+			return ;
+		i++;
+	}
+}
+
+int		str_to_ind(char **tab_hash, int v, char *str)
+{
+	int		ind;
+	int		i;
+
+	ind = hash_str(str) % v;
+	i = ind;
+	while (i < v)
+	{
+		if (!tab_hash[i])
+			return (i);
+		i++;
+	}
+	i = 0;
+	while (i < ind)
+	{
+		if (!tab_hash[i])
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int		hash_findid(char **tab_hash, int size, char *str)
+{
+	int		ind;
+	int		i;
+
+	ind = hash_str(str) % size;
+	i = ind;
+	while (i < size)
+	{
+		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
+			return (i);
+		i++;
+	}
+	i = 0;
+	while (i < ind)
+	{
+		if (tab_hash[i] && !ft_strcmp(tab_hash[i], str))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+void		create_tabhash_2(t_infos *infos, t_chr *list)
+{
+	int		ind;
+	int		i;
+
+	if (!(infos->tab_hash = (char**)malloc(sizeof(char*) * (infos->v + 1))))
+		free_error(infos);
+	i = 0;
+	while (i <= infos->v)
+		(lemin->tab_hash)[i++] = NULL;
+	while (list)
+	{
+		if (!is_room(list->str))
+			continue ;
+		ind = str_to_ind(infos->tab_hash, infos->v, list->str);
+		put_in_tabhash(infos, list->str, &ind);
+		if (list->len == -1)
+			infos->start = ind;
+		if (list->len == -2)
+			infos->end = ind;
+		list = list->next;
+	}
+}
 void			fill_infos(t_infos *infos)
 {
 	fill_basic_infos(infos);
@@ -286,7 +418,15 @@ void			fill_infos(t_infos *infos)
 		free_infos(infos);
 		exit(1);
 	}
-	fill_adv_infos(infos);
+	create_tabhash_2(infos, infos->input);
+	//fill_adv_infos(infos);
+}
+
+void			print_infos(t_infos infos)
+{
+	ft_printf("infos ants: %d\n", infos.ants);
+	ft_printf("infos v: %d\n", infos.v);
+	ft_printf("infos shots: %d\n", infos.shots);
 }
 
 int				main(void)
@@ -297,8 +437,9 @@ int				main(void)
 	init_infos(&infos);
 	if (!(infos.input = gnl_save_chr(0)))
 		return(1);
-			chr_print(infos.input);			//!!!!!!!!!!!!!!!!!!
-			ft_putstr("\n\n");				//!!!!!!!!!!!!!!!!!!
+	chr_print(infos.input);			//!!!!!!!!!!!!!!!!!!
+	ft_putstr("\n\n");				//!!!!!!!!!!!!!!!!!!
 	fill_infos(&infos);
+	print_infos(infos);
 	return (0);
 }

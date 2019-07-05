@@ -2,14 +2,14 @@
 # include "libsdl/libsdl.h"
 # include "../libft/includes/libft.h"
 
-# define	WHITE -1
-# define	BLACK 0
-# define	RED	1
-# define	GREEN 2
-# define	YELLOW 3
-# define	BLUE 4
-# define	ORANGE 5
-# define	CYAN 6
+# define	L_WHITE -1
+# define	L_BLACK 0
+# define	L_RED	1
+# define	L_GREEN 2
+# define	L_YELLOW 3
+# define	L_BLUE 4
+# define	L_ORANGE 5
+# define	L_CYAN 6
 
 typedef struct		s_display
 {
