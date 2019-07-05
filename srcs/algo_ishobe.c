@@ -77,7 +77,7 @@ static void		update_exclus(t_lemin *lemin, t_icase *path)
 		tmp = path->next;
 	else
 		tmp = NULL;
-	while (tmp->next)
+	while (tmp && tmp->next)
 	{
 		lemin->exclus[tmp->n] = 1;
 		tmp = tmp->next;

@@ -287,34 +287,26 @@ int				is_link(char *str)
 	int			i;
 
 	i = 0;
-	while (str[i] && str[i] != '-')
-	{
-		if (!ft_isdigit(str[i]))
-			return (0);
+	while (str[i] > 32 && str[i] != '-')
 		i++;
-	}
 	if (str[i++] != '-')
 		return (0);
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (0);
+	while (str[i] > 32 && str[i] != '-')
 		i++;
-	}
 	if (str[i])
 		return (0);
 	return (1);
 }
 
-void			add_link(int **matrix, char *str)
+void			add_link(char **tab_hash, int v, int **matrix, char *str)
 {
 	char		**tab;
 	int			a;
 	int			b;
 
 	tab = ft_strsplit(str, '-');
-	a = ft_atoi(tab[0]);
-	b = ft_atoi(tab[1]);
+	a = hash_findid(tab_hash, v, tab[0]);
+	b = hash_findid(tab_hash, v, tab[1]);
 	matrix[a][b] = 1;
 	matrix[b][a] = 1;
 }
@@ -345,9 +337,9 @@ void			fill_tab_ants(t_infos *infos, t_ant_infos *tab_ants, char *str, int time)
 	while (tab_cmds[i])
 	{
 		eol = modify_l(&tab_cmds[i]);
-		num_ant = ft_atoi(&tab_cmds[i][1]);
+		num_ant = ft_atoi(&(tab_cmds[i][1]));
 		id_room = hash_findid(infos->tab_hash, infos->v, &tab_cmds[i][eol + 1]);
-		tab_ants[num_ant].tab_life[time] = id_room;
+		tab_ants[num_ant - 1].tab_life[time] = id_room;
 		i++;
 	}
 	free_tabstr(&tab_cmds);
@@ -366,12 +358,12 @@ void			fill_adv_infos(t_infos *infos)
 		else if (is_room(curr->str))
 			fill_room(infos, curr->str);
 		else if (is_link(curr->str))
-			add_link(infos->links, curr->str);
+			add_link(infos->tab_hash, infos->v, infos->links, curr->str);
 		else if (curr->str[0] == 'L')
 			break ;
 		curr = curr->next;
 	}
-	time = 0;	
+	time = 0;
 	while (curr)
 	{
 		fill_tab_ants(infos, infos->tab_ants, curr->str, time);
@@ -380,27 +372,25 @@ void			fill_adv_infos(t_infos *infos)
 	}
 }
 
-static void			alloc_tab_ants(t_infos *infos)
+static int			alloc_tab_ants(t_infos *infos)
 {
 	int				nshots;
 	int				ants;
 	int				i;
 
+	ants = infos->ants;
+	nshots = infos->shots;
 	if (!(infos->tab_ants = (t_ant_infos*)malloc(sizeof(t_ant_infos) * ants)))
 		return (0);
 	i = 0;
 	while (i < ants)
 	{
-		if (!((infos->tab_ants)[i].tab_life = (int*)malloc(sizeof(int) * shots)))
-		{
-			free(tab_ants);
-			tab_ants = NULL;
+		if (!((infos->tab_ants)[i].tab_life = (int*)malloc(sizeof(int) * nshots)))
 			return (0);
-		}
-		reset_tab_int(tab_ants[i].tab_life, shots, -1);
+		reset_tab_int(infos->tab_ants[i].tab_life, nshots, -1);
 		i++;
 	}
-	return (tab_ants);
+	return (1);
 }
 
 int			alloc_places(t_infos *infos)
@@ -417,14 +407,10 @@ int			alloc_places(t_infos *infos)
 	while (i < v)
 	{
 		if (!(infos->links[i] = (int*)ft_memalloc(sizeof(int) * v)))
-		{
-			free(infos->links[i - 1]);
-			infos->links[i - 1] = NULL;
 			return(0);
-		}
 		i++;
 	}
-	infos->tab_ants = alloc_tab_ants(infos->ants, infos->shots);
+	alloc_tab_ants(infos);
 	return (1);
 }
 
@@ -444,12 +430,16 @@ int				main(void)
 {
 	t_infos		infos;
 
-	init_infos(&infos);
-	if (!(infos.input = gnl_save_chr(0)))
-		return(1);
-	chr_print(infos.input);			//!!!!!!!!!!!!!!!!!!
-	ft_putstr("\n\n");				//!!!!!!!!!!!!!!!!!!
-	fill_infos(&infos);
-	//print_infos(infos);				//!!!!!!!!!!!!!!!!!!
+	while (1)
+	{
+		init_infos(&infos);
+		if (!(infos.input = gnl_save_chr(0)))
+			return(1);
+		chr_print(infos.input);			//!!!!!!!!!!!!!!!!!!
+		ft_putstr("\n\n");				//!!!!!!!!!!!!!!!!!!
+		fill_infos(&infos);
+		print_infos(infos);				//!!!!!!!!!!!!!!!!!!
+		free_infos(&infos);
+	}
 	return (0);
 }

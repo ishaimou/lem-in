@@ -1,10 +1,10 @@
 #include "displayer.h"
 
-static void		print_tabhash(char **tab)
+static void		print_tabhash(char **tab, int v)
 {
 	int		i = 0;
 
-	while (tab[i])
+	while (i < v)
 	{
 		ft_printf("tab[%d] = %s\n", i, tab[i]);
 		i++;
@@ -58,9 +58,28 @@ static void		print_matrix(int **matrix, int size)
 	}
 }
 
+static void		print_tab_ants(t_ant_infos *tab_ants, int ants, int shots)
+{
+	int			i;
+	int			j;
+
+	i = 0;
+	while (i < ants)
+	{
+		printf("------ ant %d -------\n", i + 1);
+		printf("color   : %d\n", tab_ants[i].color);
+		printf("tab_life:\n");
+		j = 0;
+		while (j < shots)
+			printf(" %d |", tab_ants[i].tab_life[j++]);
+		printf("\n");
+		i++;
+	}
+}
+
 void			print_infos(t_infos infos)
 {
-	print_tabhash(infos.tab_hash);
+	print_tabhash(infos.tab_hash, infos.v);
 	ft_printf("infos ants: %d\n", infos.ants);
 	ft_printf("infos v   : %d\n", infos.v);
 	ft_printf("infos shots: %d\n", infos.shots);
@@ -69,5 +88,5 @@ void			print_infos(t_infos infos)
 	print_rooms(infos.rooms, infos.v);
 	ft_putstr("matrix:\n");
 	print_matrix(infos.links, infos.v);
-	//print_tab_ants();
+	print_tab_ants(infos.tab_ants, infos.ants, infos.shots);
 }

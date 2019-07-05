@@ -107,7 +107,7 @@ static void		calcul_obeish(int ants, t_infos *infos)
 	{
 		init_paths_ants(paths, n_paths);
 		n_shots = calcul_ants_shots(ants, infos, n_subs);
-		if (n_shots < infos->n_shots)
+		if (n_shots <= infos->n_shots)
 		{
 			infos->n_shots = n_shots;
 			infos->n_subs = n_subs;

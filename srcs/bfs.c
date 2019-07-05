@@ -14,14 +14,14 @@ static void		bt_enqueue_infix(t_lemin *lemin, t_bt *root, t_queue *q, int u)
 	if (root)
 	{
 		room = (t_room*)root->item;
-		bt_enqueue_infix(lemin, root->left, q, u);
+		bt_enqueue_infix(lemin, root->right, q, u);
 		if (!(lemin->visited)[room->id] && room->edge_flow)
 		{
 			qt_enqueue(q, &room->id, sizeof(int));
 			(lemin->visited)[room->id] = 1;
 			(lemin->parent)[room->id] = u;
 		}
-		bt_enqueue_infix(lemin, root->right, q, u);
+		bt_enqueue_infix(lemin, root->left, q, u);
 	}
 }
 

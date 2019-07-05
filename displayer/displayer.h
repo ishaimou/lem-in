@@ -10,6 +10,7 @@
 # define	L_BLUE 4
 # define	L_ORANGE 5
 # define	L_CYAN 6
+# define	L_MAGENTA 7
 
 typedef struct		s_display
 {
