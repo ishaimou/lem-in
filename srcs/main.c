@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/05 12:31:12 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/08 17:51:05 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,18 @@ void		algo_general_ishobe(t_lemin *lemin)
 			tmp = NULL;
 		}
 	}
+	while (extended_ishobe(lemin))
+	{
+		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
+		ft_lstadd(&lemin->list_grp, node);
+		(lemin->ngrp)++;
+		while (lemin->list_paths)
+		{
+			tmp = lemin->list_paths;
+			lemin->list_paths = lemin->list_paths->next;
+			tmp = NULL;
+		}
+	}
 		//print_list_grp(lemin->list_grp);	//////////////////////////
 		//ft_putstr("\n.............\n\n");	//////////////////////////
 	if (!(lemin->list_grp))
@@ -253,13 +265,14 @@ int		main(void)
 	init_lemin(&lemin);
 	parse(&lemin);
 	init_tools(&lemin);
+	fill_forbackwd(&lemin);
 	algo_general_ishobe(&lemin);
 	find_best_grp(&lemin);
 	manage_ants(&lemin);
-	//print_list_grp(lemin.list_grp);
-	//ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n");
-	//print_list_paths(lemin.best_grp);
-	//ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");
+	//print_list_grp(lemin.list_grp, lemin.tab_hash);    //!!!!!!!!!!
+	//ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n"); //!!!!!!!
+	//print_list_paths(lemin.best_grp, lemin.tab_hash);  //!!!!!!!!!!
+	//ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");   //!!!!!!!
 	free_lemin(&lemin, 0);
 	return (0);
 }	

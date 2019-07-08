@@ -6,11 +6,24 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 05:42:22 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/05 05:42:51 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/08 15:26:15 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
+
+void        print_ic_hash(t_icase *path, char **tab_hash)
+{
+	t_icase        *tmp;
+
+	tmp = path;
+	while (tmp)
+	{
+		ft_printf("[%s] - ", tab_hash[tmp->n]);
+		tmp = tmp->next;
+	}
+	ft_putstr("\n");
+}
 
 void print_lemin(t_lemin *lemin)
 {
@@ -23,11 +36,11 @@ void print_lemin(t_lemin *lemin)
 	ft_printf("++++++++++++++++++++++++++++++++++\n");
 }
 
-void print_tabhash(char **tab)
+void print_tabhash(char **tab, int size)
 {
 	int		i = 0;
 
-	while (tab[i])
+	while (i < size)
 	{
 		ft_printf("tab[%d] = %s\n", i, tab[i]);
 		i++;
@@ -56,7 +69,7 @@ void print_tabbt(t_bt **tab_bt)
 	ft_printf("\n");
 }
 
-void	print_list_grp(t_list *grp)
+void	print_list_grp(t_list *grp, char **tab_hash)
 {
 	int		i;
 
@@ -68,18 +81,26 @@ void	print_list_grp(t_list *grp)
 		ft_putnbr(i);
 		ft_putchar(']');
 		ft_putstr(" ------\n");
-		print_list_paths((t_list*)grp->content);
+		print_list_paths((t_list*)grp->content, tab_hash);
 		grp = grp->next;
 		i++;
 		ft_putchar('\n');
 	}
 }
 
-void	print_list_paths(t_list	*list_paths)
+void	print_list_paths(t_list	*list_paths, char **tab_hash)
 {
+	t_icase		*path;
+
 	while (list_paths)
 	{
-		ic_print((t_icase*)(list_paths->content));
+		path = (t_icase*)(list_paths->content);
+		while (path)
+		{
+			ft_printf("[%s] - ", tab_hash[path->n]);
+			path = path->next;
+		}
+		ft_putstr("\n");
 		list_paths = list_paths->next;
 	}
 }
@@ -94,9 +115,9 @@ void		print_path(t_lemin *lemin)
 		ft_putendl((lemin->tab_hash)[u]);
 		u = lemin->parent[u];
 	}
-		ft_putendl((lemin->tab_hash)[u]);
-		ft_putchar('\n');
-		ft_putchar('\n');
+	ft_putendl((lemin->tab_hash)[u]);
+	ft_putchar('\n');
+	ft_putchar('\n');
 }
 
 void		print_grp_infos(t_infos *infos, int ngrp)

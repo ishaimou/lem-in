@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/04 05:57:58 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/05 12:23:44 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/08 08:55:09 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void		find_best_grp(t_lemin *lemin)
 	int		i;
 
 	ngrp = lemin->ngrp;
-	ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//ft_printf("nbr of groups: %d\n", lemin->ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if (!(lemin->grp_infos = (t_infos*)malloc(sizeof(t_infos) * (ngrp))))
 		ft_error();
 	i = 0;
@@ -189,6 +189,6 @@ void		find_best_grp(t_lemin *lemin)
 		ptr_grp = ptr_grp->next;
 		i++;
 	}
-	print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//print_grp_infos(lemin->grp_infos, ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	best_choice(lemin);
 }

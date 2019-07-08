@@ -1,4 +1,3 @@
-
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
@@ -7,14 +6,17 @@
 #    By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/02 07:12:48 by ishaimou          #+#    #+#              #
-#    Updated: 2019/07/02 08:32:12 by ishaimou         ###   ########.fr        #
+#    Updated: 2019/07/08 12:52:45 by ishaimou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 BGREEN = \033[1;32m
 BCYAN = \033[1;36m
 RESET = \033[0m
-BEER = \xf0\x9f\x8d\xba
+BEER = 🍻
+BOOKS = 📚i
+CLEAN = ✅
+FCLEAN = 😥
 
 NAME = lem-in
 LIB_NAME = libft.a
@@ -34,7 +36,7 @@ all: $(NAME)
 
 $(NAME):
 	@make -C $(LIB_DIR)
-	@echo "$(BGREEN)$(LIB_NAME) has been created successfully.$(RESET)"
+	@echo "$(BOOKS) $(BGREEN)$(LIB_NAME) has been created successfully.$(RESET)"
 	@gcc -o $(NAME) $(SRCS_DIR) -I $(H_DIR) -I $(H_LIB_DIR) $(LIB) $(FLAGS)
 	@echo "$(BEER)  $(BGREEN)$(NAME) has been created successfully.$(RESET)"
 	@echo ""
@@ -58,11 +60,11 @@ $(NAME):
 
 clean:
 	@make clean -C $(LIB_DIR)
-	@echo "$(BCYAN)Object files has been cleaned successfully.$(RESET)"
+	@echo "$(CLEAN)  $(BCYAN)Object files has been cleaned successfully.$(RESET)"
 
 fclean: clean
 	@make fclean -C $(LIB_DIR)
 	@rm -rf $(NAME)
-	@echo "$(BCYAN)$(NAME) cleaned successfully.$(RESET)"
+	@echo "$(FCLEAN)  $(BCYAN)$(NAME) cleaned successfully.$(RESET)"
 
 re: fclean all

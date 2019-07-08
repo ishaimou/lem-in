@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/02 10:39:47 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/08 17:51:16 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ typedef struct		s_room
 {
 	int				id;
 	int				edge_flow;
+	int				ext_edge_flow;
+	int				forwd;
+	int				backwd;
 }					t_room;
 
 typedef struct		s_stat_ants
@@ -78,6 +81,10 @@ int			hash_findid(char **tab_hash, int size, char *str);
 int			str_to_ind(char **tab_hash, int v, char *str);
 void		put_in_tabhash(t_lemin *lemin, char *str, int *ind);
 int			algo_ishobe(t_lemin *lemin);
+int			algo_pre_ishobe(t_lemin *lemin);
+int			extended_ishobe(t_lemin *lemin);
+int			fill_forbackwd(t_lemin *lemin);
+int			extended_bfs(t_lemin *lemin);
 int			bfs(t_lemin *lemin);
 t_room		*create_room(int room_id);
 void		min_flux(t_lemin *lemin);
@@ -87,12 +94,13 @@ int			gnl_error(t_lemin *lemin, char **line);
 void		find_best_grp(t_lemin *lemin);
 void		manage_ants(t_lemin *lemin);
 void		print_l(char **tab_hash, int a, int b, int *flag);
+void        print_ic_hash(t_icase *path, char **tab_hash); //!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_lemin(t_lemin *lemin);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void 		print_tabhash(char **tab);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void 		print_tabhash(char **tab, int size);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tabbt(t_bt **tab_bt);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void 		print_tree(void *item);					//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void		print_list_paths(t_list	*list_paths);	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void		print_list_grp(t_list *grp);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void		print_list_paths(t_list	*list_paths, char **hash_tab);	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void		print_list_grp(t_list *grp, char **hash_tab);			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void		print_path(t_lemin *lemin);				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void		print_grp_infos(t_infos *infos, int ngrp); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void		print_tab_ants(t_stat_ants *tab, int size); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!

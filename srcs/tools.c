@@ -79,6 +79,9 @@ t_room	*create_room(int room_id)
 	if (!(room = (t_room*)malloc(sizeof(t_room))))
 		ft_error();
 	room->id = room_id;
+	room->ext_edge_flow = 1;
 	room->edge_flow = 1;
+	room->forwd = 0;
+	room->backwd = 0;
 	return (room);
 }
