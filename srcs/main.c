@@ -240,8 +240,8 @@ void		algo_general_ishobe(t_lemin *lemin)
 			tmp = NULL;
 		}
 	}
-		//print_list_grp(lemin->list_grp);	//////////////////////////
-		//ft_putstr("\n.............\n\n");	//////////////////////////
+	print_list_grp(lemin->list_grp, lemin->tab_hash);	//////////////////////////
+	ft_putstr("\n.............\n\n");	//////////////////////////
 	if (!(lemin->list_grp))
 		free_lemin(lemin, 1);
 }
@@ -268,11 +268,11 @@ int		main(void)
 	fill_forbackwd(&lemin);
 	algo_general_ishobe(&lemin);
 	find_best_grp(&lemin);
-	manage_ants(&lemin);
 	//print_list_grp(lemin.list_grp, lemin.tab_hash);    //!!!!!!!!!!
-	//ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n"); //!!!!!!!
-	//print_list_paths(lemin.best_grp, lemin.tab_hash);  //!!!!!!!!!!
-	//ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");   //!!!!!!!
+	ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n"); //!!!!!!!
+	print_list_paths(lemin.best_grp, lemin.tab_hash);  //!!!!!!!!!!
+	ft_putstr("((((((((((((((((((((()))))))))))))))))))\n");   //!!!!!!!
+	manage_ants(&lemin);
 	free_lemin(&lemin, 0);
 	return (0);
 }	

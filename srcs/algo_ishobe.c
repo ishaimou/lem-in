@@ -69,7 +69,7 @@ static void		update_edgeflow(t_lemin *lemin, t_icase *path)
 	}
 }
 
-static void		update_exclus(t_lemin *lemin, t_icase *path)
+void		update_exclus(t_lemin *lemin, t_icase *path)
 {
 	t_icase		*tmp;
 
@@ -86,6 +86,7 @@ static void		update_exclus(t_lemin *lemin, t_icase *path)
 
 int			algo_ishobe(t_lemin *lemin)
 {
+	t_list	*tmp;
 	t_icase	*path;
 	int		flux;
 
@@ -93,12 +94,18 @@ int			algo_ishobe(t_lemin *lemin)
 	reset_tab_int(lemin->exclus, lemin->v, 0);
 	while (flux-- && bfs(lemin))
 	{
+		//path = (t_icase*)(lemin->list_paths->content);
+		//update_edgeflow(lemin, path);
 		path = (t_icase*)(lemin->list_paths->content);
-		update_edgeflow(lemin, path);
 		update_exclus(lemin, path);
 	}
 	if (!(lemin->list_paths))
 		return (0);
+	tmp = lemin->list_paths;
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	path = (t_icase*)(tmp->content);
+	update_edgeflow(lemin, path);
 	return (1);
 }
 
@@ -174,17 +181,24 @@ static void		ext_update_edgeflow(t_lemin *lemin, t_icase *path)
 int			extended_ishobe(t_lemin *lemin)
 {
 	t_icase	*path;
+	t_list	*tmp;
 	//int		flux;
 
 	//flux = lemin->flux;
 	reset_tab_int(lemin->exclus, lemin->v, 0);
 	while (extended_bfs(lemin))
 	{
+		//path = (t_icase*)(lemin->list_paths->content);
+		//ext_update_edgeflow(lemin, path);
 		path = (t_icase*)(lemin->list_paths->content);
-		ext_update_edgeflow(lemin, path);
 		update_exclus(lemin, path);
 	}
 	if (!(lemin->list_paths))
 		return (0);
+	tmp = lemin->list_paths;
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	path = (t_icase*)(tmp->content);
+	ext_update_edgeflow(lemin, path);
 	return (1);
 }

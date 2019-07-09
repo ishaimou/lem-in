@@ -93,6 +93,8 @@ void				ic_lstdel(t_list **alst);
 void				ic_free(t_icase **icase);
 void				ic_print(t_icase *icase);
 int					ic_size(t_icase *icase);
+int					ic_ncmp(t_icase *list1, t_icase *list2, size_t n);
+int					ic_cmp(t_icase *list1, t_icase *list2);
 
 /*
 **		STR LIST :		-----------------------------------------------------
