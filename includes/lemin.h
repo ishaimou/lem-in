@@ -85,7 +85,7 @@ int			algo_pre_ishobe(t_lemin *lemin);
 int			extended_ishobe(t_lemin *lemin);
 int			fill_forbackwd(t_lemin *lemin);
 int			extended_bfs(t_lemin *lemin);
-int			bfs(t_lemin *lemin, int verif);
+int			bfs(t_lemin *lemin);
 t_room		*create_room(int room_id);
 void		min_flux(t_lemin *lemin);
 int			ft_ceil(float f);

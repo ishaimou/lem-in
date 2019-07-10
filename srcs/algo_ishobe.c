@@ -6,11 +6,11 @@ static void		edit_edgeflow(t_bt **tab_bt, int id1, int id2, t_room *room)
 	t_bt		*found;
 	t_room		*fnd_room;
 
-	room->id = id1;
+	/*room->id = id1;
 	root = tab_bt[id2];
 	found = bt_search_item(root, room, &id_cmp);
 	fnd_room = (t_room*)found->item;
-	fnd_room->edge_flow = 0;
+	fnd_room->edge_flow = 0;*/
 	room->id = id2;
 	root = tab_bt[id1];
 	found = bt_search_item(root, room, &id_cmp);
@@ -55,7 +55,7 @@ static void		update_edgeflow(t_lemin *lemin, t_icase *path)
 		extrem_edgeflow(lemin, &room);
 	if (ic_size(path) > 3)
 	{
-		tmp = path->next;
+		tmp = path;
 		while (tmp && tmp->next && tmp->next->next)
 		{
 			edit_edgeflow(lemin->tab_bt, tmp->n, tmp->next->n, &room);
@@ -86,26 +86,27 @@ void		update_exclus(t_lemin *lemin, t_icase *path)
 
 int			algo_ishobe(t_lemin *lemin)
 {
-	t_list	*tmp;
 	t_icase	*path;
-	int		flux;
+	//int		flux;
 
-	flux = lemin->flux;
+	//flux = lemin->flux;
 	reset_tab_int(lemin->exclus, lemin->v, 0);
-	while (flux-- && bfs(lemin))
+	if (bfs(lemin))
 	{
-		//path = (t_icase*)(lemin->list_paths->content);
-		//update_edgeflow(lemin, path);
+		path = (t_icase*)(lemin->list_paths->content);
+		update_edgeflow(lemin, path);
+		path = (t_icase*)(lemin->list_paths->content);
+		update_exclus(lemin, path);
+	}
+	else
+		return (0);
+	while (bfs(lemin))
+	{
 		path = (t_icase*)(lemin->list_paths->content);
 		update_exclus(lemin, path);
 	}
 	if (!(lemin->list_paths))
 		return (0);
-	tmp = lemin->list_paths;
-	while (tmp && tmp->next)
-		tmp = tmp->next;
-	path = (t_icase*)(tmp->content);
-	update_edgeflow(lemin, path);
 	return (1);
 }
 
@@ -181,24 +182,16 @@ static void		ext_update_edgeflow(t_lemin *lemin, t_icase *path)
 int			extended_ishobe(t_lemin *lemin)
 {
 	t_icase	*path;
-	t_list	*tmp;
-	//int		flux;
 
-	//flux = lemin->flux;
 	reset_tab_int(lemin->exclus, lemin->v, 0);
 	while (extended_bfs(lemin))
 	{
-		//path = (t_icase*)(lemin->list_paths->content);
-		//ext_update_edgeflow(lemin, path);
+		path = (t_icase*)(lemin->list_paths->content);
+		ext_update_edgeflow(lemin, path);
 		path = (t_icase*)(lemin->list_paths->content);
 		update_exclus(lemin, path);
 	}
 	if (!(lemin->list_paths))
 		return (0);
-	tmp = lemin->list_paths;
-	while (tmp && tmp->next)
-		tmp = tmp->next;
-	path = (t_icase*)(tmp->content);
-	ext_update_edgeflow(lemin, path);
 	return (1);
 }
