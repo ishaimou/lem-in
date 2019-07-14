@@ -38,13 +38,6 @@ int		gnl_error(t_lemin *lemin, char **line)
 	return (ret);
 }
 
-int			ft_ceil(float f)
-{
-	if ((float)(f - (int)f) > .0)
-		return ((int)(f + 1));
-	return ((int)f);
-}
-
 int		id_cmp(void *item1, void *item2)
 {
 	t_room	*room1;

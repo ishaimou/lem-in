@@ -126,7 +126,7 @@ int			algo_ishobe(t_lemin *lemin)
 	//int		flux;
 
 	//flux = lemin->flux;
-	reset_tab_int(lemin->exclus, lemin->v, 0);
+	tabint_reset(lemin->exclus, lemin->v, 0);
 	if (bfs(lemin))
 	{
 		path = (t_icase*)(lemin->list_paths->content);
@@ -218,7 +218,7 @@ int			extended_ishobe(t_lemin *lemin)
 {
 	t_icase	*path;
 
-	reset_tab_int(lemin->exclus, lemin->v, 0);
+	tabint_reset(lemin->exclus, lemin->v, 0);
 	while (extended_bfs(lemin))
 	{
 		path = (t_icase*)(lemin->list_paths->content);

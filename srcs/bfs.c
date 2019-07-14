@@ -64,7 +64,7 @@ int				bfs(t_lemin *lemin)
 	t_queue		*q;
 	int			u;
 
-	reset_tab_int(lemin->visited, lemin->v, 0);
+	tabint_reset(lemin->visited, lemin->v, 0);
 	q = qt_new_queue();
 	u = lemin->start;
 	qt_enqueue(q, &u, sizeof(int));
@@ -111,7 +111,7 @@ t_icase			*fill_bfs(t_lemin *lemin)
 	int			u;
 	t_icase		*result;
 
-	reset_tab_int(lemin->visited, lemin->v, 0);
+	tabint_reset(lemin->visited, lemin->v, 0);
 	q = qt_new_queue();
 	u = lemin->start;
 	qt_enqueue(q, &u, sizeof(int));
@@ -222,7 +222,7 @@ int				extended_bfs(t_lemin *lemin)
 	t_queue		*q;
 	int			u;
 
-	reset_tab_int(lemin->visited, lemin->v, 0);
+	tabint_reset(lemin->visited, lemin->v, 0);
 	q = qt_new_queue();
 	u = lemin->start;
 	qt_enqueue(q, &u, sizeof(int));

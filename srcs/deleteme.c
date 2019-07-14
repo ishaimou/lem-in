@@ -108,10 +108,10 @@ void	print_list_paths(t_list	*list_paths, char **tab_hash)
 		path = (t_icase*)(list_paths->content);
 		while (path)
 		{
-			ft_printf("[%s] - ", tab_hash[path->n]);
+			ft_printf("[%s]-", tab_hash[path->n]);
 			path = path->next;
 		}
-		ft_putstr("zbi");
+		ft_putstr("||");
 		ft_putstr("\n");
 		list_paths = list_paths->next;
 	}

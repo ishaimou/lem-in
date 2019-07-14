@@ -45,11 +45,15 @@ typedef struct		s_infos
 	int				color_paths;
 }					t_infos;
 
-void		put_in_tabhash(char **tab_hash, int size, char *str, int *ind);
-int			str_to_ind(char **tab_hash, int size, char *str);
-int			hash_findid(char **tab_hash, int size, char *str);
 void		create_tabhash_2(t_infos *infos, t_chr *list);
+void		take_cmds(t_infos *infos, t_chr *curr);
+int			alloc_places(t_infos *infos);
+int			the_color(char *str, int def);
+void		free_infos(t_infos *infos);
 void		free_error(t_infos *infos);
+void		init_infos(t_infos *infos);
+int			is_strnbr(char *str);
+int			is_link(char *str);
 int			is_room(char *str);
 void		print_infos(t_infos infos);		//!!!!!!!!!!!!!!!!
 
