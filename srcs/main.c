@@ -66,17 +66,23 @@ int			is_room(char **line)
 	int		i;
 
 	i = 0;
+	if ((*line)[0] == 'L')
+		return (0);
 	while ((*line)[i] > 32 && (*line)[i] != '-')
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	(*line)[i] = '\0';
 	i++;
+	if ((*line)[i] == '-' || (*line)[i] == '+')
+		i++;
 	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i] != ' ')
 		return (0);
 	i++;
+	if ((*line)[i] == '-' || (*line)[i] == '+')
+		i++;
 	while (ft_isdigit((*line)[i]))
 		i++;
 	if ((*line)[i])
@@ -214,9 +220,12 @@ void		algo_general_ishobe(t_lemin *lemin)
 {
 	t_list		*node;
 	t_list		*tmp;
+	int			i;
 
+	i = 0;
 	while (algo_ishobe(lemin))
 	{
+		ft_printf("{%d}\n", i++);
 		//print_list_paths(lemin->list_paths);  //!!!!!!!!!!!!!!!!!!
 		node = ft_lstnew_sm(lemin->list_paths, sizeof(t_list*));
 		ft_lstadd(&lemin->list_grp, node);
@@ -268,6 +277,8 @@ int		main(void)
 	fill_forbackwd(&lemin);
 	algo_general_ishobe(&lemin);
 	find_best_grp(&lemin);
+	print_grp_infos(lemin.best_infos, 1); //////////////////////////
+	ft_putstr("\n.............\n\n");	   //////////////////////////
 	//print_list_grp(lemin.list_grp, lemin.tab_hash);    //!!!!!!!!!!
 	ft_putstr("((((((((((((((((((THE BEST))))))))))))))))\n"); //!!!!!!!
 	print_list_paths(lemin.best_grp, lemin.tab_hash);  //!!!!!!!!!!

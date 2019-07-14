@@ -46,20 +46,56 @@ static void		extrem_edgeflow(t_lemin *lemin, t_room *room)
 	fnd_room->edge_flow = 0;
 }
 
+int				max_connect(int *connect, int size)
+{
+	int			i;
+	int			max;
+
+	i = 0;
+	max = 0;
+	while (i < size)
+	{
+		if (connect[i] > 2)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 static void		update_edgeflow(t_lemin *lemin, t_icase *path)
 {
 	t_room		room;
 	t_icase		*tmp;
+	int			size;
+	int			connect[2];
+	int			obeish;
 
-	if (ic_size(path) == 2)
+	obeish = 0;
+	size = ic_size(path);
+	if (size == 2)
 		extrem_edgeflow(lemin, &room);
-	if (ic_size(path) > 3)
+	if (size > 3)
 	{
-		tmp = path;
+		tmp = path->next;
 		while (tmp && tmp->next && tmp->next->next)
 		{
-			edit_edgeflow(lemin->tab_bt, tmp->n, tmp->next->n, &room);
+			connect[0] = bt_size_count(lemin->tab_bt[tmp->n]);
+			connect[1] = bt_size_count(lemin->tab_bt[tmp->next->n]);
+			if (connect[0] > 2 && connect[1] > 2)
+			{
+					edit_edgeflow(lemin->tab_bt, tmp->n, tmp->next->n, &room);
+					obeish = 1;
+			}
 			tmp = tmp->next;
+		}
+		if (!obeish)
+		{
+			tmp = path->next;
+			while (tmp && tmp->next && tmp->next->next)
+			{
+				edit_edgeflow(lemin->tab_bt, tmp->n, tmp->next->n, &room);
+				tmp = tmp->next;
+			}
 		}
 	}
 	else
@@ -95,7 +131,6 @@ int			algo_ishobe(t_lemin *lemin)
 	{
 		path = (t_icase*)(lemin->list_paths->content);
 		update_edgeflow(lemin, path);
-		path = (t_icase*)(lemin->list_paths->content);
 		update_exclus(lemin, path);
 	}
 	else

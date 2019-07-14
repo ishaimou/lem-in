@@ -71,16 +71,27 @@ void print_tabbt(t_bt **tab_bt)
 
 void	print_list_grp(t_list *grp, char **tab_hash)
 {
+	t_list	*tmp;
+	int		len;
 	int		i;
 
 	i = 1;
+	len = 0;
+	tmp = grp;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		len++;
+	}
 	while (grp)
 	{
 		ft_putstr(" ------ GROUP ");
 		ft_putchar('[');
 		ft_putnbr(i);
 		ft_putchar(']');
-		ft_putstr(" ------\n");
+		ft_putstr(" --------{ ");
+		ft_putnbr(len);
+		ft_putstr(" }--------\n");
 		print_list_paths((t_list*)grp->content, tab_hash);
 		grp = grp->next;
 		i++;
@@ -100,6 +111,7 @@ void	print_list_paths(t_list	*list_paths, char **tab_hash)
 			ft_printf("[%s] - ", tab_hash[path->n]);
 			path = path->next;
 		}
+		ft_putstr("zbi");
 		ft_putstr("\n");
 		list_paths = list_paths->next;
 	}

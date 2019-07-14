@@ -55,12 +55,12 @@ static int		calcul_ants_shots(int ants, t_infos *infos, int n_subs)
 
 	n_paths = infos->n_paths;
 	paths = infos->paths;
-	avg = (ants + sum_subpathslen(paths, n_paths, n_subs)) / n_paths;
+	avg = (ants + sum_subpathslen(paths, n_paths, n_subs)) / n_subs;
 	i = n_paths - 1;
 	nsubs = n_subs;
 	while (i >= 0 && nsubs-- > 0 && ants > 0)
 	{
-		phi = avg - paths[i].len;
+		phi = ft_max(avg - paths[i].len, 0);
 		paths[i].ants = (ants > phi) ? phi : ants;
 		ants -= paths[i].ants;
 		i--;
