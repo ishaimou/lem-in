@@ -2,6 +2,18 @@
 # include "libsdl/libsdl.h"
 # include "../libft/includes/libft.h"
 
+# define	WIDTH	600
+# define	HEIGHT	600
+
+# define	TITLE	"Ishobe Take Care of your ants"
+
+# define	FONT_TYPE_TXT	"./libsdl/fonts/arial.ttf"
+# define	FONT_SIZE_TXT	18
+
+# define	IMG_PATH	"libsdl/Images/bk.jpg"
+
+# define	BLOCK		WIDTH / 30
+
 # define	L_WHITE -1
 # define	L_BLACK 0
 # define	L_RED	1
@@ -11,11 +23,6 @@
 # define	L_ORANGE 5
 # define	L_CYAN 6
 # define	L_MAGENTA 7
-
-typedef struct		s_display
-{
-	t_sdlenv		env;
-}					t_display;
 
 typedef struct		s_ant_infos
 {
@@ -44,6 +51,18 @@ typedef struct		s_infos
 	t_ant_infos		*tab_ants;
 	int				color_paths;
 }					t_infos;
+
+typedef struct		s_display
+{
+	t_sdlenv		env;
+	t_infos			infos;
+	SDL_Color		color_text;
+	int				pass;
+	int				pause;
+	int				start_ants;
+	int				end_ants;
+	t_point			offset;
+}					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);
 void		take_cmds(t_infos *infos, t_chr *curr);
