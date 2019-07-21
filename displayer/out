@@ -1,25 +1,42 @@
-10
-3 2 2
+9
 ##start
-start 4 0
+A 5 5
 ##end
-end 4 6
-1 4 2
-2 4 4
-4 4 4
-5 8 2
-6 8 4
-start-1
-start-4
-start-6
-end-6
-end-5
-end-2
-1-2
-4-5
+J 1 5
+B 4 6
+C 4 5
+D 4 4
+E 2 6
+F 1 6
+H 2 5
+I 1 5
+G 0 6
+N 2 4
+M 1 4
+K 0 5
+l 0 4
+A-B
+A-C
+A-D
+B-E
+F-E
+H-I
+C-H
+D-I
+G-I
+G-F
+J-G
+K-J
+I-K
+l-M
+D-N
+N-M
+J-l
 
-L1-6 L2-4 L3-1
-L1-end L4-6 L2-5 L5-4 L3-2 L6-1
-L4-end L7-6 L2-end L5-5 L8-4 L3-end L6-2 L9-1
-L7-end L10-6 L5-end L8-5 L6-end L9-2
-L10-end L8-end L9-end
+L1-B L2-C L3-D
+L1-E L4-B L2-H L5-C L3-N L6-D
+L1-F L4-E L7-B L2-I L5-H L8-C L3-M L6-N L9-D
+L1-G L4-F L7-E L2-K L5-I L8-H L3-l L6-M L9-N
+L1-J L4-G L7-F L2-J L5-K L8-I L3-J L6-l L9-M
+L4-J L7-G L5-J L8-K L6-J L9-l
+L7-J L8-J L9-J

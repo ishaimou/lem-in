@@ -12,8 +12,6 @@
 
 # define	IMG_PATH	"libsdl/Images/bk.jpg"
 
-# define	BLOCK		WIDTH / 30
-
 # define	L_WHITE -1
 # define	L_BLACK 0
 # define	L_RED	1
@@ -27,6 +25,7 @@
 typedef struct		s_ant_infos
 {
 	int				*tab_life;
+	int				out;
 	int				color;
 }					t_ant_infos;
 
@@ -57,11 +56,15 @@ typedef struct		s_display
 	t_sdlenv		env;
 	t_infos			infos;
 	SDL_Color		color_text;
-	int				pass;
-	int				pause;
+	TTF_Font		*font_text;
+	t_point			offset;
 	int				start_ants;
 	int				end_ants;
-	t_point			offset;
+	int				moment;
+	int				block;
+	int				pause;
+	int				pass;
+	int				step;
 }					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);
@@ -74,6 +77,7 @@ void		init_infos(t_infos *infos);
 int			is_strnbr(char *str);
 int			is_link(char *str);
 int			is_room(char *str);
-void		print_infos(t_infos infos);		//!!!!!!!!!!!!!!!!
+void		print_infos(t_infos infos);			  //!!!!!!!!!!
+void		print_matrix(int **matrix, int size); //!!!!!!!!!!
 
 #endif

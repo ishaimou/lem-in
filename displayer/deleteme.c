@@ -27,7 +27,7 @@ static void		print_rooms(t_room *rooms, int size)
 	}
 }
 
-static void		print_matrix(int **matrix, int size)
+void			print_matrix(int **matrix, int size)
 {
 	int			i;
 	int			j;

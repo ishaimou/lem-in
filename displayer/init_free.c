@@ -10,6 +10,7 @@ void			init_infos(t_infos *infos)
 	infos->rooms = NULL;
 	infos->links = NULL;
 	infos->tab_ants = NULL;
+	infos->color_paths = L_WHITE;
 }
 
 void			free_error(t_infos *infos)

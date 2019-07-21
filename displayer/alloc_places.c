@@ -16,6 +16,8 @@ static int			alloc_tab_ants(t_infos *infos)
 		if (!((infos->tab_ants)[i].tab_life = (int*)malloc(sizeof(int) * nshots)))
 			return (0);
 		tabint_reset(infos->tab_ants[i].tab_life, nshots, -1);
+		(infos->tab_ants)[i].color = L_BLACK;
+		(infos->tab_ants)[i].out = 0;
 		i++;
 	}
 	return (1);
@@ -25,18 +27,22 @@ int			alloc_places(t_infos *infos)
 {
 	int		v;
 	int		i;
+	int		j;
 
 	v = infos->v;
 	if (!(infos->rooms = (t_room*)malloc(sizeof(t_room) * v)))
 		return (0);
 	if (!(infos->links = (int**)malloc(sizeof(int*) * v)))
 		return (0);
-	i = 0;
-	while (i < v)
+	i = -1;
+	while (++i < v)
 	{
-		if (!(infos->links[i] = (int*)ft_memalloc(sizeof(int) * v)))
+		infos->rooms[i].color = L_WHITE;
+		if (!(infos->links[i] = (int*)malloc(sizeof(int) * v)))
 			return(0);
-		i++;
+		j = -1;
+		while (++j < v)
+			infos->links[i][j] = 0;
 	}
 	alloc_tab_ants(infos);
 	return (1);
