@@ -192,16 +192,6 @@ static char		*str_msg(char *msg, int nbr)
 	return (str);
 }
 
-SDL_Texture		*ttf_texture(SDL_Renderer *render, TTF_Font *font, char *str, SDL_Color color)
-{
-	SDL_Surface	*surface;
-	SDL_Texture	*text;
-
-	surface = TTF_RenderText_Blended(font, str, color);
-	text = SDL_CreateTextureFromSurface(render, surface);
-	return (text);
-}
-
 void			display_shots(t_display *display)
 {
 	SDL_Texture	*tex;
@@ -318,9 +308,39 @@ static void		draw_edge(t_display *display)
 	}
 }
 
+static void		limits_square(t_sdlenv env, t_point c, int r, int is_start)
+{
+	SDL_Color	colors[2];
+	SDL_Texture	texture;
+	TTF_Font	font;
+
+	colors[0] = setcolor_sdl(0, 0, 0, 1);
+	if (is_start)
+	{
+		texture = ttf_texture(env, display->font, "start", colors[0]);
+		colors[1] = setcolor_sdl(0, 0, 255, 1);
+	}
+	else
+	{
+		texture = ttf_texture(env, display->font, "end", colors[0]);
+		colors[1] = setcolor_sdl(0, 255, 0, 1);
+	}
+	drawfillsquare_sdl_c(env, colors, c, 2 * r);
+}
+
+static void		drawnormal_disk(t_sdlenv env, SDL_Color color, t_point c, int r)
+{
+	SDL_Color	black;
+
+	black = setcolor_sdl(0, 0, 0, 1);
+	drawdisk_sdl(env, color, c, r);
+	drawcircle_sdl(env, black, c, r);
+}
+
 static void		draw_rooms(t_display *display)
 {
 	t_infos		infos;
+	SDL_Color	colors[2];
 	t_point		c;
 	int			r;
 	int			i;
@@ -328,16 +348,18 @@ static void		draw_rooms(t_display *display)
 	i = 0;
 	r = display->block / 3;
 	infos = display->infos;
+	colors[0] = setcolor_sdl(0, 0, 0, 1);
 	while (i < infos.v)
 	{
+		colors[1] = color_macros(infos.rooms[i].color);
 		c = ft_setpoint(display->offset.y + infos.rooms[i].coord.y * display->block,
 					display->offset.x + infos.rooms[i].coord.x * display->block);
 		if (infos.rooms[i].id == infos.start)
-			;
+			limits_square(display->env, c, r, 1);
 		else if (infos.rooms[i].id == infos.end)
-			;
+			limits_square(display->env, c, r, 0);
 		else
-			drawdisk_sdl(display->env, color_macros(infos.rooms[i].color), c, r);
+			drawnormal_disk(display->env, colors[1], c, r);
 		i++;
 	}
 }
