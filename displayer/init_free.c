@@ -2,6 +2,7 @@
 
 void			init_infos(t_infos *infos)
 {
+	infos->debug = 0;
 	infos->v = 0;
 	infos->ants = 0;
 	infos->shots = 0;

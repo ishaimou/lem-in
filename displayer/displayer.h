@@ -2,8 +2,8 @@
 # include "libsdl/libsdl.h"
 # include "../libft/includes/libft.h"
 
-# define	WIDTH	2200
-# define	HEIGHT	1200
+# define	WIDTH	800 //2200
+# define	HEIGHT	600 //1200
 
 # define	TITLE	"Ishobe Take Care of your ants"
 
@@ -49,18 +49,21 @@ typedef struct		s_infos
 	int				**links;
 	t_ant_infos		*tab_ants;
 	int				color_paths;
+	int				debug;
 }					t_infos;
 
 typedef struct		s_display
 {
 	t_sdlenv		env;
 	t_infos			infos;
+	SDL_Event		event;
 	SDL_Color		color_text;
 	TTF_Font		*font_text;
 	t_point			offset;
 	int				start_ants;
 	int				end_ants;
 	int				name_size;
+	int				edge_size;
 	int				moment;
 	int				block;
 	int				pause;

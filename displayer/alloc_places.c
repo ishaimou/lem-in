@@ -17,7 +17,6 @@ static int			alloc_tab_ants(t_infos *infos)
 			return (0);
 		tabint_reset(infos->tab_ants[i].tab_life, nshots, -1);
 		(infos->tab_ants)[i].color = L_BLACK;
-		(infos->tab_ants)[i].out = 0;
 		i++;
 	}
 	return (1);
