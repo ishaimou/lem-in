@@ -2,13 +2,13 @@
 # include "libsdl/libsdl.h"
 # include "../libft/includes/libft.h"
 
-# define	WIDTH	600
-# define	HEIGHT	600
+# define	WIDTH	2200
+# define	HEIGHT	1200
 
 # define	TITLE	"Ishobe Take Care of your ants"
 
 # define	FONT_TYPE_TXT	"./libsdl/fonts/arial.ttf"
-# define	FONT_SIZE_TXT	18
+# define	FONT_SIZE_TXT	30
 
 # define	IMG_PATH	"libsdl/Images/bk.jpg"
 
@@ -60,6 +60,7 @@ typedef struct		s_display
 	t_point			offset;
 	int				start_ants;
 	int				end_ants;
+	int				name_size;
 	int				moment;
 	int				block;
 	int				pause;

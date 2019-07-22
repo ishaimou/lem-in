@@ -22,6 +22,8 @@ int				is_link(char *str)
 	int			i;
 
 	i = 0;
+	if (str[0] == 'L')
+		return (0);
 	while (str[i] > 32 && str[i] != '-')
 		i++;
 	if (str[i++] != '-')
@@ -38,8 +40,10 @@ int				is_room(char *str)
 	int			i;
 
 	i = -1;
+	if (str[0] == 'L')
+		return (0);
 	while (str[++i] && str[i] != ' ')
-		if (!ft_isalnum(str[i]))
+		if (!ft_isprint(str[i]))
 			return (0);
 	if (str[i] != ' ')
 		return (0);

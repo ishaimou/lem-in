@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/29 02:13:56 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/08 17:51:05 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/22 05:18:44 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int			is_link(char **line)
 	int		i;
 
 	i = 0;
+	if ((*line)[0] == 'L')
+		return (0);
 	while ((*line)[i] > 32 && (*line)[i] != '-')
 		i++;
 	if ((*line)[i] != '-')
