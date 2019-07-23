@@ -9,7 +9,7 @@ static void		write_limits(t_display *display, int is_start, t_point c)
 
 	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 8);
 	name = (is_start) ? "start" : "end";
-	texture = ttf_texture(display->env.render, font, name, setcolor_sdl(0, 0, 0, 1));
+	texture = ttf_texture(display->env.render, font, name, sdl_rgb(0, 0, 0));
 	SDL_QueryTexture(texture, NULL, NULL, &pos.w, &pos.h);
 	pos.y = c.y + display->block / 8;
 	pos.x = c.x - pos.w / 2;
@@ -22,22 +22,22 @@ static void		limits_square(t_display *display, t_point c, int r, int is_start)
 {
 	SDL_Color	colors[2];
 
-	colors[0] = setcolor_sdl(0, 0, 0, 1);
+	colors[0] = sdl_rgb(0, 0, 0);
 	if (is_start)
-		colors[1] = setcolor_sdl(0, 0, 255, 1);
+		colors[1] = sdl_rgb(0, 0, 255);
 	else
-		colors[1] = setcolor_sdl(0, 255, 0, 1);
-	drawfillsquare_sdl_c(display->env, colors, c, 2 * r);
+		colors[1] = sdl_rgb(0, 255, 0);
+	sdl_fsquare_c(display->env, colors, c, 2 * r);
 	write_limits(display, is_start, c);
 }
 
-static void		drawnormal_disk(t_sdlenv env, SDL_Color color, t_point c, int r)
+static void		normal_disk(t_sdlenv env, SDL_Color color, t_point c, int r)
 {
 	SDL_Color	black;
 
-	black = setcolor_sdl(0, 0, 0, 1);
-	drawdisk_sdl(env, color, c, r);
-	drawcircle_sdl(env, black, c, r);
+	black = sdl_rgb(0, 0, 0);
+	sdl_disk(env, color, c, r);
+	sdl_circle(env, black, c, r);
 }
 
 static void		write_name(t_display *display, char *name, t_point c)
@@ -47,7 +47,7 @@ static void		write_name(t_display *display, char *name, t_point c)
 	SDL_Rect	pos;
 
 	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 8);
-	texture = ttf_texture(display->env.render, font, name, setcolor_sdl(0, 0, 0, 1));
+	texture = ttf_texture(display->env.render, font, name, sdl_rgb(0, 0, 0));
 	SDL_QueryTexture(texture, NULL, NULL, &pos.w, &pos.h);
 	pos.y = c.y - display->block / 4;
 	pos.x = c.x - pos.w / 2;
@@ -70,16 +70,16 @@ void			draw_rooms(t_display *display)
 	while (i < infos.v)
 	{
 		color = color_macros(infos.rooms[i].color);
-		c = ft_setpoint(display->offset.y +
-						infos.rooms[i].coord.y * display->block,
-						display->offset.x +
-						infos.rooms[i].coord.x * display->block);
+		c = pt_new(display->offset.y +
+					infos.rooms[i].coord.y * display->block,
+					display->offset.x +
+					infos.rooms[i].coord.x * display->block);
 		if (infos.rooms[i].id == infos.start)
 			limits_square(display, c, r, 1);
 		else if (infos.rooms[i].id == infos.end)
 			limits_square(display, c, r, 0);
 		else
-			drawnormal_disk(display->env, color, c, r);
+			normal_disk(display->env, color, c, r);
 		write_name(display, infos.tab_hash[infos.rooms[i].id], c);
 		i++;
 	}

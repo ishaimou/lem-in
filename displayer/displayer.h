@@ -68,6 +68,9 @@ typedef struct		s_display
 	int				block;
 	int				pause;
 	int				pass;
+	int				mute;
+	int				frame[4];
+	int				f;
 }					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);

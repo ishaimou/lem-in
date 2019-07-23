@@ -44,5 +44,5 @@ void			free_display(t_display *display)
 {
 	TTF_CloseFont(display->font_text);
 	free_infos(&(display->infos));
-	free_sdl(&(display->env));
+	sdl_close(&(display->env));
 }

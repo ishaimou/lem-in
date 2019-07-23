@@ -28,6 +28,28 @@ static void		event_zoom(t_display *display)
 	}
 }
 
+static void		event_instructs(t_display *display)
+{
+	if (display->event.key.keysym.sym == SDLK_b)
+	{
+		display->moment -= (display->moment > 0) ? 1 : 0;
+		draw_state(display, display->infos);
+	}
+	else if (display->event.key.keysym.sym == SDLK_f)
+	{
+		display->moment += (display->moment < STATE * display->infos.shots) ? 1 : 0;
+		draw_state(display, display->infos);
+	}
+}
+
+static void		change_frame(int *frame)
+{
+	if (*frame != 3)
+		(*frame)++;
+	else
+		frame = 0;
+}
+
 static void		event_keydown(t_display *display)
 {
 	if (display->event.key.keysym.sym == SDLK_ESCAPE)
@@ -44,16 +66,13 @@ static void		event_keydown(t_display *display)
 		display->offset.y += 20;
 	else if (display->event.key.keysym.sym == SDLK_r)
 		init_vars_display(display);
-	else if (display->event.key.keysym.sym == SDLK_b)
-	{
-		display->moment -= (display->moment > 0) ? 1 : 0;
-		draw_state(display, display->infos);
-	}
-	else if (display->event.key.keysym.sym == SDLK_f)
-	{
-		display->moment += (display->moment < STATE * display->infos.shots) ? 1 : 0;
-		draw_state(display, display->infos);
-	}
+	else if (display->event.key.keysym.sym == SDLK_m)
+		display->mute = (display->mute) ? 0 : 1;
+	else if (display->event.key.keysym.sym == SDLK_v)
+		change_frame(&(display->f));
+	else if (display->event.key.keysym.sym == SDLK_b ||
+			display->event.key.keysym.sym == SDLK_f)
+		event_instructs(display);
 	else if (display->event.key.keysym.sym == SDLK_KP_PLUS ||
 			display->event.key.keysym.sym == SDLK_KP_MINUS)
 		event_zoom(display);
@@ -76,7 +95,7 @@ void			displayer_loop(t_display *display)
 				display->moment++;
 			else
 				display->pause = 1;
-			SDL_Delay(1 / 100);
+			SDL_Delay(display->frame[display->f]);
 		}
 		draw_state(display, display->infos);
 	}

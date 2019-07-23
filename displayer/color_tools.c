@@ -3,24 +3,24 @@
 SDL_Color		color_macros(int macros)
 {
 	if (macros == L_YELLOW)
-		return (setcolor_sdl(255, 255, 0, 1));
+		return (sdl_rgb(255, 255, 0));
 	if (macros == L_WHITE)
-		return (setcolor_sdl(255, 255, 255, 1));
+		return (sdl_rgb(255, 255, 255));
 	if (macros == L_BLACK)
-		return (setcolor_sdl(0, 0, 0, 1));
+		return (sdl_rgb(0, 0, 0));
 	if (macros == L_GREEN)
-		return (setcolor_sdl(0, 255, 0, 1));
+		return (sdl_rgb(0, 255, 0));
 	if (macros == L_RED)
-		return (setcolor_sdl(255, 0, 0, 1));
+		return (sdl_rgb(255, 0, 0));
 	if (macros == L_BLUE)
-		return (setcolor_sdl(0, 0, 255, 1));
+		return (sdl_rgb(0, 0, 255));
 	if (macros == L_ORANGE)
-		return (setcolor_sdl(255, 70, 0, 1));
+		return (sdl_rgb(255, 70, 0));
 	if (macros == L_CYAN)
-		return (setcolor_sdl(0, 255, 255, 1));
+		return (sdl_rgb(0, 255, 255));
 	if (macros == L_MAGENTA)
-		return (setcolor_sdl(255, 0, 255, 1));
-	return (setcolor_sdl(0, 0, 0, 1));
+		return (sdl_rgb(255, 0, 255));
+	return (sdl_rgb(0, 0, 0));
 }
 
 void		name_color(int macros)

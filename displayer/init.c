@@ -33,19 +33,29 @@ void			init_vars_display(t_display *display)
 	display->moment = 0;
 	display->pause = 1;
 	display->pass = 1;
+	display->f = 0;
 	display->block = WIDTH / 10;
-	display->color_text = setcolor_sdl(0, 0, 0, 0);
-	display->offset = ft_setpoint(400, 200);
+	display->offset = pt_new(400, 200);
+}
+
+static void		fill_frames(int *frames)
+{
+	frames[0] = 1 / 100;
+	frames[1] = 1;
+	frames[2] = 20;
+	frames[3] = 200;
 }
 
 int				init_display(t_display *display)
 {
-	init_sdlenv(&(display->env), 1, 1, 0);
-	init_sdl(display->env);
-	if (!fill_sdlenv(&(display->env), TITLE, HEIGHT, WIDTH))
+	sdlenv_init(&(display->env), 1, 1, 1);
+	sdl_init(display->env);
+	if (!sdlenv_fill(&(display->env), TITLE, HEIGHT, WIDTH))
 		return (0);
 	//load_music(display->env, MUSIC_PATH);
+	fill_frames(display->frame);
 	display->font_text = TTF_OpenFont(FONT_TYPE_TXT, FONT_SIZE_TXT);
+	display->mute = 0;
 	init_vars_display(display);
 	return (1);
 }

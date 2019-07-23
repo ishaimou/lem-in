@@ -282,7 +282,7 @@ void			display_shots(t_display *display)
 
 	str = str_msg("Shots: ", display->moment / STATE);
 	tex = ttf_texture(display->env.render, display->font_text,
-			str, display->color_text);
+			str, sdl_rgb(0, 0, 0));
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
 	pos.y = HEIGHT / 10;
 	pos.x = WIDTH / 30 + WIDTH / 10 - pos.w / 2;
@@ -296,17 +296,18 @@ void			display_ants(t_display *display)
 	SDL_Texture	*tex;
 	SDL_Rect	pos;
 	char		*str;
+	SDL_Surface	*surface;
 
 	str = str_msg("Start: ", display->infos.start_end[display->moment / STATE].x);
 	tex = ttf_texture(display->env.render, display->font_text,
-			str, display->color_text);
-	pos = create_rect(0, 0, HEIGHT / 20, WIDTH / 20);
+			str, sdl_rgb(0, 0, 0));
+	pos = rect_new(0, 0, HEIGHT / 20, WIDTH / 20);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
 	SDL_RenderCopy(display->env.render, tex, NULL, &pos);
 	SDL_DestroyTexture(tex);
 	str = str_msg("End: ", display->infos.start_end[display->moment / STATE].y);
 	tex = ttf_texture(display->env.render, display->font_text,
-			str, display->color_text);
+			str, sdl_rgb(0, 0, 0));
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
 	pos.y = HEIGHT / 20;
 	pos.x = WIDTH / 60 + WIDTH / 5 - pos.w;
@@ -319,7 +320,7 @@ static void		draw_link(t_display *display, t_infos infos, int a, int b)
 	t_room		*rooms;
 	t_point		p_a;
 	t_point		p_b;
-	t_bline		bold;
+	t_bline		bline;
 	int			i;
 	int			j;
 	int			k;
@@ -334,12 +335,12 @@ static void		draw_link(t_display *display, t_infos infos, int a, int b)
 			j = k;
 		k++;
 	}
-	p_a = ft_setpoint(display->offset.y + rooms[i].coord.y * display->block,
+	p_a = pt_new(display->offset.y + rooms[i].coord.y * display->block,
 			display->offset.x + rooms[i].coord.x * display->block);
-	p_b = ft_setpoint(display->offset.y + rooms[j].coord.y * display->block,
+	p_b = pt_new(display->offset.y + rooms[j].coord.y * display->block,
 			display->offset.x + rooms[j].coord.x * display->block);
-	bold = ft_setboldline(p_a, p_b, display->block / 8);
-	drawboldline_sdl(display->env, color_macros(infos.color_paths), bold);
+	bline = bline_new(p_a, p_b, display->block / 8);
+	sdl_bline(display->env, color_macros(infos.color_paths), bline);
 }
 
 static void		draw_edge(t_display *display)
@@ -370,10 +371,10 @@ void			draw_scene(t_display *display)
 	SDL_Texture		*texture;
 	SDL_Rect		rect;
 
-	texture = texture_img(display->env.render, IMG_PATH);
+	texture = img_texture(display->env.render, IMG_PATH);
 	SDL_RenderCopy(display->env.render, texture, NULL, NULL);
 	SDL_DestroyTexture(texture);
-	rect = create_rect(HEIGHT / 8, WIDTH / 5, HEIGHT / 30, WIDTH / 30);
+	rect = rect_new(HEIGHT / 8, WIDTH / 5, HEIGHT / 30, WIDTH / 30);
 	SDL_SetRenderDrawColor(display->env.render, 160, 160, 160, 255);
 	SDL_RenderFillRect(display->env.render, &rect);
 	draw_edge(display);
@@ -391,7 +392,7 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 
 	v_now = infos.tab_ants[x].tab_life[display->moment / STATE];
 	color = color_macros(infos.tab_ants[x].color);
-	p1 = ft_setpoint(display->offset.y +
+	p1 = pt_new(display->offset.y +
 			infos.rooms[v_now].coord.y * display->block,
 			display->offset.x +
 			infos.rooms[v_now].coord.x * display->block);
@@ -400,19 +401,19 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 		v_next = infos.tab_ants[x].tab_life[display->moment / STATE + 1];
 		if (v_next != -1)
 		{
-			p2 = ft_setpoint(display->offset.y +
+			p2 = pt_new(display->offset.y +
 					infos.rooms[v_next].coord.y * display->block,
 					display->offset.x +
 					infos.rooms[v_next].coord.x * display->block);
 			coord_ant = pt_linterp(p1, p2, display->moment % STATE, STATE);
 		}
 		else
-			coord_ant = ft_setpoint(p1.y, p1.x);
+			coord_ant = pt_new(p1.y, p1.x);
 	}
 	else
-		coord_ant = ft_setpoint(p1.y, p1.x);
-	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
-	drawcircle_sdl(display->env, setcolor_sdl(0, 0, 0, 1),
+		coord_ant = pt_new(p1.y, p1.x);
+	sdl_disk(display->env, color, coord_ant, display->block / 15);
+	sdl_circle(display->env, sdl_rgb(0, 0, 0),
 			coord_ant, display->block / 15);
 }
 
@@ -423,14 +424,14 @@ void			draw_full_limit(t_display *display, int is_start)
 	SDL_Color	color;
 
 	infos = display->infos;
-	color = setcolor_sdl(0, 0, 0, 1);
+	color = sdl_rgb(0, 0, 0);
 	if (is_start)
-		coord_ant = ft_setpoint(display->offset.y + infos.rooms[infos.start].coord.y * display->block,
+		coord_ant = pt_new(display->offset.y + infos.rooms[infos.start].coord.y * display->block,
 				display->offset.x + infos.rooms[infos.start].coord.x * display->block);
 	else
-		coord_ant = ft_setpoint(display->offset.y + infos.rooms[infos.end].coord.y * display->block,
+		coord_ant = pt_new(display->offset.y + infos.rooms[infos.end].coord.y * display->block,
 				display->offset.x + infos.rooms[infos.end].coord.x * display->block);
-	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
+	sdl_disk(display->env, color, coord_ant, display->block / 15);
 }
 
 void			draw_state(t_display *display, t_infos infos)
