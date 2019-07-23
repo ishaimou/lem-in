@@ -80,5 +80,6 @@ t_bline				ft_setboldline(t_point pi, t_point pf, int bold);
 t_bcircle			ft_setboldcircle(t_point c, int r, int bold);
 t_point				ft_setpoint(int y, int x);
 void				swap_pt(t_point *p1, t_point *p2);
+t_point				pt_linterp(t_point p1, t_point p2, int a, int t);
 
 #endif

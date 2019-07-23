@@ -85,6 +85,11 @@ void		free_display(t_display *display);
 int			init_display(t_display *display);
 void		init_vars_display(t_display *display);
 void		draw_state(t_display *display, t_infos infos);
+void		print_life_ants(t_infos *infos);
+void		name_color(int macros);
+SDL_Color	color_macros(int macros);
+void		print_debug(t_infos *infos);
+void		draw_rooms(t_display *display);
 void		print_infos(t_infos infos);			  //!!!!!!!!!!
 void		print_matrix(int **matrix, int size); //!!!!!!!!!!
 

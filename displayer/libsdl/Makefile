@@ -24,6 +24,7 @@ LIBSDL = create_rect fill_sdlenv free_sdl init_sdlenv load_music init_sdl textur
 		 drawboldline_sdl drawdisk_sdl ttf_texture drawquad_sdl drawboldquad_sdl\
 		 swap_pt drawrect_sdl drawboldrect_sdl drawrect_sdl_c drawrect_sdl_b\
 		 drawsquare_sdl drawsquare_sdl_c drawfillsquare_sdl drawfillsquare_sdl_c\
+		pt_linterp
 
 SRC = $(addprefix srcs/, $(addsuffix .c, $(LIBSDL)))
 

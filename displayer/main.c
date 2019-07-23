@@ -173,185 +173,6 @@ void			take_options(int ac, char **av, t_infos *infos)
 	}
 }
 
-void		name_color(int macros)
-{
-	char	*str;
-
-	if (macros == L_YELLOW)
-		ft_printf("   color: %{yellow}Yellow%{eoc}\n");
-	else if (macros == L_WHITE)
-		ft_printf("   color: White\n");
-	else if (macros == L_BLACK)
-		ft_printf("   color: Black\n");
-	else if (macros == L_GREEN)
-		ft_printf("   color: %{green}Green%{eoc}\n");
-	else if (macros == L_RED)
-		ft_printf("   color: %{red}Red%{eoc}\n");
-	else if (macros == L_BLUE)
-		ft_printf("   color: %{blue}Blue%{eoc}\n");
-	else if (macros == L_ORANGE)
-		ft_printf("   color: Orange\n");
-	else if (macros == L_CYAN)
-		ft_printf("   color: %{cyan}Cyan%{eoc}\n");
-	else if (macros == L_MAGENTA)
-		ft_printf("   color: %{purple}Magenta%{eoc}\n");
-	else
-		ft_printf("   color: White\n");
-}
-
-static void		print_infos_rooms(char **tab_hash, t_room *rooms, int size)
-{
-	int			i;
-
-	i = 0;
-	ft_printf("\n %{CYAN}Rooms Informations:%{eoc}:\n");
-	while (i < size)
-	{
-		ft_printf("%{yellow}-----| %{eoc}room %d%{yellow} |-----%{eoc}\n", rooms[i].id);
-		ft_printf("   name : %s\n", tab_hash[rooms[i].id]);
-		name_color(rooms[i].color);
-		ft_printf("   coord: (x = %d, y = %d)\n", rooms[i].coord.x, rooms[i].coord.y);
-		ft_putchar('\n');
-		i++;
-	}
-	ft_putchar('\n');
-}
-
-void			print_adj_matrix(int **matrix, int size)
-{
-	int			i;
-	int			j;
-
-	ft_printf(" %{CYAN}Adjacency Matrix:%{eoc}\n\n");
-	i = -1;
-	ft_putstr("       | ");
-	while (++i < size)
-		ft_printf("%-3d", i);
-	ft_putchar('\n');
-	i = -1;
-	ft_putstr("    ----");
-	while (++i < size)
-		ft_putstr("---");
-	ft_putchar('\n');
-	i = 0;
-	while (i < size)
-	{
-		j = 0;
-		ft_printf("%6d | ", i);
-		while (j < size)
-		{
-			if (matrix[i][j])
-				ft_printf("%{GREEN}%-3d%{eoc}", matrix[i][j]);
-			else
-				ft_printf("%-3d", matrix[i][j]);
-			j++;
-		}
-		ft_putchar('\n');
-		i++;
-	}
-	ft_putchar('\n');
-}
-
-
-void			print_infos_tabhash(char **tab_hash, int size)
-{
-	int			i;
-
-	i = 0;
-	ft_printf("%{CYAN} Hash Table:%{eoc}\n");
-	ft_printf("  ___________\n");
-	ft_printf("   id | name\n");
-	ft_printf("  -----------\n");
-	while (i < size)
-	{
-		ft_printf("%5d | %s\n", i, tab_hash[i]);
-		i++;
-	}
-	ft_putchar('\n');
-}
-
-void		ant_life_color(char *str, int macros)
-{
-	if (macros == L_YELLOW)
-		ft_printf(" %{yellow}%s%{eoc} |", str);
-	else if (macros == L_GREEN)
-		ft_printf(" %{green}%s%{eoc} |", str);
-	else if (macros == L_RED)
-		ft_printf(" %{red}%s%{eoc} |", str);
-	else if (macros == L_BLUE)
-		ft_printf(" %{blue}%s%{eoc} |", str);
-	else if (macros == L_CYAN)
-		ft_printf(" %{cyan}%s%{eoc} |", str);
-	else if (macros == L_MAGENTA)
-		ft_printf(" %{purple}%s%{eoc} |", str);
-	else
-		ft_printf(" %s |", str);
-}
-
-int				color_room(t_infos *infos, int id)
-{
-	int			i;
-
-	i = 0;
-	while (i < infos->v)
-	{
-		if (infos->rooms[i].id == id)
-			return (infos->rooms[i].color);
-		i++;
-	}
-	return (L_WHITE);
-}
-
-void			print_life_ants(t_infos *infos)
-{
-	int			a;
-	int			i;
-	int			j;
-
-	i = 0;
-	ft_printf(" %{CYAN}Ants course:%{eoc}\n\n");
-	while (i < infos->ants)
-	{
-		ft_printf("%{yellow}........%{eoc} ant %d %{yellow}........%{eoc}\n\n", i + 1);
-		name_color(infos->tab_ants[i].color);
-		ft_printf("   course:\n");
-		j = -1;
-		while (++j <= infos->shots)
-		{
-			a = infos->tab_ants[i].tab_life[j];
-			if (a != -1)
-			{
-				if (a == infos->start)
-					ft_printf(" %{blue}%s%{eoc} |", infos->tab_hash[a]);
-				else if (a == infos->end)
-					ft_printf(" %{green}%s%{eoc} |", infos->tab_hash[a]);
-				else
-					ant_life_color(infos->tab_hash[a], color_room(infos, a));
-			}
-			else
-				ft_printf(" %{green}%s%{eoc} |", infos->tab_hash[infos->end]);
-		}
-		ft_printf("\n\n");
-		i++;
-	}
-	ft_printf("\n");
-}
-
-void			print_debug(t_infos *infos)
-{
-	ft_printf("%{blue}==================%{BLUE} DEGUB MODE %{blue}==================%{eoc}\n");
-	print_infos_tabhash(infos->tab_hash, infos->v);
-	ft_printf(" We have %{RED}%d%{eoc} ant.\n", infos->ants);
-	ft_printf(" The Graph have %{GREEN}%d%{eoc} vertex.\n", infos->v);
-	ft_printf(" start: [%{RED}%s%{eoc}] | ", infos->tab_hash[infos->start]);
-	ft_printf(" end: [%{RED}%s%{eoc}]\n", infos->tab_hash[infos->end]);
-	print_infos_rooms(infos->tab_hash, infos->rooms, infos->v);
-	print_adj_matrix(infos->links, infos->v);
-	print_life_ants(infos);
-	ft_printf(" The Goal is done in %{RED}%d%{eoc} instruction(s)\n", infos->shots);
-	ft_printf("%{blue}================================================%{eoc}\n");
-}
-
 static int		in_start(t_infos *infos, int x)
 {
 	int			count;
@@ -361,8 +182,9 @@ static int		in_start(t_infos *infos, int x)
 	count = 0;
 	while (i < infos->ants)
 	{
-		if (infos->tab_ants[i].tab_life[x] != -1 && infos->tab_ants[i].tab_life[x] != infos->start &&
-				infos->tab_ants[i].tab_life[x - 1] == infos->start)
+		if (infos->tab_ants[i].tab_life[x] != -1 &&
+			infos->tab_ants[i].tab_life[x] != infos->start &&
+			infos->tab_ants[i].tab_life[x - 1] == infos->start)
 			count++;
 		i++;
 	}
@@ -426,9 +248,18 @@ int				store_data(int ac, char **av, t_infos *infos)
 	return (1);
 }
 
-void			print_usage(void)					///////////////////////////////
+void			print_usage(void)
 {
-	ft_putstr("Welcome\n");							//////////////////////////////
+	ft_printf("%{blue}==========|%{BLUE} USAGE %{blue}|==========%{eoc}\n");
+	ft_printf("    Exit     :  %{CYAN}ESCAPE%{eoc}\n");
+	ft_printf("    Move     :  %{CYAN}ARROWS%{eoc}\n");
+	ft_printf("    Pause    :  %{CYAN}SPACE%{eoc}\n");
+	ft_printf("    Reset    :  %{CYAN}R%{eoc}\n");
+	ft_printf("    Zoom In  :  %{CYAN}+%{eoc}\n");
+	ft_printf("    Zoom Out :  %{CYAN}-%{eoc}\n");
+	ft_printf("    Next Shot:  %{CYAN}F%{eoc}\n");
+	ft_printf("    Prev Shot:  %{CYAN}B%{eoc}\n");
+	ft_printf("%{blue}=============================%{eoc}\n");
 }
 
 static char		*str_msg(char *msg, int nbr)
@@ -483,29 +314,6 @@ void			display_ants(t_display *display)
 	SDL_DestroyTexture(tex);
 }
 
-SDL_Color		color_macros(int macros)
-{
-	if (macros == L_YELLOW)
-		return (setcolor_sdl(255, 255, 0, 1));
-	if (macros == L_WHITE)
-		return (setcolor_sdl(255, 255, 255, 1));
-	if (macros == L_BLACK)
-		return (setcolor_sdl(0, 0, 0, 1));
-	if (macros == L_GREEN)
-		return (setcolor_sdl(0, 255, 0, 1));
-	if (macros == L_RED)
-		return (setcolor_sdl(255, 0, 0, 1));
-	if (macros == L_BLUE)
-		return (setcolor_sdl(0, 0, 255, 1));
-	if (macros == L_ORANGE)
-		return (setcolor_sdl(255, 70, 0, 1));
-	if (macros == L_CYAN)
-		return (setcolor_sdl(0, 255, 255, 1));
-	if (macros == L_MAGENTA)
-		return (setcolor_sdl(255, 0, 255, 1));
-	return (setcolor_sdl(0, 0, 0, 1));
-}
-
 static void		draw_link(t_display *display, t_infos infos, int a, int b)
 {
 	t_room		*rooms;
@@ -557,89 +365,6 @@ static void		draw_edge(t_display *display)
 	}
 }
 
-static void		write_limits(t_display *display, int is_start, t_point c)
-{
-	SDL_Texture	*texture;
-	TTF_Font	*font;
-	SDL_Rect	pos;
-	char		*name;
-
-	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 8);
-	name = (is_start) ? "start" : "end";
-	texture = ttf_texture(display->env.render, font, name, setcolor_sdl(0, 0, 0, 1));
-	SDL_QueryTexture(texture, NULL, NULL, &pos.w, &pos.h);
-	pos.y = c.y + display->block / 8;
-	pos.x = c.x - pos.w / 2;
-	SDL_RenderCopy(display->env.render, texture, NULL, &pos);
-	SDL_DestroyTexture(texture);
-	TTF_CloseFont(font);
-}
-
-static void		limits_square(t_display *display, t_point c, int r, int is_start)
-{
-	SDL_Color	colors[2];
-
-	colors[0] = setcolor_sdl(0, 0, 0, 1);
-	if (is_start)
-		colors[1] = setcolor_sdl(0, 0, 255, 1);
-	else
-		colors[1] = setcolor_sdl(0, 255, 0, 1);
-	drawfillsquare_sdl_c(display->env, colors, c, 2 * r);
-	write_limits(display, is_start, c);
-}
-
-static void		drawnormal_disk(t_sdlenv env, SDL_Color color, t_point c, int r)
-{
-	SDL_Color	black;
-
-	black = setcolor_sdl(0, 0, 0, 1);
-	drawdisk_sdl(env, color, c, r);
-	drawcircle_sdl(env, black, c, r);
-}
-
-static void		write_name(t_display *display, char *name, t_point c)
-{
-	SDL_Texture	*texture;
-	TTF_Font	*font;
-	SDL_Rect	pos;
-
-	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 8);
-	texture = ttf_texture(display->env.render, font, name, setcolor_sdl(0, 0, 0, 1));
-	SDL_QueryTexture(texture, NULL, NULL, &pos.w, &pos.h);
-	pos.y = c.y - display->block / 4;
-	pos.x = c.x - pos.w / 2;
-	SDL_RenderCopy(display->env.render, texture, NULL, &pos);
-	SDL_DestroyTexture(texture);
-	TTF_CloseFont(font);
-}
-
-static void		draw_rooms(t_display *display)
-{
-	t_infos		infos;
-	SDL_Color	color;
-	t_point		c;
-	int			r;
-	int			i;
-
-	i = 0;
-	r = display->block / 3;
-	infos = display->infos;
-	while (i < infos.v)
-	{
-		color = color_macros(infos.rooms[i].color);
-		c = ft_setpoint(display->offset.y + infos.rooms[i].coord.y * display->block,
-				display->offset.x + infos.rooms[i].coord.x * display->block);
-		if (infos.rooms[i].id == infos.start)
-			limits_square(display, c, r, 1);
-		else if (infos.rooms[i].id == infos.end)
-			limits_square(display, c, r, 0);
-		else
-			drawnormal_disk(display->env, color, c, r);
-		write_name(display, infos.tab_hash[infos.rooms[i].id], c);
-		i++;
-	}
-}
-
 void			draw_scene(t_display *display)
 {
 	SDL_Texture		*texture;
@@ -653,15 +378,6 @@ void			draw_scene(t_display *display)
 	SDL_RenderFillRect(display->env.render, &rect);
 	draw_edge(display);
 	draw_rooms(display);
-}
-
-t_point			linear_interp(t_point p1, t_point p2, int a, int t)
-{
-	t_point		p;
-
-	p.x = ((float)((p2.x - p1.x) * a) / t) + p1.x;
-	p.y = ((float)((p2.y - p1.y) * a) / t) + p1.y;
-	return (p);
 }
 
 void			draw_ant(t_display *display, t_infos infos, int x)
@@ -688,7 +404,7 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 					infos.rooms[v_next].coord.y * display->block,
 					display->offset.x +
 					infos.rooms[v_next].coord.x * display->block);
-			coord_ant = linear_interp(p1, p2, display->moment % STATE, STATE);
+			coord_ant = pt_linterp(p1, p2, display->moment % STATE, STATE);
 		}
 		else
 			coord_ant = ft_setpoint(p1.y, p1.x);
