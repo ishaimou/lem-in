@@ -3,7 +3,10 @@
 int			the_color(char *str, int def)
 {
 	if (!ft_strcmp(str, "RED"))
+	{
+		ft_putstr("zamla red\n");
 		return (L_RED);
+	}
 	if (!ft_strcmp(str, "BLUE"))
 		return (L_BLUE);
 	if (!ft_strcmp(str, "YELLOW"))

@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/23 06:26:23 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/23 07:22:25 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,7 +486,7 @@ static void		write_name(t_display *display, char *name, t_point c, int r)
 static void		draw_rooms(t_display *display)
 {
 	t_infos		infos;
-	SDL_Color	colors[2];
+	SDL_Color	color;
 	t_point		c;
 	int			r;
 	int			i;
@@ -494,10 +494,10 @@ static void		draw_rooms(t_display *display)
 	i = 0;
 	r = display->block / 3;
 	infos = display->infos;
-	colors[0] = setcolor_sdl(0, 0, 0, 1);
 	while (i < infos.v)
 	{
-		colors[1] = color_macros(infos.rooms[i].color);
+		color = color_macros(infos.rooms[i].color);
+		ft_printf("r = %d | g = %d | b = %d\n", color.r, color.g, color.b);
 		c = ft_setpoint(display->offset.y + infos.rooms[i].coord.y * display->block,
 					display->offset.x + infos.rooms[i].coord.x * display->block);
 		if (infos.rooms[i].id == infos.start)
@@ -505,7 +505,7 @@ static void		draw_rooms(t_display *display)
 		else if (infos.rooms[i].id == infos.end)
 			limits_square(display, c, r, 0);
 		else
-			drawnormal_disk(display->env, colors[1], c, r);
+			drawnormal_disk(display->env, color, c, r);
 		write_name(display, infos.tab_hash[infos.rooms[i].id], c, r);
 		i++;
 	}
@@ -537,25 +537,6 @@ void			draw_scene(t_display *display)
 	display_graph(display);
 }
 
-static void		draw_num_ant(t_display *display, t_point coord_ant, int x)
-{
-	SDL_Texture	*num;
-	TTF_Font	*font;
-	char		*nbr;
-	SDL_Rect	pos;
-
-	nbr = ft_itoa(x);
-	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 18);
-	num = ttf_texture(display->env.render, font, nbr, setcolor_sdl(255, 255, 255, 1));
-	SDL_QueryTexture(num, NULL, NULL, &pos.w, &pos.h);
-	SDL_RenderCopy(display->env.render, num, NULL, &pos);
-	pos.x = coord_ant.x;
-	pos.y = coord_ant.y;
-	SDL_DestroyTexture(num);
-	TTF_CloseFont(font);
-	free(nbr);
-}
-
 void			draw_ant(t_display *display, t_infos infos, int x)
 {
 	t_point		coord_ant;
@@ -568,7 +549,6 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 					display->offset.x + infos.rooms[v_now].coord.x * display->block);
 	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
 	drawcircle_sdl(display->env, setcolor_sdl(0, 0, 0, 1), coord_ant, display->block / 15);
-	draw_num_ant(display, coord_ant, x);
 }
 
 void			draw_full_limit(t_display *display, int is_start)
@@ -642,12 +622,12 @@ void			event_keydown(t_display *display)
 		display->offset.y += 20;
 	else if (display->event.key.keysym.sym == SDLK_r)	
 		init_vars_display(display);
-	else if (display->event.key.keysym.sym == SDLK_a)
+	else if (display->event.key.keysym.sym == SDLK_b)
 	{
 		display->moment -= (display->moment > 0) ? 1 : 0;
 		draw_state(display, display->infos);
 	}
-	else if (display->event.key.keysym.sym == SDLK_s)
+	else if (display->event.key.keysym.sym == SDLK_f)
 	{
 		display->moment += (display->moment < display->infos.shots) ? 1 : 0;
 		draw_state(display, display->infos);
@@ -680,6 +660,8 @@ void			displayer_loop(t_display *display)
 		{
 			if (display->moment < display->infos.shots)
 				display->moment++;
+			else
+				display->pause = 1;
 			SDL_Delay(200);
 		}
 		draw_state(display, display->infos);
