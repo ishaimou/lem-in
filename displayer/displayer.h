@@ -25,7 +25,6 @@
 typedef struct		s_ant_infos
 {
 	int				*tab_life;
-	int				out;
 	int				color;
 }					t_ant_infos;
 
@@ -50,6 +49,7 @@ typedef struct		s_infos
 	t_ant_infos		*tab_ants;
 	int				color_paths;
 	int				debug;
+	t_point			*start_end;
 }					t_infos;
 
 typedef struct		s_display
@@ -67,7 +67,6 @@ typedef struct		s_display
 	int				pause;
 	int				pass;
 	int				step;
-	t_point			*start_end;
 }					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);

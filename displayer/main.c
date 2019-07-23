@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/23 01:53:05 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/23 06:26:23 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void			fill_adv_infos(t_infos *infos)
 			break ;
 		curr = curr->next;
 	}
-	time = 0;
+	time = 1;
 	while (curr)
 	{
 		fill_tab_ants(infos, infos->tab_ants, curr->str, time);
@@ -197,27 +197,53 @@ void			print_debug(t_infos infos)
 
 static int		in_start(t_infos *infos, int x)
 {
+	int			count;
 	int			i;
 
 	i = 0;
+	count = 0;
 	while (i < infos->ants)
 	{
-		if (infos->tab_ants[i].tab_life[x] != -1)
+		ft_printf("tab_ants[%d].tab_life[%d] = %d\n", i, x, infos->tab_ants[i].tab_life[x]);
+		if (infos->tab_ants[i].tab_life[x] != -1 &&
+			(x == 0 || (x > 0 && infos->tab_ants[i].tab_life[x - 1] == -1)))
+			count++;
 		i++;
 	}
+	return (count);
+}
+
+static int		in_end(t_infos *infos, int x)
+{
+	int			count;
+	int			i;
+
+	i = 0;
+	count = 0;
+	while (i < infos->ants)
+	{
+		if (infos->tab_ants[i].tab_life[x] == infos->end)
+			count++;
+		i++;
+	}
+	return (count);
 }
 
 void			fill_start_end(t_infos *infos)
 {
+	int			start;
+	int			end;
 	int			i;
 
-	i = 1;
-	infos->start_end[0].x = infos->ants;
-	infos->start_end[0].y = 0;
-	while (i <= infos.shots)
+	i = 0;
+	end = 0;
+	start = infos->ants;
+	while (i <= infos->shots)
 	{
-		infos->start_end[i].x = in_start(infos, i - 1);
-		infos->start_end[i].y = in_end(infos, i - 1);
+		end += in_end(infos, i);
+		start -= in_start(infos, i);
+		infos->start_end[i].y = end;
+		infos->start_end[i].x = start;
 		i++;
 	}
 }
@@ -252,11 +278,6 @@ void			print_usage(void)
 
 void			init_vars_display(t_display *display)
 {
-	int			i;
-
-	i = 0;
-	while (i < display->infos.ants)
-		display->infos.tab_ants[i++].out = 0;
 	display->start_ants = display->infos.ants;
 	display->end_ants = 0;
 	display->moment = 0;
@@ -299,7 +320,6 @@ void			display_shots(t_display *display, int shots)
 	char		*str;
 
 	str = str_msg("Shots: ", shots);
-	//ft_strcombin(&str, " shot");
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
@@ -316,14 +336,14 @@ void			display_ants(t_display *display, int start_ants, int end_ants)
 	SDL_Rect	pos;
 	char		*str;
 
-	str = str_msg("Start: ", start_ants);
+	str = str_msg("Start: ", display->infos.start_end[display->moment].x);
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	pos = create_rect(0, 0, HEIGHT / 20, WIDTH / 20);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
 	SDL_RenderCopy(display->env.render, tex, NULL, &pos);
 	SDL_DestroyTexture(tex);
-	str = str_msg("End: ", end_ants);
+	str = str_msg("End: ", display->infos.start_end[display->moment].y);
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
@@ -542,7 +562,7 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 	SDL_Color	color;
 	int			v_now;
 
-	v_now = infos.tab_ants[x].tab_life[display->moment - 1];
+	v_now = infos.tab_ants[x].tab_life[display->moment];
 	color = color_macros(infos.tab_ants[x].color);
 	coord_ant = ft_setpoint(display->offset.y + infos.rooms[v_now].coord.y * display->block,
 					display->offset.x + infos.rooms[v_now].coord.x * display->block);
@@ -577,23 +597,14 @@ void			draw_state(t_display *display, t_infos infos)
 	draw_scene(display);
 	while (i < infos.ants)
 	{
-		ant_state = infos.tab_ants[i].tab_life[display->moment - 1];
+		ant_state = infos.tab_ants[i].tab_life[display->moment];
 		if (ant_state != -1)
-		{
-			if (!infos.tab_ants[i].out)
-			{
-				display->start_ants--;
-				infos.tab_ants[i].out = 1;
-			}
-			if (ant_state == infos.end)
-				display->end_ants++;
 			draw_ant(display, infos, i);
-		}
 		i++;
 	}
-	if (display->start_ants > 0)
+	if (display->infos.start_end[display->moment].x > 0)
 		draw_full_limit(display, 1);
-	if (display->end_ants > 0)
+	if (display->infos.start_end[display->moment].y > 0)
 		draw_full_limit(display, 0);
 	display_vars(display, display->start_ants, display->end_ants, display->moment);
 	SDL_RenderPresent(display->env.render);
@@ -615,27 +626,6 @@ static void		event_zoom(t_display *display)
 	}
 }
 
-void			draw_fix_scene(t_display display)
-{
-	int			i;
-
-	i = 0;
-	draw_scene(&display);
-	display_vars(&display, display.start_ants,
-	display.end_ants, ft_min(display.moment, display.infos.shots));
-	if (display.start_ants > 0)
-		draw_full_limit(&display, 1);
-	if (display.end_ants > 0)
-		draw_full_limit(&display, 0);
-	while (i < display.infos.ants)
-	{
-		if (display.moment > 0 && display.infos.tab_ants[i].tab_life[display.moment - 1] != -1)
-			draw_ant(&display, display.infos, i);
-		i++;
-	}
-	SDL_RenderPresent(display.env.render);
-}
-
 void			event_keydown(t_display *display)
 {
 	if (display->event.key.keysym.sym == SDLK_ESCAPE)
@@ -655,12 +645,12 @@ void			event_keydown(t_display *display)
 	else if (display->event.key.keysym.sym == SDLK_a)
 	{
 		display->moment -= (display->moment > 0) ? 1 : 0;
-		draw_fix_scene(*display);
+		draw_state(display, display->infos);
 	}
 	else if (display->event.key.keysym.sym == SDLK_s)
 	{
 		display->moment += (display->moment < display->infos.shots) ? 1 : 0;
-		draw_fix_scene(*display);
+		draw_state(display, display->infos);
 	}
 	else if (display->event.key.keysym.sym == SDLK_KP_PLUS ||
 		display->event.key.keysym.sym == SDLK_KP_MINUS)
@@ -686,28 +676,28 @@ void			displayer_loop(t_display *display)
 			if (display->event.type == SDL_KEYDOWN)
 				event_keydown(display);
 		}
-		if (!display->pause &&
-			display->moment <= display->infos.shots)
+		if (!display->pause)
 		{
-			if (display->moment > 0)
-				draw_state(display, display->infos);
-			else
-				draw_fix_scene(*display);
-			display->moment++;
+			if (display->moment < display->infos.shots)
+				display->moment++;
 			SDL_Delay(200);
 		}
-		else
-			draw_fix_scene(*display);
+		draw_state(display, display->infos);
 	}
 }
 
 int				main(int ac, char **av)
 {
 	t_display	display;
+		int			i;
 
 	print_usage();
 	if (!store_data(ac, av, &(display.infos)))
 		return(EXIT_FAILURE);
+	i = -1;
+	ft_printf("\nstart_end:\n");
+	while (++i <= display.infos.shots)
+		ft_printf("start = %d | end = %d\n", display.infos.start_end[i].x, display.infos.start_end[i].y);
 	if (!init_display(&display))
 		return(EXIT_FAILURE);
 	displayer_loop(&display);
