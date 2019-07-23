@@ -44,5 +44,7 @@ int			alloc_places(t_infos *infos)
 			infos->links[i][j] = 0;
 	}
 	alloc_tab_ants(infos);
+	if (!(infos->start_end = (t_point*)malloc(sizeof(t_point) * (infos->shots + 1))))
+		return (0);
 	return (1);
 }

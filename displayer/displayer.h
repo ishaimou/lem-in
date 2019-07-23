@@ -2,8 +2,8 @@
 # include "libsdl/libsdl.h"
 # include "../libft/includes/libft.h"
 
-# define	WIDTH	800 //2200
-# define	HEIGHT	600 //1200
+# define	WIDTH	2200
+# define	HEIGHT	1200
 
 # define	TITLE	"Ishobe Take Care of your ants"
 
@@ -62,13 +62,12 @@ typedef struct		s_display
 	t_point			offset;
 	int				start_ants;
 	int				end_ants;
-	int				name_size;
-	int				edge_size;
 	int				moment;
 	int				block;
 	int				pause;
 	int				pass;
 	int				step;
+	t_point			*start_end;
 }					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);

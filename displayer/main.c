@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/22 07:05:20 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/23 01:53:05 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,33 @@ void			print_debug(t_infos infos)
 	ft_printf("The Goal is done in %{RED}%d%{eoc} instruction\n", infos.shots);
 }
 
+static int		in_start(t_infos *infos, int x)
+{
+	int			i;
+
+	i = 0;
+	while (i < infos->ants)
+	{
+		if (infos->tab_ants[i].tab_life[x] != -1)
+		i++;
+	}
+}
+
+void			fill_start_end(t_infos *infos)
+{
+	int			i;
+
+	i = 1;
+	infos->start_end[0].x = infos->ants;
+	infos->start_end[0].y = 0;
+	while (i <= infos.shots)
+	{
+		infos->start_end[i].x = in_start(infos, i - 1);
+		infos->start_end[i].y = in_end(infos, i - 1);
+		i++;
+	}
+}
+
 int				store_data(int ac, char **av, t_infos *infos)
 {
 	init_infos(infos);
@@ -211,6 +238,7 @@ int				store_data(int ac, char **av, t_infos *infos)
 	}
 	create_tabhash_2(infos, infos->input);
 	fill_adv_infos(infos);
+	fill_start_end(infos);
 	if (infos->debug)
 		print_debug(*infos);
 		//print_infos(*infos);		//!!!!!!!!!!!!!!!!!!
@@ -231,15 +259,13 @@ void			init_vars_display(t_display *display)
 		display->infos.tab_ants[i++].out = 0;
 	display->start_ants = display->infos.ants;
 	display->end_ants = 0;
-	display->moment = 1;
+	display->moment = 0;
 	display->step = 1;
 	display->pause = 1;
 	display->pass = 1;
 	display->block = WIDTH / 10;
 	display->color_text = setcolor_sdl(0, 0, 0, 0);
 	display->offset = ft_setpoint(400, 200);
-	display->name_size = 18;
-	display->edge_size = display->block / 8;
 }
 
 int				init_display(t_display *display)
@@ -354,7 +380,7 @@ static void		draw_link(t_display *display, t_infos infos, int a, int b)
 					display->offset.x + rooms[i].coord.x * display->block);
 	p_b = ft_setpoint(display->offset.y + rooms[j].coord.y * display->block,
 					display->offset.x + rooms[j].coord.x * display->block);
-	bold = ft_setboldline(p_a, p_b, display->edge_size);
+	bold = ft_setboldline(p_a, p_b, display->block / 8);
 	drawboldline_sdl(display->env, color_macros(infos.color_paths), bold);
 }
 
@@ -388,7 +414,7 @@ static void		write_limits(t_display *display, int is_start, t_point c, int r)
 	SDL_Rect	pos;
 	char		*name;
 
-	font = TTF_OpenFont(FONT_TYPE_TXT, display->name_size);
+	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 8);
 	name = (is_start) ? "start" : "end";
 	texture = ttf_texture(display->env.render, font, name, setcolor_sdl(0, 0, 0, 1));
 	SDL_QueryTexture(texture, NULL, NULL, &pos.w, &pos.h);
@@ -427,7 +453,7 @@ static void		write_name(t_display *display, char *name, t_point c, int r)
 	TTF_Font	*font;
 	SDL_Rect	pos;
 
-	font = TTF_OpenFont(FONT_TYPE_TXT, display->name_size);
+	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 8);
 	texture = ttf_texture(display->env.render, font, name, setcolor_sdl(0, 0, 0, 1));
 	SDL_QueryTexture(texture, NULL, NULL, &pos.w, &pos.h);
 	pos.y = c.y - display->block / 4;
@@ -500,7 +526,7 @@ static void		draw_num_ant(t_display *display, t_point coord_ant, int x)
 
 	nbr = ft_itoa(x);
 	font = TTF_OpenFont(FONT_TYPE_TXT, display->block / 18);
-	num = ttf_texture(display->env.render, font, nbr, setcolor_sdl(100, 100, 100, 1));
+	num = ttf_texture(display->env.render, font, nbr, setcolor_sdl(255, 255, 255, 1));
 	SDL_QueryTexture(num, NULL, NULL, &pos.w, &pos.h);
 	SDL_RenderCopy(display->env.render, num, NULL, &pos);
 	pos.x = coord_ant.x;
@@ -523,6 +549,23 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
 	drawcircle_sdl(display->env, setcolor_sdl(0, 0, 0, 1), coord_ant, display->block / 15);
 	draw_num_ant(display, coord_ant, x);
+}
+
+void			draw_full_limit(t_display *display, int is_start)
+{
+	t_infos		infos;
+	t_point		coord_ant;
+	SDL_Color	color;
+
+	infos = display->infos;
+	color = setcolor_sdl(0, 0, 0, 1);
+	if (is_start)
+		coord_ant = ft_setpoint(display->offset.y + infos.rooms[infos.start].coord.y * display->block,
+					display->offset.x + infos.rooms[infos.start].coord.x * display->block);
+	else
+		coord_ant = ft_setpoint(display->offset.y + infos.rooms[infos.end].coord.y * display->block,
+					display->offset.x + infos.rooms[infos.end].coord.x * display->block);
+	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
 }
 
 void			draw_state(t_display *display, t_infos infos)
@@ -548,26 +591,12 @@ void			draw_state(t_display *display, t_infos infos)
 		}
 		i++;
 	}
+	if (display->start_ants > 0)
+		draw_full_limit(display, 1);
+	if (display->end_ants > 0)
+		draw_full_limit(display, 0);
 	display_vars(display, display->start_ants, display->end_ants, display->moment);
 	SDL_RenderPresent(display->env.render);
-}
-
-
-void			draw_full_limit(t_display *display, int is_start)
-{
-	t_infos		infos;
-	t_point		coord_ant;
-	SDL_Color	color;
-
-	infos = display->infos;
-	color = setcolor_sdl(0, 0, 0, 1);
-	if (is_start)
-		coord_ant = ft_setpoint(display->offset.y + infos.rooms[infos.start].coord.y * display->block,
-					display->offset.x + infos.rooms[infos.start].coord.x * display->block);
-	else
-		coord_ant = ft_setpoint(display->offset.y + infos.rooms[infos.end].coord.y * display->block,
-					display->offset.x + infos.rooms[infos.end].coord.x * display->block);
-	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
 }
 
 static void		event_zoom(t_display *display)
@@ -577,15 +606,34 @@ static void		event_zoom(t_display *display)
 	{
 		display->block += 10;
 		display->offset.x -= 20;
-		display->edge_size = display->block / 8;
 	}
 	if (display->event.key.keysym.sym == SDLK_KP_MINUS &&
 		display->block > WIDTH / 50)
 	{
 		display->block -= 10;
 		display->offset.x += 20;
-		display->edge_size = display->block / 8;
 	}
+}
+
+void			draw_fix_scene(t_display display)
+{
+	int			i;
+
+	i = 0;
+	draw_scene(&display);
+	display_vars(&display, display.start_ants,
+	display.end_ants, ft_min(display.moment, display.infos.shots));
+	if (display.start_ants > 0)
+		draw_full_limit(&display, 1);
+	if (display.end_ants > 0)
+		draw_full_limit(&display, 0);
+	while (i < display.infos.ants)
+	{
+		if (display.moment > 0 && display.infos.tab_ants[i].tab_life[display.moment - 1] != -1)
+			draw_ant(&display, display.infos, i);
+		i++;
+	}
+	SDL_RenderPresent(display.env.render);
 }
 
 void			event_keydown(t_display *display)
@@ -604,6 +652,16 @@ void			event_keydown(t_display *display)
 		display->offset.y += 20;
 	else if (display->event.key.keysym.sym == SDLK_r)	
 		init_vars_display(display);
+	else if (display->event.key.keysym.sym == SDLK_a)
+	{
+		display->moment -= (display->moment > 0) ? 1 : 0;
+		draw_fix_scene(*display);
+	}
+	else if (display->event.key.keysym.sym == SDLK_s)
+	{
+		display->moment += (display->moment < display->infos.shots) ? 1 : 0;
+		draw_fix_scene(*display);
+	}
 	else if (display->event.key.keysym.sym == SDLK_KP_PLUS ||
 		display->event.key.keysym.sym == SDLK_KP_MINUS)
 		event_zoom(display);
@@ -616,16 +674,31 @@ void			free_display(t_display *display)
 	free_sdl(&(display->env));
 }
 
-void			draw_fix_scene(t_display display)
+
+void			displayer_loop(t_display *display)
 {
-	draw_scene(&display);
-	display_vars(&display, display.start_ants,
-	display.end_ants, ft_min(display.moment, display.infos.shots));
-	if (display.start_ants > 0)
-		draw_full_limit(&display, 1);
-	if (display.end_ants > 0)
-		draw_full_limit(&display, 0);
-	SDL_RenderPresent(display.env.render);
+	while (display->pass)
+	{
+		while (SDL_PollEvent(&(display->event)))
+		{
+			if (display->event.type == SDL_QUIT)
+				display->pass = 0;
+			if (display->event.type == SDL_KEYDOWN)
+				event_keydown(display);
+		}
+		if (!display->pause &&
+			display->moment <= display->infos.shots)
+		{
+			if (display->moment > 0)
+				draw_state(display, display->infos);
+			else
+				draw_fix_scene(*display);
+			display->moment++;
+			SDL_Delay(200);
+		}
+		else
+			draw_fix_scene(*display);
+	}
 }
 
 int				main(int ac, char **av)
@@ -637,24 +710,7 @@ int				main(int ac, char **av)
 		return(EXIT_FAILURE);
 	if (!init_display(&display))
 		return(EXIT_FAILURE);
-	while (display.pass)
-	{
-		while (SDL_PollEvent(&(display.event)))
-		{
-			if (display.event.type == SDL_QUIT)
-				display.pass = 0;
-			if (display.event.type == SDL_KEYDOWN)
-				event_keydown(&display);
-		}
-		if (!display.pause && display.moment <= display.infos.shots)
-		{
-			draw_state(&display, display.infos);
-			display.moment++;
-			SDL_Delay(200);
-		}
-		else
-			draw_fix_scene(display);
-	}
+	displayer_loop(&display);
 	free_display(&display);
 	return (EXIT_SUCCESS);
 }
