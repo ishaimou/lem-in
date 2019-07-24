@@ -5,6 +5,8 @@
 # define	WIDTH	2200
 # define	HEIGHT	1200
 
+# define	STATE	20
+
 # define	TITLE	"Ishobe Take Care of your ants"
 
 # define	FONT_TYPE_TXT	"./libsdl/fonts/arial.ttf"
@@ -66,7 +68,6 @@ typedef struct		s_display
 	int				block;
 	int				pause;
 	int				pass;
-	int				step;
 }					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);

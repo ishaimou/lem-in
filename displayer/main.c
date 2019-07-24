@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 02:15:50 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/24 04:42:00 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void			fill_basic_infos(t_infos *infos)
 			else
 				find_start_end(curr, &str[2]);
 		}
-		else if (is_strnbr(str) && !infos->ants)
+		else if (is_strnbr(str))
 			infos->ants = ft_atoi(str);
 		else if (is_room(str))
 			infos->v++;
@@ -108,10 +108,31 @@ void			fill_tab_ants(t_infos *infos, t_ant_infos *tab_ants, char *str, int time)
 	free_tabstr(&tab_cmds);
 }
 
+static void		begin_state(t_infos *infos)
+{
+	int			i;
+	int			j;
+
+	i = 0;
+	while (i < infos->ants)
+	{
+		j = 0;
+		while (j <= infos->shots)
+		{
+			if (infos->tab_ants[i].tab_life[j] != -1)
+				break;
+			infos->tab_ants[i].tab_life[j] = infos->start;
+			j++;
+		}
+		i++;
+	}
+}
+
 void			fill_adv_infos(t_infos *infos)
 {
 	t_chr		*curr;
 	int			time;
+	int			i;
 
 	curr = infos->input;
 	while (curr)
@@ -133,6 +154,7 @@ void			fill_adv_infos(t_infos *infos)
 		curr = curr->next;
 		time++;
 	}
+	begin_state(infos);
 }
 
 void			take_options(int ac, char **av, t_infos *infos)
@@ -201,8 +223,8 @@ static int		in_start(t_infos *infos, int x)
 	count = 0;
 	while (i < infos->ants)
 	{
-		if (infos->tab_ants[i].tab_life[x] != -1 &&
-			(x == 0 || (x > 0 && infos->tab_ants[i].tab_life[x - 1] == -1)))
+		if (infos->tab_ants[i].tab_life[x] != -1 && infos->tab_ants[i].tab_life[x] != infos->start &&
+			infos->tab_ants[i].tab_life[x - 1] == infos->start)
 			count++;
 		i++;
 	}
@@ -263,7 +285,7 @@ int				store_data(int ac, char **av, t_infos *infos)
 	fill_start_end(infos);
 	if (infos->debug)
 		print_debug(*infos);
-		//print_infos(*infos);		//!!!!!!!!!!!!!!!!!!
+		print_infos(*infos);		//!!!!!!!!!!!!!!!!!!
 	return (1);
 }
 
@@ -290,7 +312,7 @@ void			display_shots(t_display *display)
 	SDL_Rect	pos;
 	char		*str;
 
-	str = str_msg("Shots: ", display->moment);
+	str = str_msg("Shots: ", display->moment / STATE);
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
@@ -307,14 +329,14 @@ void			display_ants(t_display *display)
 	SDL_Rect	pos;
 	char		*str;
 
-	str = str_msg("Start: ", display->infos.start_end[display->moment].x);
+	str = str_msg("Start: ", display->infos.start_end[display->moment / STATE].x);
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	pos = create_rect(0, 0, HEIGHT / 20, WIDTH / 20);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
 	SDL_RenderCopy(display->env.render, tex, NULL, &pos);
 	SDL_DestroyTexture(tex);
-	str = str_msg("End: ", display->infos.start_end[display->moment].y);
+	str = str_msg("End: ", display->infos.start_end[display->moment / STATE].y);
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
@@ -496,18 +518,49 @@ void			draw_scene(t_display *display)
 	draw_rooms(display);
 }
 
+t_point			linear_interp(t_point p1, t_point p2, int a, int t)
+{
+	t_point		p;
+
+	p.x = ((float)((p2.x - p1.x) * a) / t) + p1.x;
+	p.y = ((float)((p2.y - p1.y) * a) / t) + p1.y;
+	return (p);
+}
+
 void			draw_ant(t_display *display, t_infos infos, int x)
 {
 	t_point		coord_ant;
 	SDL_Color	color;
 	int			v_now;
+	int			v_next;
+	t_point		p1;
+	t_point		p2;
 
-	v_now = infos.tab_ants[x].tab_life[display->moment];
+	v_now = infos.tab_ants[x].tab_life[display->moment / STATE];
 	color = color_macros(infos.tab_ants[x].color);
-	coord_ant = ft_setpoint(display->offset.y + infos.rooms[v_now].coord.y * display->block,
-					display->offset.x + infos.rooms[v_now].coord.x * display->block);
+	p1 = ft_setpoint(display->offset.y +
+					infos.rooms[v_now].coord.y * display->block,
+					display->offset.x +
+					infos.rooms[v_now].coord.x * display->block);
+	if (display->moment < STATE * infos.shots)
+	{
+		v_next = infos.tab_ants[x].tab_life[display->moment / STATE + 1];
+		if (v_next != -1)
+		{
+			p2 = ft_setpoint(display->offset.y +
+							infos.rooms[v_next].coord.y * display->block,
+							display->offset.x +
+							infos.rooms[v_next].coord.x * display->block);
+			coord_ant = linear_interp(p1, p2, display->moment % STATE, STATE);
+		}
+		else
+			coord_ant = ft_setpoint(p1.y, p1.x);
+	}
+	else
+		coord_ant = ft_setpoint(p1.y, p1.x);
 	drawdisk_sdl(display->env, color, coord_ant, display->block / 15);
-	drawcircle_sdl(display->env, setcolor_sdl(0, 0, 0, 1), coord_ant, display->block / 15);
+	drawcircle_sdl(display->env, setcolor_sdl(0, 0, 0, 1),
+								coord_ant, display->block / 15);
 }
 
 void			draw_full_limit(t_display *display, int is_start)
@@ -536,15 +589,11 @@ void			draw_state(t_display *display, t_infos infos)
 	draw_scene(display);
 	while (i < infos.ants)
 	{
-		ant_state = infos.tab_ants[i].tab_life[display->moment];
+		ant_state = infos.tab_ants[i].tab_life[display->moment / STATE];
 		if (ant_state != -1)
 			draw_ant(display, infos, i);
 		i++;
 	}
-	if (display->infos.start_end[display->moment].x > 0)
-		draw_full_limit(display, 1);
-	if (display->infos.start_end[display->moment].y > 0)
-		draw_full_limit(display, 0);
 	display_shots(display);
 	display_ants(display);
 	SDL_RenderPresent(display->env.render);
@@ -554,11 +603,11 @@ int				main(int ac, char **av)
 {
 	t_display	display;
 
-	print_usage();
 	if (!store_data(ac, av, &(display.infos)))
 		return(EXIT_FAILURE);
 	if (!init_display(&display))
 		return(EXIT_FAILURE);
+	print_usage();
 	displayer_loop(&display);
 	free_display(&display);
 	return (EXIT_SUCCESS);

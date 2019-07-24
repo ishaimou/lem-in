@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 02:08:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 02:12:29 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/24 04:42:04 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void		event_keydown(t_display *display)
 	}
 	else if (display->event.key.keysym.sym == SDLK_f)
 	{
-		display->moment += (display->moment < display->infos.shots) ? 1 : 0;
+		display->moment += (display->moment < STATE * display->infos.shots) ? 1 : 0;
 		draw_state(display, display->infos);
 	}
 	else if (display->event.key.keysym.sym == SDLK_KP_PLUS ||
@@ -72,11 +72,11 @@ void			displayer_loop(t_display *display)
 		}
 		if (!display->pause)
 		{
-			if (display->moment < display->infos.shots)
+			if (display->moment < STATE * display->infos.shots)
 				display->moment++;
 			else
 				display->pause = 1;
-			SDL_Delay(200);
+			SDL_Delay(1 / 100);
 		}
 		draw_state(display, display->infos);
 	}

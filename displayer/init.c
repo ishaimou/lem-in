@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 02:16:40 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 02:16:42 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/24 02:58:38 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void			init_vars_display(t_display *display)
 	display->start_ants = display->infos.ants;
 	display->end_ants = 0;
 	display->moment = 0;
-	display->step = 1;
 	display->pause = 1;
 	display->pass = 1;
 	display->block = WIDTH / 10;

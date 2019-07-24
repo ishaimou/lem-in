@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 01:58:50 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 01:59:13 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/24 03:53:15 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int			is_link(char *str)
 		i++;
 	if (str[i++] != '-')
 		return (0);
-	while (str[i] > 32 && str[i] != '-')
+	while (str[i] > 32 && str[i] < 127)
 		i++;
 	if (str[i])
 		return (0);
@@ -75,8 +75,10 @@ int			is_strnbr(char *str)
 	int		i;
 
 	i = -1;
+	if (str[0] == '\0')
+		return (0);
 	while (str[++i])
-		if (!ft_isdigit(str[i]))
+		if (str[i] < 48 || str[i] > 57)
 			return (0);
 	return (1);
 }
