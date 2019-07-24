@@ -1,12 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tools.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/24 01:58:50 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/24 01:59:13 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
 int			the_color(char *str, int def)
 {
 	if (!ft_strcmp(str, "RED"))
-	{
-		ft_putstr("zamla red\n");
 		return (L_RED);
-	}
 	if (!ft_strcmp(str, "BLUE"))
 		return (L_BLUE);
 	if (!ft_strcmp(str, "YELLOW"))
@@ -20,9 +29,9 @@ int			the_color(char *str, int def)
 	return (def);
 }
 
-int				is_link(char *str)
+int			is_link(char *str)
 {
-	int			i;
+	int		i;
 
 	i = 0;
 	if (str[0] == 'L')
@@ -38,9 +47,9 @@ int				is_link(char *str)
 	return (1);
 }
 
-int				is_room(char *str)
+int			is_room(char *str)
 {
-	int			i;
+	int		i;
 
 	i = -1;
 	if (str[0] == 'L')
@@ -61,9 +70,9 @@ int				is_room(char *str)
 	return ((str[i]) ? 0 : 1);
 }
 
-int				is_strnbr(char *str)
+int			is_strnbr(char *str)
 {
-	int			i;
+	int		i;
 
 	i = -1;
 	while (str[++i])

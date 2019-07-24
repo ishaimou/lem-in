@@ -70,7 +70,7 @@ typedef struct		s_display
 }					t_display;
 
 void		create_tabhash_2(t_infos *infos, t_chr *list);
-void		take_cmds(t_infos *infos, t_chr *curr);
+void		take_cmds(t_infos *infos, char *str);
 int			alloc_places(t_infos *infos);
 int			the_color(char *str, int def);
 void		free_infos(t_infos *infos);
@@ -79,6 +79,11 @@ void		init_infos(t_infos *infos);
 int			is_strnbr(char *str);
 int			is_link(char *str);
 int			is_room(char *str);
+void		displayer_loop(t_display *display);
+void		free_display(t_display *display);
+int			init_display(t_display *display);
+void		init_vars_display(t_display *display);
+void		draw_state(t_display *display, t_infos infos);
 void		print_infos(t_infos infos);			  //!!!!!!!!!!
 void		print_matrix(int **matrix, int size); //!!!!!!!!!!
 

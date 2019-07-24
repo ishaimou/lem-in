@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/23 07:22:25 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/24 02:15:50 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void			fill_adv_infos(t_infos *infos)
 	while (curr)
 	{
 		if (!ft_strncmp(curr->str, "##", 2))
-			take_cmds(infos, curr);
+			take_cmds(infos, curr->str);
 		else if (is_room(curr->str))
 			fill_room(infos, curr->str);
 		else if (is_link(curr->str))
@@ -137,12 +137,9 @@ void			fill_adv_infos(t_infos *infos)
 
 void			take_options(int ac, char **av, t_infos *infos)
 {
-	int			i;
-
-	i = 0;
-	while (++i < ac)
+	if (ac == 2)
 	{
-		if (!ft_strcmp(av[i], "-d"))
+		if (!ft_strcmp(av[1], "-d"))
 			infos->debug = 1;
 		else
 		{
@@ -204,7 +201,6 @@ static int		in_start(t_infos *infos, int x)
 	count = 0;
 	while (i < infos->ants)
 	{
-		ft_printf("tab_ants[%d].tab_life[%d] = %d\n", i, x, infos->tab_ants[i].tab_life[x]);
 		if (infos->tab_ants[i].tab_life[x] != -1 &&
 			(x == 0 || (x > 0 && infos->tab_ants[i].tab_life[x - 1] == -1)))
 			count++;
@@ -276,31 +272,6 @@ void			print_usage(void)
 	ft_putstr("Welcome\n");
 }
 
-void			init_vars_display(t_display *display)
-{
-	display->start_ants = display->infos.ants;
-	display->end_ants = 0;
-	display->moment = 0;
-	display->step = 1;
-	display->pause = 1;
-	display->pass = 1;
-	display->block = WIDTH / 10;
-	display->color_text = setcolor_sdl(0, 0, 0, 0);
-	display->offset = ft_setpoint(400, 200);
-}
-
-int				init_display(t_display *display)
-{
-	init_sdlenv(&(display->env), 1, 1, 0);
-	init_sdl(display->env);
-	if (!fill_sdlenv(&(display->env), TITLE, HEIGHT, WIDTH))
-		return (0);
-	//load_music(display->env, MUSIC_PATH);
-	display->font_text = TTF_OpenFont(FONT_TYPE_TXT, FONT_SIZE_TXT);
-	init_vars_display(display);
-	return (1);
-}
-
 static char		*str_msg(char *msg, int nbr)
 {
 	char		*str;
@@ -313,13 +284,13 @@ static char		*str_msg(char *msg, int nbr)
 	return (str);
 }
 
-void			display_shots(t_display *display, int shots)
+void			display_shots(t_display *display)
 {
 	SDL_Texture	*tex;
 	SDL_Rect	pos;
 	char		*str;
 
-	str = str_msg("Shots: ", shots);
+	str = str_msg("Shots: ", display->moment);
 	tex = ttf_texture(display->env.render, display->font_text,
 						str, display->color_text);
 	SDL_QueryTexture(tex, NULL, NULL, &pos.w, &pos.h);
@@ -330,7 +301,7 @@ void			display_shots(t_display *display, int shots)
 	free(str);
 }
 
-void			display_ants(t_display *display, int start_ants, int end_ants)
+void			display_ants(t_display *display)
 {
 	SDL_Texture	*tex;
 	SDL_Rect	pos;
@@ -427,7 +398,7 @@ static void		draw_edge(t_display *display)
 	}
 }
 
-static void		write_limits(t_display *display, int is_start, t_point c, int r)
+static void		write_limits(t_display *display, int is_start, t_point c)
 {
 	SDL_Texture	*texture;
 	TTF_Font	*font;
@@ -455,7 +426,7 @@ static void		limits_square(t_display *display, t_point c, int r, int is_start)
 	else
 		colors[1] = setcolor_sdl(0, 255, 0, 1);
 	drawfillsquare_sdl_c(display->env, colors, c, 2 * r);
-	write_limits(display, is_start, c, r);
+	write_limits(display, is_start, c);
 }
 
 static void		drawnormal_disk(t_sdlenv env, SDL_Color color, t_point c, int r)
@@ -467,7 +438,7 @@ static void		drawnormal_disk(t_sdlenv env, SDL_Color color, t_point c, int r)
 	drawcircle_sdl(env, black, c, r);
 }
 
-static void		write_name(t_display *display, char *name, t_point c, int r)
+static void		write_name(t_display *display, char *name, t_point c)
 {
 	SDL_Texture	*texture;
 	TTF_Font	*font;
@@ -497,7 +468,6 @@ static void		draw_rooms(t_display *display)
 	while (i < infos.v)
 	{
 		color = color_macros(infos.rooms[i].color);
-		ft_printf("r = %d | g = %d | b = %d\n", color.r, color.g, color.b);
 		c = ft_setpoint(display->offset.y + infos.rooms[i].coord.y * display->block,
 					display->offset.x + infos.rooms[i].coord.x * display->block);
 		if (infos.rooms[i].id == infos.start)
@@ -506,21 +476,9 @@ static void		draw_rooms(t_display *display)
 			limits_square(display, c, r, 0);
 		else
 			drawnormal_disk(display->env, color, c, r);
-		write_name(display, infos.tab_hash[infos.rooms[i].id], c, r);
+		write_name(display, infos.tab_hash[infos.rooms[i].id], c);
 		i++;
 	}
-}
-
-void			display_graph(t_display *display)
-{
-	draw_edge(display);
-	draw_rooms(display);
-}
-
-void			display_vars(t_display *display, int start_ants, int end_ants, int shots)
-{
-	display_shots(display, shots);
-	display_ants(display, start_ants, end_ants);
 }
 
 void			draw_scene(t_display *display)
@@ -534,7 +492,8 @@ void			draw_scene(t_display *display)
 	rect = create_rect(HEIGHT / 8, WIDTH / 5, HEIGHT / 30, WIDTH / 30);
 	SDL_SetRenderDrawColor(display->env.render, 160, 160, 160, 255);
 	SDL_RenderFillRect(display->env.render, &rect);
-	display_graph(display);
+	draw_edge(display);
+	draw_rooms(display);
 }
 
 void			draw_ant(t_display *display, t_infos infos, int x)
@@ -586,100 +545,18 @@ void			draw_state(t_display *display, t_infos infos)
 		draw_full_limit(display, 1);
 	if (display->infos.start_end[display->moment].y > 0)
 		draw_full_limit(display, 0);
-	display_vars(display, display->start_ants, display->end_ants, display->moment);
+	display_shots(display);
+	display_ants(display);
 	SDL_RenderPresent(display->env.render);
-}
-
-static void		event_zoom(t_display *display)
-{
-	if (display->event.key.keysym.sym == SDLK_KP_PLUS &&
-		display->block < WIDTH / 5)
-	{
-		display->block += 10;
-		display->offset.x -= 20;
-	}
-	if (display->event.key.keysym.sym == SDLK_KP_MINUS &&
-		display->block > WIDTH / 50)
-	{
-		display->block -= 10;
-		display->offset.x += 20;
-	}
-}
-
-void			event_keydown(t_display *display)
-{
-	if (display->event.key.keysym.sym == SDLK_ESCAPE)
-		display->pass = 0;
-	else if (display->event.key.keysym.sym == SDLK_SPACE)
-		display->pause = (display->pause) ? 0 : 1;
-	else if (display->event.key.keysym.sym == SDLK_RIGHT)
-		display->offset.x += 20;
-	else if (display->event.key.keysym.sym == SDLK_LEFT)
-		display->offset.x -= 20;
-	else if (display->event.key.keysym.sym == SDLK_UP)
-		display->offset.y -= 20;
-	else if (display->event.key.keysym.sym == SDLK_DOWN)
-		display->offset.y += 20;
-	else if (display->event.key.keysym.sym == SDLK_r)	
-		init_vars_display(display);
-	else if (display->event.key.keysym.sym == SDLK_b)
-	{
-		display->moment -= (display->moment > 0) ? 1 : 0;
-		draw_state(display, display->infos);
-	}
-	else if (display->event.key.keysym.sym == SDLK_f)
-	{
-		display->moment += (display->moment < display->infos.shots) ? 1 : 0;
-		draw_state(display, display->infos);
-	}
-	else if (display->event.key.keysym.sym == SDLK_KP_PLUS ||
-		display->event.key.keysym.sym == SDLK_KP_MINUS)
-		event_zoom(display);
-}
-
-void			free_display(t_display *display)
-{
-	TTF_CloseFont(display->font_text);
-	free_infos(&(display->infos));
-	free_sdl(&(display->env));
-}
-
-
-void			displayer_loop(t_display *display)
-{
-	while (display->pass)
-	{
-		while (SDL_PollEvent(&(display->event)))
-		{
-			if (display->event.type == SDL_QUIT)
-				display->pass = 0;
-			if (display->event.type == SDL_KEYDOWN)
-				event_keydown(display);
-		}
-		if (!display->pause)
-		{
-			if (display->moment < display->infos.shots)
-				display->moment++;
-			else
-				display->pause = 1;
-			SDL_Delay(200);
-		}
-		draw_state(display, display->infos);
-	}
 }
 
 int				main(int ac, char **av)
 {
 	t_display	display;
-		int			i;
 
 	print_usage();
 	if (!store_data(ac, av, &(display.infos)))
 		return(EXIT_FAILURE);
-	i = -1;
-	ft_printf("\nstart_end:\n");
-	while (++i <= display.infos.shots)
-		ft_printf("start = %d | end = %d\n", display.infos.start_end[i].x, display.infos.start_end[i].y);
 	if (!init_display(&display))
 		return(EXIT_FAILURE);
 	displayer_loop(&display);
