@@ -6,13 +6,13 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 09:09:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 10:10:35 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:14:58 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DISPLAYER_H
-# include "libsdl/libsdl.h"
-# include "../libft/includes/libft.h"
+# include "libsdl.h"
+# include "libft.h"
 
 # define	WIDTH	2200
 # define	HEIGHT	1200

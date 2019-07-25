@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 10:12:06 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 10:12:14 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:18:33 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ SDL_Color	color_macros(int macros)
 
 void		name_color(int macros)
 {
-	char	*str;
-
 	if (macros == L_YELLOW)
 		ft_printf("   color: %{yellow}Yellow%{eoc}\n");
 	else if (macros == L_WHITE)

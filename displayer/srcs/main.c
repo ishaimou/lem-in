@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 10:11:24 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:17:35 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ void			fill_adv_infos(t_infos *infos)
 {
 	t_chr		*curr;
 	int			time;
-	int			i;
 
 	curr = infos->input;
 	while (curr)
@@ -336,7 +335,6 @@ void			display_ants(t_display *display)
 	SDL_Texture	*tex;
 	SDL_Rect	pos;
 	char		*str;
-	SDL_Surface	*surface;
 
 	str = str_msg("Start: ", display->infos.start_end[display->moment / STATE].x);
 	tex = ttf_texture(display->env.render, display->font_text,
@@ -450,6 +448,7 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 	t_point		p1;
 	t_point		p2;
 
+	v_next = -1;
 	v_now = infos.tab_ants[x].tab_life[display->moment / STATE];
 	color = color_macros(infos.tab_ants[x].color);
 	p1 = pt_new(display->offset.y +
