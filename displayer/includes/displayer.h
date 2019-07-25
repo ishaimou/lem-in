@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 09:09:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 10:14:58 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/25 11:09:12 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,13 @@ typedef struct		s_display
 	int				f;
 }					t_display;
 
+int			store_data(int ac, char **av, t_infos *infos);
+void		fill_adv_infos(t_infos *infos);
+void		fill_basic_infos(t_infos *infos);
+void		fill_start_end(t_infos *infos);
+void		fill_tab_ants(t_infos *infos, t_ant_infos *tab_ants, char *str, int time);
+void		fill_room(t_infos *infos, char *str);
+void		add_link(char **tab_hash, int v, int **matrix, char *str);
 void		create_tabhash_2(t_infos *infos, t_chr *list);
 void		take_cmds(t_infos *infos, char *str);
 int			alloc_places(t_infos *infos);

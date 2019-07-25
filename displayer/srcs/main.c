@@ -6,12 +6,13 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 10:17:35 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/25 11:09:10 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "displayer.h"
 
+/*
 static void		find_start_end(t_chr *curr, char *str)
 {
 	if (!ft_strcmp(str, "start"))
@@ -274,7 +275,7 @@ int				store_data(int ac, char **av, t_infos *infos)
 		print_debug(infos);
 	return (1);
 }
-
+*/
 void			print_usage(void)
 {
 	ft_printf("%{blue}=====================|%{BLUE} USAGE %{blue}|");
