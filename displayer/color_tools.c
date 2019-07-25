@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   color_tools.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 10:12:06 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/25 10:12:14 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
-SDL_Color		color_macros(int macros)
+SDL_Color	color_macros(int macros)
 {
 	if (macros == L_YELLOW)
 		return (sdl_rgb(255, 255, 0));

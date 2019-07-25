@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 09:54:54 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:11:24 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -472,7 +472,7 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 	}
 	else
 		coord_ant = pt_new(p1.y, p1.x);
-	ant_man(display->env, color, coord_ant, display->block / 15,
+	ant_man(display, color, coord_ant,
 			get_teta(display->infos, v_now, v_next));
 }
 

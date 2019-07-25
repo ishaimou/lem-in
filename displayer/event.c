@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 02:08:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 03:08:09 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:04:29 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,13 @@ static void		event_instructs(t_display *display)
 	}
 	else if (display->event.key.keysym.sym == SDLK_f)
 	{
-		display->moment += (display->moment < STATE * display->infos.shots) ? 1 : 0;
+		display->moment +=
+			(display->moment < STATE * display->infos.shots) ? 1 : 0;
 		draw_state(display, display->infos);
 	}
 }
 
-void		off_on_music(t_display *display)
+static void		off_on_music(t_display *display)
 {
 	if (display->mute == -1)
 	{
@@ -60,8 +61,6 @@ static void		event_keydown(t_display *display)
 {
 	if (display->event.key.keysym.sym == SDLK_ESCAPE)
 		display->pass = 0;
-	else if (display->event.key.keysym.sym == SDLK_SPACE)
-		display->pause = (display->pause) ? 0 : 1;
 	else if (display->event.key.keysym.sym == SDLK_RIGHT)
 		display->offset.x += 20;
 	else if (display->event.key.keysym.sym == SDLK_LEFT)
@@ -70,6 +69,8 @@ static void		event_keydown(t_display *display)
 		display->offset.y -= 20;
 	else if (display->event.key.keysym.sym == SDLK_DOWN)
 		display->offset.y += 20;
+	else if (display->event.key.keysym.sym == SDLK_SPACE)
+		display->pause = (display->pause) ? 0 : 1;
 	else if (display->event.key.keysym.sym == SDLK_r)
 		init_vars_display(display);
 	else if (display->event.key.keysym.sym == SDLK_m)
@@ -80,12 +81,8 @@ static void		event_keydown(t_display *display)
 		(display->f < 3) ? display->f++ : 0;
 	else if (display->event.key.keysym.sym == SDLK_t)
 		display->trace = (display->trace) ? 0 : 1;
-	else if (display->event.key.keysym.sym == SDLK_b ||
-			display->event.key.keysym.sym == SDLK_f)
-		event_instructs(display);
-	else if (display->event.key.keysym.sym == SDLK_KP_PLUS ||
-			display->event.key.keysym.sym == SDLK_KP_MINUS)
-		event_zoom(display);
+	event_instructs(display);
+	event_zoom(display);
 }
 
 void			displayer_loop(t_display *display)
