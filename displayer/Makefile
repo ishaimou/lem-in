@@ -6,7 +6,7 @@
 #    By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/22 23:50:43 by ishaimou          #+#    #+#              #
-#    Updated: 2019/07/25 11:04:41 by ishaimou         ###   ########.fr        #
+#    Updated: 2019/07/25 11:16:54 by ishaimou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,10 +50,18 @@ all: $(NAME)
 
 $(NAME):
 	@make -C $(LIB_DIR)
-	@echo "$(BGREEN)$(LIB_NAME) has been created successfully.$(RESET)"
+	@echo "$(BGREEN) "
+	@echo " ██████╗ ██████╗ ███████╗██╗███████╗██╗  ██╗"
+	@echo "██╔═══██╗██╔══██╗██╔════╝██║██╔════╝██║  ██║"
+	@echo "██║   ██║██████╔╝█████╗  ██║███████╗███████║"
+	@echo "██║   ██║██╔══██╗██╔══╝  ██║╚════██║██╔══██║"
+	@echo "╚██████╔╝██████╔╝███████╗██║███████║██║  ██║"
+	@echo " ╚═════╝ ╚═════╝ ╚══════╝╚═╝╚══════╝╚═╝  ╚═╝"
+	@echo " $(BCYAN)The Best tool to supervise your dirty ants!"
+	@echo ""
+	@echo "$(RESET)"
 	@gcc -o $(NAME) $(SRCS_DIR) -I $(H_LIBFT) -I $(H_DIR) -I $(H_LIBSDL) $(LIBFT) $(LIBSDL)\
 		$(LIB_SDL2) $(LIB_SDL2_IMG) $(LIB_SDL2_TTF) $(LIB_SDL2_MIXER) $(FLAGS)
-	@echo "$(BGREEN)$(NAME) has been created successfully.$(RESET)"
 
 clean:
 	@make clean -C $(LIB_DIR)
