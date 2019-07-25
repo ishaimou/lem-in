@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_debug.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 10:41:24 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/25 10:44:35 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
 static void		print_infos_rooms(char **tab_hash, t_room *rooms, int size)
@@ -8,10 +20,12 @@ static void		print_infos_rooms(char **tab_hash, t_room *rooms, int size)
 	ft_printf("\n %{CYAN}Rooms Informations:%{eoc}:\n");
 	while (i < size)
 	{
-		ft_printf("%{yellow}-----| %{eoc}room %d%{yellow} |-----%{eoc}\n", rooms[i].id);
+		ft_printf("%{yellow}-----| %{eoc}room %d");
+		ft_printf("%{yellow} |-----%{eoc}\n", rooms[i].id);
 		ft_printf("   name : %s\n", tab_hash[rooms[i].id]);
 		name_color(rooms[i].color);
-		ft_printf("   coord: (x = %d, y = %d)\n", rooms[i].coord.x, rooms[i].coord.y);
+		ft_printf("   coord: (x = %d, ", rooms[i].coord.x);
+		ft_printf("y = %d)\n", rooms[i].coord.y);
 		ft_putchar('\n');
 		i++;
 	}
@@ -53,7 +67,6 @@ static void		print_adj_matrix(int **matrix, int size)
 	ft_putchar('\n');
 }
 
-
 static void		print_infos_tabhash(char **tab_hash, int size)
 {
 	int			i;
@@ -83,6 +96,7 @@ void			print_debug(t_infos *infos)
 	print_infos_rooms(infos->tab_hash, infos->rooms, infos->v);
 	print_adj_matrix(infos->links, infos->v);
 	print_life_ants(infos);
-	ft_printf(" The Goal is done in %{RED}%d%{eoc} instruction(s)\n", infos->shots);
-	ft_printf("%{blue}================================================%{eoc}\n\n");
+	ft_printf(" Done in %{RED}%d%{eoc} instruction(s)\n", infos->shots);
+	ft_printf("%{blue}========================");
+	ft_printf("========================%{eoc}\n\n");
 }

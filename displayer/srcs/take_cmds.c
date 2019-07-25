@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 06:42:50 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 01:58:43 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:45:46 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int		good_ant_syntax(char **s)
 	}
 	eol = i;
 	while (str[++i])
-		if (str[i] < 65 && str[i] > 90 )
+		if (str[i] < 65 && str[i] > 90)
 			return (0);
 	(*s)[eol] = '\0';
 	return (eol);
@@ -66,7 +66,7 @@ static int		good_room_syntax(char **s)
 	}
 	eol = i;
 	while (str[++i])
-		if (str[i] < 65 && str[i] > 90 )
+		if (str[i] < 65 && str[i] > 90)
 			return (0);
 	(*s)[eol] = '\0';
 	return (eol);

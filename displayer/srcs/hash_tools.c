@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hash_tools.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 10:38:22 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/25 10:40:37 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
 static char	*name_vertex(char *str)
@@ -26,19 +38,17 @@ void		create_tabhash_2(t_infos *infos, t_chr *list)
 		(infos->tab_hash)[i++] = NULL;
 	while (list)
 	{
-		if (!is_room(list->str))
+		if (is_room(list->str))
 		{
-			list = list->next;
-			continue ;
+			s = name_vertex(list->str);
+			ind = hash_strtoind(infos->tab_hash, infos->v, s);
+			hash_putintab(infos->tab_hash, infos->v, s, &ind);
+			if (list->len == INT_MAX)
+				infos->start = ind;
+			if (list->len == UINT_MAX)
+				infos->end = ind;
+			free(s);
 		}
-		s = name_vertex(list->str);
-		ind = hash_strtoind(infos->tab_hash, infos->v, s);
-		hash_putintab(infos->tab_hash, infos->v, s, &ind);
-		if (list->len == INT_MAX)
-			infos->start = ind;
-		if (list->len == UINT_MAX)
-			infos->end = ind;
 		list = list->next;
-		free(s);
 	}
 }

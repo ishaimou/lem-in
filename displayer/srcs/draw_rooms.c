@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw_rooms.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 10:31:14 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/25 10:32:02 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
 static void		write_limits(t_display *display, int is_start, t_point c)
@@ -18,7 +30,8 @@ static void		write_limits(t_display *display, int is_start, t_point c)
 	TTF_CloseFont(font);
 }
 
-static void		limits_square(t_display *display, t_point c, int r, int is_start)
+static void		limits_square(t_display *display, t_point c, int r,
+							int is_start)
 {
 	SDL_Color	colors[2];
 
