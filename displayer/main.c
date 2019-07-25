@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 06:21:00 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 09:54:54 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,6 +426,21 @@ void			draw_scene(t_display *display)
 	draw_rooms(display);
 }
 
+int				get_teta(t_infos infos, int a, int b)
+{
+	t_point		p[2];
+	float		rad;
+
+	if (b == -1 || a == infos.end)
+		return (0);
+	p[0] = infos.rooms[a].coord;
+	p[1] = infos.rooms[b].coord;
+	rad = atan2(p[1].y - p[0].y, p[1].x - p[0].x);
+	if (p[0].y >= p[1].y || p[0].x >= p[1].x)
+		rad += M_PI;
+	return ((rad * 180) / M_PI);
+}
+
 void			draw_ant(t_display *display, t_infos infos, int x)
 {
 	t_point		coord_ant;
@@ -457,7 +472,8 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 	}
 	else
 		coord_ant = pt_new(p1.y, p1.x);
-	ant_man(display->env, color, coord_ant, display->block / 15);
+	ant_man(display->env, color, coord_ant, display->block / 15,
+			get_teta(display->infos, v_now, v_next));
 }
 
 void			draw_full_limit(t_display *display, int is_start)

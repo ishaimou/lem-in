@@ -1,35 +1,36 @@
 #include "libsdl.h"
 
-void		ant_man(t_sdlenv env, SDL_Color color, t_point c, int r)
+void		ant_man(t_sdlenv env, SDL_Color color, t_point origin, int g_r, int teta)
 {
-	t_bline	bline;
-	t_point	small_c[4];
+	t_point	c[4];
+	t_point	rot_c[4];
 	t_point	p[2];
-	int		small_r;
+	int		r;
 	int		i;
 
-	small_r = r / 8;
-	small_c[0] = pt_new(c.y, c.x - 3 * small_r);
-	small_c[1] = pt_new(c.y, c.x - small_r);
-	small_c[2] = pt_new(c.y, c.x + small_r);
-	small_c[3] = pt_new(c.y, c.x + 3 * small_r);
-	p[0] = pt_new(small_c[0].y + 3 * small_r / 2, small_c[0].x - 3 * small_r / 2);
-	p[1] = pt_new(small_c[0].y - 3 * small_r / 2, small_c[0].x - 3 * small_r / 2);
-	bline = bline_new(small_c[0], p[0], 3);
-	sdl_bline(env, sdl_rgb(0, 0, 0), bline);
-	bline = bline_new(small_c[0], p[1], 3);
-	sdl_bline(env, sdl_rgb(0, 0, 0), bline);
-	sdl_disk(env, color, small_c[0], small_r);
-	sdl_circle(env, sdl_rgb(0, 0, 0), small_c[i], small_r);
+	r = g_r / 8;
+	c[0] = pt_new(origin.y, origin.x - 3 * r);
+	c[1] = pt_new(origin.y, origin.x - r);
+	c[2] = pt_new(origin.y, origin.x + r);
+	c[3] = pt_new(origin.y, origin.x + 3 * r);
+	rot_c[0] = pt_rot(origin, c[0], teta);
+	rot_c[1] = pt_rot(origin, c[1], teta);
+	rot_c[2] = pt_rot(origin, c[2], teta);
+	rot_c[3] = pt_rot(origin, c[3], teta);
+	p[0] = pt_rot(origin, pt_new(c[0].y + 3 * r / 2, c[0].x - 3 * r / 2), teta);
+	p[1] = pt_rot(origin, pt_new(c[0].y - 3 * r / 2, c[0].x - 3 * r / 2), teta);
+	sdl_line(env, sdl_rgb(0, 0, 0), rot_c[0], p[0]);
+	sdl_line(env, sdl_rgb(0, 0, 0), rot_c[0], p[1]);
+	sdl_disk(env, color, rot_c[0], r);
+	sdl_circle(env, sdl_rgb(0, 0, 0), rot_c[0], r);
 	i = 1;
 	while (i < 4)
 	{
-		p[0] = pt_new(small_c[i].y - 2 * small_r, small_c[i].x);
-		p[1] = pt_new(small_c[i].y + 2 * small_r, small_c[i].x);
-		bline = bline_new(p[0], p[1], 3);
-		sdl_bline(env, sdl_rgb(0, 0, 0), bline);
-		sdl_disk(env, color, small_c[i], small_r);
-		sdl_circle(env, sdl_rgb(0, 0, 0), small_c[i], small_r);
+		p[0] = pt_rot(origin, pt_new(c[i].y - 2 * r, c[i].x), teta);
+		p[1] = pt_rot(origin, pt_new(c[i].y + 2 * r, c[i].x), teta);
+		sdl_line(env, sdl_rgb(0, 0, 0), p[0], p[1]);
+		sdl_disk(env, color, rot_c[i], r);
+		sdl_circle(env, sdl_rgb(0, 0, 0), rot_c[i], r);
 		i++;
 	}
 }
@@ -50,7 +51,7 @@ int		main(void)
 	colors[0] = sdl_rgb(255, 0, 0);
 	colors[1] = sdl_rgb(0, 255, 0);
 	sdl_circle(env, color, pt_new(200, 200), 100);
-	ant_man(env, color, pt_new(200, 200), 100);
+	ant_man(env, color, pt_new(200, 200), 100, 30);
 	//drawdisk_sdl(env, color, ft_setpoint(200, 200), 100);
 	//drawline_sdl(env, color, ft_setpoint(300, 200), ft_setpoint(100, 200));
 	//drawrect_sdl_b(env, color, create_rect(200, 300, 100, 100));

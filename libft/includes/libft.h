@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/04 01:07:21 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/01 07:35:22 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/25 09:36:26 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
+# include <math.h>
 # include "structs.h"
 # include "ft_printf.h"
 # define BUFF_SIZE 1000
@@ -184,6 +185,7 @@ void				mxint_free(int ***tab, int size);
 
 t_point				pt_new(int y, int x);
 void				pt_swap(t_point *p1, t_point *p2);
+t_point				pt_rot(t_point c, t_point a, int teta);
 t_point				pt_linterp(t_point p1, t_point p2, int a, int t);
 
 /*

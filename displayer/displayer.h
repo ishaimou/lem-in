@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   displayer.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 09:09:59 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/25 09:10:10 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef DISPLAYER_H
 # include "libsdl/libsdl.h"
 # include "../libft/includes/libft.h"
@@ -95,7 +107,7 @@ void		name_color(int macros);
 SDL_Color	color_macros(int macros);
 void		print_debug(t_infos *infos);
 void		draw_rooms(t_display *display);
-void		ant_man(t_sdlenv env, SDL_Color color, t_point c, int r);
+void		ant_man(t_sdlenv env, SDL_Color color, t_point c, int r, int teta);
 void		print_infos(t_infos infos);			  //!!!!!!!!!!
 void		print_matrix(int **matrix, int size); //!!!!!!!!!!
 
