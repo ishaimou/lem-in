@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 09:09:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 11:09:12 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:30:27 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void		free_display(t_display *display);
 int			init_display(t_display *display);
 void		init_vars_display(t_display *display);
 void		draw_state(t_display *display, t_infos infos);
+void		draw_scene(t_display *display);
 void		print_life_ants(t_infos *infos);
 void		name_color(int macros);
 SDL_Color	color_macros(int macros);

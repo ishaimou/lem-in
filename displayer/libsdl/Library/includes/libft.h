@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/04 01:07:21 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 08:30:30 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:49:01 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,7 @@ void				mxint_free(int ***tab, int size);
 t_point				pt_new(int y, int x);
 void				pt_swap(t_point *p1, t_point *p2);
 t_point				pt_rot(t_point c, t_point a, int o_deg);
+int					pt_diffteta(t_point p1, t_point p2);
 t_point				pt_linterp(t_point p1, t_point p2, int a, int t);
 
 /*

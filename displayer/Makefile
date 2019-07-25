@@ -6,7 +6,7 @@
 #    By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/22 23:50:43 by ishaimou          #+#    #+#              #
-#    Updated: 2019/07/25 11:16:54 by ishaimou         ###   ########.fr        #
+#    Updated: 2019/07/26 00:25:42 by obelouch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ FLAGS = -Wall -Werror -Wextra
 
 SRCS = alloc_places.c take_cmds.c main.c tools.c ant_man.c color_tools.c\
 	   draw_rooms.c event.c free.c init.c print_debug.c print_life_ants.c\
-	   fill.c fill_infos.c store_data.c hash_tools.c deleteme.c
+	   fill.c fill_infos.c store_data.c hash_tools.c deleteme.c draw_scene.c\
 
 SRCS_DIR = $(addprefix srcs/, $(SRCS))
 
