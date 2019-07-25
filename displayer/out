@@ -2,10 +2,13 @@
 ##start
 A 5 5
 ##end
-J 1 5
+J -1 5
+##color room E-CYAN
+##color room D-PURPLE
 B 4 6
 C 4 5
 D 4 4
+##color ant 7-PURPLE
 E 2 6
 F 1 6
 H 2 5

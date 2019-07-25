@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 02:08:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 04:42:04 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 03:08:09 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,18 @@ static void		event_instructs(t_display *display)
 	}
 }
 
-static void		change_frame(int *frame)
+void		off_on_music(t_display *display)
 {
-	if (*frame != 3)
-		(*frame)++;
+	if (display->mute == -1)
+	{
+		display->mute = 0;
+		Mix_PauseMusic();
+	}
 	else
-		frame = 0;
+	{
+		display->mute = -1;
+		Mix_PlayMusic(display->env.music, display->mute);
+	}
 }
 
 static void		event_keydown(t_display *display)
@@ -67,9 +73,13 @@ static void		event_keydown(t_display *display)
 	else if (display->event.key.keysym.sym == SDLK_r)
 		init_vars_display(display);
 	else if (display->event.key.keysym.sym == SDLK_m)
-		display->mute = (display->mute) ? 0 : 1;
-	else if (display->event.key.keysym.sym == SDLK_v)
-		change_frame(&(display->f));
+		off_on_music(display);
+	else if (display->event.key.keysym.sym == SDLK_KP_2)
+		(display->f > 0) ? display->f-- : 0;
+	else if (display->event.key.keysym.sym == SDLK_KP_1)
+		(display->f < 3) ? display->f++ : 0;
+	else if (display->event.key.keysym.sym == SDLK_t)
+		display->trace = (display->trace) ? 0 : 1;
 	else if (display->event.key.keysym.sym == SDLK_b ||
 			display->event.key.keysym.sym == SDLK_f)
 		event_instructs(display);

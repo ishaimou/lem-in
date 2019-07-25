@@ -5,7 +5,7 @@
 # define	WIDTH	2200
 # define	HEIGHT	1200
 
-# define	STATE	20
+# define	STATE	5
 
 # define	TITLE	"Ishobe Take Care of your ants"
 
@@ -13,6 +13,7 @@
 # define	FONT_SIZE_TXT	30
 
 # define	IMG_PATH	"libsdl/Images/bk.jpg"
+# define	MUSIC_PATH	"./libsdl/Music/Ants_Walk.ogg"
 
 # define	L_WHITE -1
 # define	L_BLACK 0
@@ -22,7 +23,7 @@
 # define	L_BLUE 4
 # define	L_ORANGE 5
 # define	L_CYAN 6
-# define	L_MAGENTA 7
+# define	L_PURPLE 7
 
 typedef struct		s_ant_infos
 {
@@ -70,6 +71,7 @@ typedef struct		s_display
 	int				pass;
 	int				mute;
 	int				frame[4];
+	int				trace;
 	int				f;
 }					t_display;
 
@@ -93,6 +95,7 @@ void		name_color(int macros);
 SDL_Color	color_macros(int macros);
 void		print_debug(t_infos *infos);
 void		draw_rooms(t_display *display);
+void		ant_man(t_sdlenv env, SDL_Color color, t_point c, int r);
 void		print_infos(t_infos infos);			  //!!!!!!!!!!
 void		print_matrix(int **matrix, int size); //!!!!!!!!!!
 

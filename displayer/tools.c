@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 01:58:50 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 03:53:15 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 03:56:35 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ int			the_color(char *str, int def)
 		return (L_CYAN);
 	if (!ft_strcmp(str, "ORANGE"))
 		return (L_ORANGE);
+	if (!ft_strcmp(str, "PURPLE"))
+		return (L_PURPLE);
 	return (def);
 }
 
@@ -60,12 +62,12 @@ int			is_room(char *str)
 	if (str[i] != ' ')
 		return (0);
 	while (str[++i] && str[i] != ' ')
-		if (!ft_isdigit(str[i]))
+		if (!ft_isdigit(str[i]) && str[i] != '-' && str[i] != '+')
 			return (0);
 	if (str[i] != ' ')
 		return (0);
 	while (str[++i])
-		if (!ft_isdigit(str[i]))
+		if (!ft_isdigit(str[i]) && str[i] != '-' && str[i] != '+')
 			return (0);
 	return ((str[i]) ? 0 : 1);
 }

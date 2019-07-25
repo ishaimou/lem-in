@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_life_ants.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 03:29:03 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/25 03:54:03 by obelouch         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "displayer.h"
 
 static void		ant_life_color(char *str, int macros)
@@ -12,7 +24,7 @@ static void		ant_life_color(char *str, int macros)
 		ft_printf(" %{blue}%s%{eoc} |", str);
 	else if (macros == L_CYAN)
 		ft_printf(" %{cyan}%s%{eoc} |", str);
-	else if (macros == L_MAGENTA)
+	else if (macros == L_PURPLE)
 		ft_printf(" %{purple}%s%{eoc} |", str);
 	else
 		ft_printf(" %s |", str);

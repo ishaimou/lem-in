@@ -21,9 +21,9 @@ static void		print_infos_rooms(char **tab_hash, t_room *rooms, int size)
 static void		print_val_green(int **matrix, int i, int j)
 {
 	if (matrix[i][j])
-		ft_printf("%{GREEN}%-3d%{eoc}", matrix[i][j]);
+		ft_printf("%{GREEN}%-3d%{eoc}", 1);
 	else
-		ft_printf("%-3d", matrix[i][j]);
+		ft_printf("%-3d", 0);
 }
 
 static void		print_adj_matrix(int **matrix, int size)

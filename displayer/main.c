@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 07:16:21 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 06:21:00 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,33 @@ void			fill_start_end(t_infos *infos)
 	}
 }
 
+void			fill_trace(t_infos *infos)
+{
+	int			*life;
+	int			i;
+	int			j;
+
+	i = 0;
+	while (i < infos->ants)
+	{
+		j = 0;
+		while (j < infos->shots)
+		{
+			life = infos->tab_ants[i].tab_life;
+			if (life[j] != -1 && life[j + 1] != -1 &&
+				life[j] != life[j + 1])
+			{
+				if (infos->links[life[j]][life[j + 1]] == 2)
+					break ;
+				infos->links[life[j]][life[j + 1]] = 2;
+				infos->links[life[j + 1]][life[j]] = 2;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
 int				store_data(int ac, char **av, t_infos *infos)
 {
 	init_infos(infos);
@@ -243,6 +270,7 @@ int				store_data(int ac, char **av, t_infos *infos)
 	create_tabhash_2(infos, infos->input);
 	fill_adv_infos(infos);
 	fill_start_end(infos);
+	fill_trace(infos);
 	if (infos->debug)
 		print_debug(infos);
 	return (1);
@@ -250,16 +278,28 @@ int				store_data(int ac, char **av, t_infos *infos)
 
 void			print_usage(void)
 {
-	ft_printf("%{blue}==========|%{BLUE} USAGE %{blue}|==========%{eoc}\n");
-	ft_printf("    Exit     :  %{CYAN}ESCAPE%{eoc}\n");
-	ft_printf("    Move     :  %{CYAN}ARROWS%{eoc}\n");
-	ft_printf("    Pause    :  %{CYAN}SPACE%{eoc}\n");
-	ft_printf("    Reset    :  %{CYAN}R%{eoc}\n");
-	ft_printf("    Zoom In  :  %{CYAN}+%{eoc}\n");
-	ft_printf("    Zoom Out :  %{CYAN}-%{eoc}\n");
-	ft_printf("    Next Shot:  %{CYAN}F%{eoc}\n");
-	ft_printf("    Prev Shot:  %{CYAN}B%{eoc}\n");
-	ft_printf("%{blue}=============================%{eoc}\n");
+	ft_printf("%{blue}=====================|%{BLUE} USAGE %{blue}|");
+	ft_printf("==================%{eoc}\n");
+	ft_printf("        %{GREEN}* Displayer commands:%{eoc}\n");
+	ft_printf("   Exit        :  %{CYAN}ESCAPE%{eoc}\n");
+	ft_printf("   Move        :  %{CYAN}ARROWS%{eoc}\n");
+	ft_printf("   Pause       :  %{CYAN}SPACE%{eoc}\n");
+	ft_printf("   Reset       :  %{CYAN}R%{eoc}\n");
+	ft_printf("   Zoom In     :  %{CYAN}+%{eoc}\n");
+	ft_printf("   Zoom Out    :  %{CYAN}-%{eoc}\n");
+	ft_printf("   Next Shot   :  %{CYAN}F%{eoc}\n");
+	ft_printf("   Prev Shot   :  %{CYAN}B%{eoc}\n");
+	ft_printf("   Speed Up    :  %{CYAN}2%{eoc}\n");
+	ft_printf("   Speed Down  :  %{CYAN}1%{eoc}\n");
+	ft_printf("   Trace On/Off:  %{CYAN}T%{eoc}\n");
+	ft_printf("   Music On/Off:  %{CYAN}M%{eoc}\n");
+	ft_printf("\n        %{GREEN}* Map commands:%{eoc}\n");
+	ft_printf("  %{cyan}##color room %{eoc}room_name%{cyan}-%{eoc}color\n");
+	ft_printf("  %{cyan}##color ant %{eoc}ant_num%{cyan}-%{eoc}color\n");
+	ft_printf("\n        %{GREEN}* Colors:%{eoc}\n");
+	ft_printf(" %{RED}RED %{BLUE}BLUE %{GREEN}GREEN %{YELLOW}YELLOW");
+	ft_printf(" %{CYAN}CYAN %{eoc}ORANGE %{PURPLE}PURPLE\n");
+	ft_printf("%{blue}=================================================%{eoc}\n");
 }
 
 static char		*str_msg(char *msg, int nbr)
@@ -317,6 +357,7 @@ void			display_ants(t_display *display)
 
 static void		draw_link(t_display *display, t_infos infos, int a, int b)
 {
+	SDL_Color	color;
 	t_room		*rooms;
 	t_point		p_a;
 	t_point		p_b;
@@ -340,7 +381,11 @@ static void		draw_link(t_display *display, t_infos infos, int a, int b)
 	p_b = pt_new(display->offset.y + rooms[j].coord.y * display->block,
 			display->offset.x + rooms[j].coord.x * display->block);
 	bline = bline_new(p_a, p_b, display->block / 8);
-	sdl_bline(display->env, color_macros(infos.color_paths), bline);
+	if (display->infos.links[a][b] == 2 && display->trace)
+		color = sdl_rgb(255, 177, 51);
+	else
+		color = color_macros(infos.color_paths);
+	sdl_bline(display->env, color, bline);
 }
 
 static void		draw_edge(t_display *display)
@@ -358,7 +403,7 @@ static void		draw_edge(t_display *display)
 		j = 0;
 		while (j < size)
 		{
-			if (matrix[i][j] == 1)
+			if (matrix[i][j])
 				draw_link(display, display->infos, i, j);
 			j++;
 		}
@@ -412,9 +457,7 @@ void			draw_ant(t_display *display, t_infos infos, int x)
 	}
 	else
 		coord_ant = pt_new(p1.y, p1.x);
-	sdl_disk(display->env, color, coord_ant, display->block / 15);
-	sdl_circle(display->env, sdl_rgb(0, 0, 0),
-			coord_ant, display->block / 15);
+	ant_man(display->env, color, coord_ant, display->block / 15);
 }
 
 void			draw_full_limit(t_display *display, int is_start)
@@ -462,6 +505,7 @@ int				main(int ac, char **av)
 	if (!init_display(&display))
 		return(EXIT_FAILURE);
 	print_usage();
+	Mix_PlayMusic(display.env.music, display.mute);
 	displayer_loop(&display);
 	free_display(&display);
 	return (EXIT_SUCCESS);

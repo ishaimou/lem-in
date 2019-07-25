@@ -18,8 +18,8 @@ SDL_Color		color_macros(int macros)
 		return (sdl_rgb(255, 70, 0));
 	if (macros == L_CYAN)
 		return (sdl_rgb(0, 255, 255));
-	if (macros == L_MAGENTA)
-		return (sdl_rgb(255, 0, 255));
+	if (macros == L_PURPLE)
+		return (sdl_rgb(186, 85, 211));
 	return (sdl_rgb(0, 0, 0));
 }
 
@@ -43,8 +43,8 @@ void		name_color(int macros)
 		ft_printf("   color: Orange\n");
 	else if (macros == L_CYAN)
 		ft_printf("   color: %{cyan}Cyan%{eoc}\n");
-	else if (macros == L_MAGENTA)
-		ft_printf("   color: %{purple}Magenta%{eoc}\n");
+	else if (macros == L_PURPLE)
+		ft_printf("   color: %{purple}Purple%{eoc}\n");
 	else
 		ft_printf("   color: White\n");
 }

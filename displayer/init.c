@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 02:16:40 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/24 02:58:38 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/25 06:14:36 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@ void			init_vars_display(t_display *display)
 	display->moment = 0;
 	display->pause = 1;
 	display->pass = 1;
+	display->trace = 0;
 	display->f = 0;
-	display->block = WIDTH / 10;
-	display->offset = pt_new(400, 200);
 }
 
 static void		fill_frames(int *frames)
 {
-	frames[0] = 1 / 100;
+	frames[0] = 1 / 1000000;
 	frames[1] = 1;
 	frames[2] = 20;
 	frames[3] = 200;
@@ -52,10 +51,12 @@ int				init_display(t_display *display)
 	sdl_init(display->env);
 	if (!sdlenv_fill(&(display->env), TITLE, HEIGHT, WIDTH))
 		return (0);
-	//load_music(display->env, MUSIC_PATH);
+	load_music(&(display->env), MUSIC_PATH);
 	fill_frames(display->frame);
 	display->font_text = TTF_OpenFont(FONT_TYPE_TXT, FONT_SIZE_TXT);
-	display->mute = 0;
+	display->mute = -1;
+	display->block = WIDTH / 10;
+	display->offset = pt_new(400, 200);
 	init_vars_display(display);
 	return (1);
 }
