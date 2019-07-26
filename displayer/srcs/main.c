@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 01:41:34 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 02:59:52 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:05:07 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int				main(int ac, char **av)
 	t_display	display;
 
 	if (!store_data(ac, av, &(display.infos)))
-		return(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	if (!init_display(&display))
-		return(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	print_usage();
 	Mix_PlayMusic(display.env.music, display.mute);
 	displayer_loop(&display);

@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 00:16:55 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 01:38:50 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:11:06 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,13 @@ static t_bline	affect_bline(t_display *display, int i, int j)
 	return (bline_new(a, b, display->block / 8));
 }
 
-static void        draw_link(t_display *display, t_infos infos, int a, int b)
+static void		draw_link(t_display *display, t_infos infos, int a, int b)
 {
-	SDL_Color    color;
-	t_bline        bline;
-	int            i;
-	int            j;
-	int            k;
+	SDL_Color	color;
+	t_bline		bline;
+	int			i;
+	int			j;
+	int			k;
 
 	k = -1;
 	i = -1;

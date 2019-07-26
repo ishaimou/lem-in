@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 02:54:22 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 02:54:53 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:04:01 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,6 @@ void			print_usage(void)
 	ft_printf("\n        %{GREEN}* Colors:%{eoc}\n");
 	ft_printf(" %{RED}RED %{BLUE}BLUE %{GREEN}GREEN %{YELLOW}YELLOW");
 	ft_printf(" %{CYAN}CYAN %{eoc}ORANGE %{PURPLE}PURPLE\n");
-	ft_printf("%{blue}=================================================%{eoc}\n");
+	ft_printf("%{blue}========================");
+	ft_printf("=========================%{eoc}\n");
 }

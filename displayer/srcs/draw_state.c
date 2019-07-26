@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 02:48:40 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 02:49:38 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:08:07 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static void		display_ants(t_display *display)
 	SDL_Rect	pos;
 	char		*str;
 
-	str = str_msg("Start: ", display->infos.start_end[display->moment / STATE].x);
+	str = str_msg("Start: ",
+			display->infos.start_end[display->moment / STATE].x);
 	tex = ttf_texture(display->env.render, display->font_text,
 			str, sdl_rgb(0, 0, 0));
 	pos = rect_new(0, 0, HEIGHT / 20, WIDTH / 20);

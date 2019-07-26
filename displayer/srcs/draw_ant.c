@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/26 02:43:11 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 02:46:26 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:08:39 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ static void		fill_rot_c(t_point *rot_c, t_point *c, t_point o, int teta)
 	rot_c[3] = pt_rot(o, c[3], teta);
 }
 
-static void		ant_man(t_display *display, SDL_Color color, t_point o, int teta)
+static void		ant_man(t_display *display, SDL_Color color,
+		t_point o, int teta)
 {
 	t_point	c[4];
 	t_point	rot_c[4];
