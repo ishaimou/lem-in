@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 05:17:29 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/22 05:17:44 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:03:40 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@ void	ft_error(void)
 {
 	write(2, "ERROR\n", 6);
 	exit(1);
+}
+
+int		is_exclus(int *exclus, int x)
+{
+	if (exclus[x])
+		return (1);
+	return (0);
 }
 
 int		is_ignored(char *str)

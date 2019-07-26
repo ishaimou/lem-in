@@ -1,57 +1,56 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bfs.c                                              :+:      :+:    :+:   */
+/*   fill_bfs.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/26 00:58:25 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 02:09:41 by obelouch         ###   ########.fr       */
+/*   Created: 2019/07/26 01:09:07 by obelouch          #+#    #+#             */
+/*   Updated: 2019/07/26 01:12:20 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-static void		enqueue_infix(t_lemin *lemin, t_bt *root, t_queue *q, int u)
+static t_icase	*store_result(t_lemin *lemin)
+{
+	t_icase		*result;
+	int			u;
+
+	result = NULL;
+	u = lemin->end;
+	while (u != lemin->start)
+	{
+		ic_pushnode(&result, u);
+		u = lemin->parent[u];
+	}
+	ic_pushnode(&result, u);
+	return (result);
+}
+
+static void		pre_enqueue(t_lemin *lemin, t_bt *root, t_queue *q, int u)
 {
 	t_room	*room;
 
 	if (root)
 	{
 		room = (t_room*)root->item;
-		enqueue_infix(lemin, root->right, q, u);
-		if (!(lemin->visited)[room->id] && room->edge_flow)
+		pre_enqueue(lemin, root->right, q, u);
+		if (!(lemin->visited)[room->id] && !room->forwd)
 		{
 			qt_enqueue(q, &room->id, sizeof(int));
 			(lemin->visited)[room->id] = 1;
 			(lemin->parent)[room->id] = u;
 		}
-		enqueue_infix(lemin, root->left, q, u);
+		pre_enqueue(lemin, root->left, q, u);
 	}
 }
 
-void			store_path(t_lemin *lemin)
-{
-	t_icase		*path;
-	t_list		*node;
-	int			u;
-
-	u = lemin->end;
-	path = NULL;
-	while (u != lemin->start)
-	{
-		ic_pushnode(&path, u);
-		u = lemin->parent[u];
-	}
-	ic_pushnode(&path, u);
-	node = ft_lstnew_sm(path, sizeof(path));
-	ft_lstadd(&lemin->list_paths, node);
-}
-
-int				bfs(t_lemin *lemin)
+t_icase			*fill_bfs(t_lemin *lemin)
 {
 	t_queue		*q;
 	int			u;
+	t_icase		*result;
 
 	tabint_reset(lemin->visited, lemin->v, 0);
 	q = qt_new_queue();
@@ -64,14 +63,13 @@ int				bfs(t_lemin *lemin)
 		qt_front(*q, &u);
 		if (u == lemin->end)
 		{
-			store_path(lemin);
+			result = store_result(lemin);
 			qt_free(q);
-			return (1);
+			return (result);
 		}
 		qt_dequeue(q);
-		if (!is_exclus(lemin->exclus, u))
-			enqueue_infix(lemin, lemin->tab_bt[u], q, u);
+		pre_enqueue(lemin, lemin->tab_bt[u], q, u);
 	}
 	qt_free(q);
-	return (0);
+	return (NULL);
 }

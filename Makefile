@@ -6,7 +6,7 @@
 #    By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/02 07:12:48 by ishaimou          #+#    #+#              #
-#    Updated: 2019/07/08 12:52:45 by ishaimou         ###   ########.fr        #
+#    Updated: 2019/07/26 01:12:49 by obelouch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,8 @@ H_LIB_DIR = ./libft/includes
 H_DIR = ./includes
 FLAGS = -Wall -Werror -Wextra
 
-SRCS = 	main.c init.c tools.c hash_tools.c free.c\
-		bfs.c algo_ishobe.c best_group.c manager.c \
+SRCS = 	main.c init.c tools.c hash_tools.c free.c manager.c\
+		extended_bfs.c fill_bfs.c bfs.c algo_ishobe.c best_group.c\
 		deleteme.c
 
 SRCS_DIR = $(addprefix srcs/, $(SRCS))

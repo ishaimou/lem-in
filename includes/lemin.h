@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/28 23:02:05 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/09 13:39:12 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:16:06 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct		s_lemin
 }					t_lemin;
 
 void		ft_error(void);
+int			is_exclus(int *exclus, int x);
 void		init_tools(t_lemin *lemin);
 void		init_lemin(t_lemin *lemin);
 void		init_tab_ants(t_stat_ants *tab_ants, int size);
@@ -82,7 +83,9 @@ int			algo_pre_ishobe(t_lemin *lemin);
 int			extended_ishobe(t_lemin *lemin);
 int			fill_forbackwd(t_lemin *lemin);
 int			extended_bfs(t_lemin *lemin);
+t_icase		*fill_bfs(t_lemin *lemin);
 int			bfs(t_lemin *lemin);
+void		store_path(t_lemin *lemin);
 t_room		*create_room(int room_id);
 void		min_flux(t_lemin *lemin);
 int			id_cmp(void *item1, void *item2);
