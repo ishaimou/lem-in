@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 09:09:59 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/26 00:59:18 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:55:28 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ void		init_infos(t_infos *infos);
 int			is_strnbr(char *str);
 int			is_link(char *str);
 int			is_room(char *str);
+int			get_teta(t_infos infos, int a, int b);
 void		displayer_loop(t_display *display);
 void		free_display(t_display *display);
 int			init_display(t_display *display);
@@ -109,11 +110,12 @@ void		init_vars_display(t_display *display);
 void		draw_state(t_display *display, t_infos infos);
 void		draw_scene(t_display *display);
 void		print_life_ants(t_infos *infos);
+void		print_debug(t_infos *infos);
+void		print_usage(void);
 void		name_color(int macros);
 SDL_Color	color_macros(int macros);
-void		print_debug(t_infos *infos);
 void		draw_rooms(t_display *display);
-void		ant_man(t_display *display, SDL_Color color, t_point c, int teta);
+void		draw_ant(t_display *display, t_infos infos, int x);
 void		print_infos(t_infos infos);			  //!!!!!!!!!!
 void		print_matrix(int **matrix, int size); //!!!!!!!!!!
 

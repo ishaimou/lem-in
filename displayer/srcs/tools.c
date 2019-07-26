@@ -6,7 +6,7 @@
 /*   By: obelouch <OB-96@hotmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/24 01:58:50 by obelouch          #+#    #+#             */
-/*   Updated: 2019/07/25 03:56:35 by obelouch         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:53:22 by obelouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,19 @@ int			is_strnbr(char *str)
 		if (str[i] < 48 || str[i] > 57)
 			return (0);
 	return (1);
+}
+
+int				get_teta(t_infos infos, int a, int b)
+{
+	t_point		p[2];
+	float		teta;
+
+	if (b == -1 || a == infos.end)
+		return (0);
+	p[0] = infos.rooms[a].coord;
+	p[1] = infos.rooms[b].coord;
+	teta = pt_diffteta(p[0], p[1]);
+	if (p[0].x < p[1].x || p[0].y < p[1].y)
+		teta += 180;
+	return (teta);
 }
