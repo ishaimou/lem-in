@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 10:51:48 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/25 10:52:04 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:55:14 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,14 @@ static int		modify_l(char **str)
 
 	i = 1;
 	s = *str;
-	while(s[i] && s[i] != '-')
+	while (s[i] && s[i] != '-')
 		i++;
 	(*str)[i] = '\0';
 	return (i);
 }
 
-void			fill_tab_ants(t_infos *infos, t_ant_infos *tab_ants, char *str, int time)
+void			fill_tab_ants(t_infos *infos, t_ant_infos *tab_ants,
+		char *str, int time)
 {
 	char		**tab_cmds;
 	int			num_ant;

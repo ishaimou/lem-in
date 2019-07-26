@@ -6,7 +6,7 @@
 /*   By: ishaimou <ishaimou@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 10:28:54 by ishaimou          #+#    #+#             */
-/*   Updated: 2019/07/25 10:58:02 by ishaimou         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:55:14 by ishaimou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void			fill_trace(t_infos *infos)
 		{
 			life = infos->tab_ants[i].tab_life;
 			if (life[j] != -1 && life[j + 1] != -1 &&
-				life[j] != life[j + 1])
+					life[j] != life[j + 1])
 			{
 				if (infos->links[life[j]][life[j + 1]] == 2)
 					break ;
@@ -37,32 +37,6 @@ void			fill_trace(t_infos *infos)
 		}
 		i++;
 	}
-}
-
-void			fill_room(t_infos *infos, char *str)
-{
-	char	**tab;
-	int		ind;
-
-	tab = ft_strsplit(str, ' ');
-	ind = hash_findid(infos->tab_hash, infos->v, tab[0]);
-	infos->rooms[ind].id = ind;
-	infos->rooms[ind].coord.x = ft_atoi(tab[1]);
-	infos->rooms[ind].coord.y = ft_atoi(tab[2]);
-	free_tabstr(&tab);
-}
-
-void			add_link(char **tab_hash, int v, int **matrix, char *str)
-{
-	char		**tab;
-	int			a;
-	int			b;
-
-	tab = ft_strsplit(str, '-');
-	a = hash_findid(tab_hash, v, tab[0]);
-	b = hash_findid(tab_hash, v, tab[1]);
-	matrix[a][b] = 1;
-	matrix[b][a] = 1;
 }
 
 void			take_options(int ac, char **av, t_infos *infos)
@@ -81,12 +55,48 @@ void			take_options(int ac, char **av, t_infos *infos)
 	}
 }
 
+static void		find_start_end(t_chr *curr, char *str)
+{
+	if (!ft_strcmp(str, "start"))
+		curr->next->len = INT_MAX;
+	else if (!ft_strcmp(str, "end"))
+		curr->next->len = UINT_MAX;
+}
+
+void			fill_basic_infos(t_infos *infos)
+{
+	t_chr		*curr;
+	char		*str;
+
+	curr = infos->input;
+	if (!ft_strncmp(curr->str, "ERROR", 5))
+		free_error(infos);
+	while (curr)
+	{
+		str = curr->str;
+		if (str[0] == '#')
+		{
+			if (str[1] != '#')
+				ft_putendl(&str[1]);
+			else
+				find_start_end(curr, &str[2]);
+		}
+		else if (is_strnbr(str))
+			infos->ants = ft_atoi(str);
+		else if (is_room(str))
+			infos->v++;
+		else if (str[0] == 'L')
+			infos->shots++;
+		curr = curr->next;
+	}
+}
+
 int				store_data(int ac, char **av, t_infos *infos)
 {
 	init_infos(infos);
 	take_options(ac, av, infos);
 	if (!(infos->input = gnl_save_chr(0)))
-		return(0);
+		return (0);
 	chr_print(infos->input);
 	ft_putstr("\n\n");
 	fill_basic_infos(infos);
